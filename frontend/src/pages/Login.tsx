@@ -21,7 +21,7 @@ export default function Login(){
     finally{ setLoading(false)}
   }
   return (
-    <div className="min-h-screen flex bg-white dark:bg-zinc-950">
+    <div className="h-screen overflow-hidden flex bg-white dark:bg-zinc-950">
       {/* Left — Branding / Visual (split) */}
       <div className="hidden lg:flex w-[52%] relative overflow-hidden bg-[#714B67] text-white flex-col">
         <div className="absolute inset-0 bg-gradient-to-br from-[#714B67] via-[#7a5771] to-[#8a6582]" />
