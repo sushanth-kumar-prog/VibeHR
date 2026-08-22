@@ -5,6 +5,16 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
 
+function resolveFileUrl(url?: string){
+  if(!url) return ''
+  if(url.startsWith('http://') || url.startsWith('https://')) return url
+  if(url.startsWith('/uploads')){
+    const base = (import.meta.env.VITE_API_URL as string || 'http://localhost:8001/api/v1').replace(/\/api\/v1\/?$/, '')
+    return `${base}${url}`
+  }
+  return url
+}
+
 export default function Settings(){
   const { user } = useAuth()
   const isAdmin = user?.role==='admin' || user?.role==='hr'
@@ -48,7 +58,7 @@ export default function Settings(){
           </div>
           <div>
             <label className="text-sm">Company Logo</label>
-            {company.logo_url && <img src={company.logo_url.startsWith('/uploads') ? `http://localhost:8000${company.logo_url}` : company.logo_url} alt="logo" className="h-16 mt-2 border border-zinc-200 dark:border-zinc-800 rounded"/>}
+            {company.logo_url && <img src={resolveFileUrl(company.logo_url)} alt="logo" className="h-16 mt-2 border border-zinc-200 dark:border-zinc-800 rounded"/>}
             <div className="flex gap-2 mt-2">
               <input type="file" accept="image/*" onChange={e=>setLogoFile(e.target.files?.[0]||null)} className="text-sm"/>
               <Button size="sm" variant="outline" onClick={uploadLogo} disabled={!isAdmin}>Upload Logo</Button>

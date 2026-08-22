@@ -55,7 +55,7 @@ async def delete_component(comp_id: uuid.UUID, db: AsyncSession = Depends(get_db
     return {"deleted": True}
 
 @router.post("/compute")
-async def compute(payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(require_admin)):
+async def compute(payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
     monthly = float(payload["monthly_wage"])
     comps = payload.get("components")
     if comps is None:
