@@ -204,7 +204,7 @@ async def invite_employee(payload: InviteEmployeeRequest, current: User = Depend
     seq = count + 1
     emp_id = generate_employee_id(company.name, seq)
     temp_pw = generate_temp_password(10)
-    role = payload.role if payload.role in ("admin","hr","employee") else "employee"
+    role = payload.role if payload.role in ("admin","hr","employee","intern") else "employee"
     # only admin can create admin/hr? allow
     user = User(
         company_id=current.company_id,
