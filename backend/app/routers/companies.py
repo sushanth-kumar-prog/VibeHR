@@ -41,7 +41,9 @@ async def upload_logo(file: UploadFile = File(...), db: AsyncSession = Depends(g
     url = await upload_bytes("company-logos", filename, content, file.content_type)
     # update company
     res = await db.execute(select(Company).where(Company.id == current.company_id))
-    c = res.scalar_one()
+    c = res.scalar_one_or_none()
+    if not c:
+        raise HTTPException(status_code=404, detail="Company not found")
     c.logo_url = url
     await db.commit()
     return {"logo_url": url, "company_id": str(c.id)}

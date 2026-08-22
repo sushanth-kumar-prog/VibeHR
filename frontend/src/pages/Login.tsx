@@ -4,7 +4,7 @@ import { useAuth } from '../stores/auth'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import {
-  Eye, EyeOff, ArrowRight, Check, Star, Quote, ShieldCheck, Lock
+  Eye, EyeOff, ArrowRight, Check, ShieldCheck, Lock
 } from 'lucide-react'
 
 export default function Login(){
@@ -56,21 +56,6 @@ export default function Login(){
                   {t}
                 </div>
               ))}
-            </div>
-
-            <div className="mt-10 rounded-2xl bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] text-zinc-900">
-              <div className="flex gap-1 text-amber-500">
-                <Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" />
-              </div>
-              <Quote className="h-5 w-5 text-zinc-300 mt-3" />
-              <p className="mt-1 text-[14px] leading-relaxed text-zinc-700">“Dayflow gave us clarity we never had. What took days now takes minutes — and our leadership finally trusts the numbers.”</p>
-              <div className="mt-4 flex items-center gap-3">
-                <img src="https://i.pravatar.cc/100?img=12" alt="avatar" className="h-9 w-9 rounded-full object-cover" />
-                <div>
-                  <div className="text-sm font-semibold">Ananya R.</div>
-                  <div className="text-xs text-zinc-500">Head of People, Olive Systems</div>
-                </div>
-              </div>
             </div>
           </div>
 

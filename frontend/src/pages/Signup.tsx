@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { api } from '../api/client'
 import {
-  ArrowRight, ArrowLeft, Upload, Building2, Check, ShieldCheck, Globe, Users, Eye, EyeOff, Image as ImageIcon, X, Star, Quote
+  ArrowRight, ArrowLeft, Upload, Building2, Check, ShieldCheck, Globe, Users, Eye, EyeOff, Image as ImageIcon, X
 } from 'lucide-react'
 
 type Form = {
@@ -370,7 +370,7 @@ export default function Signup(){
 
                 <label className="flex gap-3 py-3 border-t border-zinc-200 dark:border-zinc-700 cursor-pointer items-start">
                   <input type="checkbox" checked={form.agree} onChange={e=>update('agree',e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-[#714B67] focus:ring-[#714B67] shrink-0" />
-                  <span className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">I agree to <a href="#" className="underline text-[#714B67]">Terms</a> and <a href="#" className="underline text-[#714B67]">Privacy</a> and confirm I am authorized to create this workspace.</span>
+                  <span className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">I agree to <Link to="/terms" target="_blank" rel="noopener noreferrer" className="underline text-[#714B67]">Terms</Link> and <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="underline text-[#714B67]">Privacy</Link> and confirm I am authorized to create this workspace.</span>
                 </label>
               </div>
             )}

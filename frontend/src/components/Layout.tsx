@@ -205,9 +205,9 @@ export default function Layout(){
               )}
             </div>
             {!today?.checked_in ? (
-              <Button size="sm" disabled={checking} onClick={()=>handleCheck('in')}>Check In ({today?.status || 'absent'})</Button>
+              <Button size="sm" disabled={checking} onClick={()=>handleCheck('in')}>Check In</Button>
             ) : !today?.checked_out ? (
-              <Button size="sm" variant="outline" disabled={checking} onClick={()=>handleCheck('out')}>Check Out • {today?.status}</Button>
+              <Button size="sm" variant="outline" disabled={checking} onClick={()=>handleCheck('out')}>Check Out</Button>
             ) : (
               <span className="hidden sm:inline text-xs text-zinc-500">Done today • {today?.working_hours ?? '-'}h • {today?.status}</span>
             )}
