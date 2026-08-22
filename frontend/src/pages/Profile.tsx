@@ -16,14 +16,19 @@ export default function Profile(){
   const [formSalary, setFormSalary] = useState('50000')
   const [components, setComponents] = useState<any[]>([])
   const [msg, setMsg] = useState('')
+  const [docs, setDocs] = useState<any[]>([])
+  const [pwd, setPwd] = useState({old:'', next:'', confirm:''})
+  const [editField, setEditField] = useState<any>({phone: '', address: '', job_title: '', department: ''})
 
   const canViewSalary = me?.role !== 'employee' || me?.id === id
   const canEditSalary = me?.role === 'admin' || me?.role === 'hr'
+  const canEditAll = canEditSalary || me?.id === id
 
   const load = async()=>{
     if(!id) return
     const {data} = await api.get(`/users/${id}`)
     setUser(data)
+    setEditField({phone: data.phone||'', address: data.address||'', job_title: data.job_title||'', department: data.department||''})
     if(canViewSalary){
       try{
         const s = await api.get(`/payroll/salary/${id}`)
@@ -35,6 +40,10 @@ export default function Profile(){
         setComponents(c.data)
       }catch{}
     }
+    try{
+      const d = await api.get(`/documents/${id}`)
+      setDocs(d.data)
+    }catch{}
   }
   useEffect(()=>{ load() },[id])
 
@@ -51,6 +60,31 @@ export default function Profile(){
     await api.post('/payroll/seed-defaults')
     const c = await api.get('/payroll/components')
     setComponents(c.data)
+  }
+
+  const uploadDoc = async(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const file = e.target.files?.[0]
+    if(!file) return
+    const fd = new FormData()
+    fd.append('file', file)
+    await api.post(`/documents/upload/${id}`, fd, {headers: {'Content-Type':'multipart/form-data'}})
+    const d = await api.get(`/documents/${id}`)
+    setDocs(d.data)
+  }
+
+  const saveProfile = async()=>{
+    await api.patch(`/users/${id}`, editField)
+    load()
+    setMsg('Profile updated')
+  }
+
+  const changePwd = async()=>{
+    if(pwd.next !== pwd.confirm) return setMsg('New passwords mismatch')
+    try{
+      await api.post('/auth/change-password', {old_password: pwd.old, new_password: pwd.next})
+      setMsg('Password changed — re-login recommended')
+      setPwd({old:'', next:'', confirm:''})
+    }catch(e:any){ setMsg(e.response?.data?.detail || 'Failed')}
   }
 
   if(!user) return <div className="text-zinc-500">Loading...</div>
@@ -88,13 +122,41 @@ export default function Profile(){
       )}
 
       {tab==='private' && (
-        <Card className="p-6">
-          <h3 className="font-semibold mb-3">Private Info</h3>
+        <Card className="p-6 space-y-4">
+          <h3 className="font-semibold">Private Info & Job Details (spec 3.3)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <Input defaultValue={user.phone||''} placeholder="Phone" onBlur={async e=>{ await api.patch(`/users/${id}`, {phone:e.target.value}); }} />
-            <Input defaultValue={user.address||''} placeholder="Address" onBlur={async e=>{ await api.patch(`/users/${id}`, {address:e.target.value}); }} />
+            <div><label className="text-xs text-zinc-500">Phone {me?.role==='employee'?'(editable)':''}</label><Input value={editField.phone} onChange={e=>setEditField({...editField, phone:e.target.value})} placeholder="Phone"/></div>
+            <div><label className="text-xs text-zinc-500">Address</label><Input value={editField.address} onChange={e=>setEditField({...editField, address:e.target.value})} placeholder="Address"/></div>
+            <div><label className="text-xs text-zinc-500">Job Title {canEditSalary ? '(admin editable)' : ''}</label><Input value={editField.job_title} onChange={e=>setEditField({...editField, job_title:e.target.value})} disabled={!canEditSalary && me?.id!==id} placeholder="Developer"/></div>
+            <div><label className="text-xs text-zinc-500">Department</label><Input value={editField.department} onChange={e=>setEditField({...editField, department:e.target.value})} disabled={!canEditSalary && me?.id!==id} placeholder="Engineering"/></div>
           </div>
-          <div className="text-xs text-zinc-500 mt-2">Employees can edit limited fields (phone, address, avatar). Admin can edit all via PATCH /users.</div>
+          <Button size="sm" onClick={saveProfile}>Save Profile</Button>
+          <div className="text-xs text-zinc-500">Employees can edit limited fields (phone, address, avatar). Admin can edit all employee details (job, dept, role). Salary structure visible in Salary Info tab.</div>
+
+          <div className="border-t border-zinc-800 pt-4 space-y-3">
+            <h4 className="font-medium">Documents (Supabase Storage)</h4>
+            <input type="file" onChange={uploadDoc} className="text-sm"/>
+            <div className="space-y-1">
+              {docs.map((d:any)=>(
+                <div key={d.id} className="flex justify-between items-center text-sm border border-zinc-800 rounded p-2">
+                  <div>{d.name} <span className="text-xs text-zinc-500">{d.mime_type}</span></div>
+                  <a href={d.file_url} target="_blank" className="text-xs text-[#a855f7]">View</a>
+                </div>
+              ))}
+              {docs.length===0 && <div className="text-xs text-zinc-500">No documents — upload resume, ID, etc.</div>}
+            </div>
+          </div>
+
+          <div className="border-t border-zinc-800 pt-4 space-y-3">
+            <h4 className="font-medium">Change Password {user.is_temp_password && <span className="text-amber-400 text-xs">— temp password, change required</span>}</h4>
+            <div className="grid md:grid-cols-3 gap-3">
+              <Input type="password" placeholder="Current" value={pwd.old} onChange={e=>setPwd({...pwd, old:e.target.value})}/>
+              <Input type="password" placeholder="New (8+ U/l, num, special)" value={pwd.next} onChange={e=>setPwd({...pwd, next:e.target.value})}/>
+              <Input type="password" placeholder="Confirm new" value={pwd.confirm} onChange={e=>setPwd({...pwd, confirm:e.target.value})}/>
+            </div>
+            <Button size="sm" variant="outline" onClick={changePwd}>Change Password</Button>
+          </div>
+          {msg && <div className="text-sm p-2 rounded bg-zinc-900 border border-zinc-800">{msg}</div>}
         </Card>
       )}
 
