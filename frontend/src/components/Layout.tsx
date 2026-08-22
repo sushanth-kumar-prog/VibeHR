@@ -4,7 +4,7 @@ import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
-import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2 } from 'lucide-react'
+import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video } from 'lucide-react'
 
 export default function Layout(){
   const { user, logout } = useAuth()
@@ -46,6 +46,7 @@ export default function Layout(){
     {label:'Documents', path:'/documents', icon: FileText, active: 'bg-orange-600 text-white shadow-md shadow-orange-600/20', tint: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-300', hover: 'hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300'},
     {label:'Notifications', path:'/notifications', icon: Bell, active: 'bg-amber-600 text-white shadow-md shadow-amber-600/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
     {label:'Company', path:'/company', icon: Building2, active: 'bg-zinc-700 text-white shadow-md shadow-zinc-700/20', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
+    {label:'Meetings', path:'/meetings', icon: Video, active: 'bg-fuchsia-600 text-white shadow-md shadow-fuchsia-600/20', tint: 'bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/30 dark:text-fuchsia-300', hover: 'hover:bg-fuchsia-50 dark:hover:bg-fuchsia-900/20 hover:text-fuchsia-700 dark:hover:text-fuchsia-300'},
   ]
   const accountTabs = [
     {label:'My Profile', path:'/me', icon: User, active: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20', tint: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300', hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-700 dark:hover:text-indigo-300'},
