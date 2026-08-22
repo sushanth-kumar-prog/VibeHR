@@ -7,6 +7,7 @@ import Profile from './pages/Profile'
 import Attendance from './pages/Attendance'
 import TimeOff from './pages/TimeOff'
 import Reports from './pages/Reports'
+import Settings from './pages/Settings'
 import Layout from './components/Layout'
 import { useAuth } from './stores/auth'
 
@@ -32,6 +33,7 @@ export default function App(){
             <Route path="/attendance" element={<Attendance/>}/>
             <Route path="/time-off" element={<TimeOff/>}/>
             <Route path="/reports" element={<Reports/>}/>
+            <Route path="/settings" element={<Settings/>}/>
           </Route>
           <Route path="*" element={<Navigate to="/" replace/>}/>
         </Routes>

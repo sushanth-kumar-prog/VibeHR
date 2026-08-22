@@ -40,6 +40,7 @@ export default function Layout(){
     {label:'Attendance', path:'/attendance'},
     {label:'Time Off', path:'/time-off'},
     {label:'Reports', path:'/reports'},
+    {label:'Settings', path:'/settings'},
   ]
 
   return (

@@ -78,10 +78,13 @@ export default function Reports(){
         </Card>
       )}
 
-      <Card className="p-4">
+      <Card className="p-4" id="payslip-print">
         <div className="flex justify-between items-center">
           <h3 className="font-semibold">My Salary Slip — {slip?.period || '—'}</h3>
-          <Button size="sm" variant="outline" onClick={load}>Refresh</Button>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={load}>Refresh</Button>
+            <Button size="sm" onClick={()=>window.print()}>Print / Save PDF</Button>
+          </div>
         </div>
         {slip && !slip.error ? (
           <div className="mt-3">
@@ -99,7 +102,7 @@ export default function Reports(){
                 </tbody>
               </table>
             )}
-            <div className="text-xs text-zinc-500 mt-2">Slip generated based on attendance — unpaid absences auto-reduce as per spec: attendance as basis for payroll.</div>
+            <div className="text-xs text-zinc-500 mt-2">Slip generated based on attendance — unpaid absences auto-reduce as per spec: attendance as basis for payroll. Use Print to save as PDF (spec 3.6).</div>
           </div>
         ): <div className="text-sm text-zinc-500 mt-2">{slip?.error || 'No salary structure yet — admin must set via Profile → Salary Info'}</div>}
       </Card>
