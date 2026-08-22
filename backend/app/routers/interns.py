@@ -169,8 +169,11 @@ async def create_internship(payload: dict, db: AsyncSession = Depends(get_db), c
         add_notification(current.company_id, "Intern Onboarded",
                          f"{user.first_name} {user.last_name} ({user.employee_id}) internship {start} → {end}", "info")
         if mentor_id:
+            m_res = await db.execute(select(User).where(User.id == mentor_id))
+            mentor = m_res.scalar_one_or_none()
             add_notification(current.company_id, "Mentor Assigned",
-                             f"You are the mentor for {user.first_name} {user.last_name} — see My Interns", "info")
+                             f"You are the mentor for {user.first_name} {user.last_name} — see My Interns", "info",
+                             to_emails=mentor.email if mentor else None)
         send_email(user.email, "Welcome as Intern — Dayflow",
                    f"<p>Hi {user.first_name},</p><p>Your internship ({start} → {end}) is active. Stipend ₹{stipend}/month.</p>",
                    f"Internship {start} - {end}, stipend {stipend}")
@@ -330,9 +333,12 @@ async def evaluate(intern_id: str, payload: dict, db: AsyncSession = Depends(get
 
     # notify intern with scores (Add ons.md:330)
     try:
+        i_res = await db.execute(select(User).where(User.id == d.user_id))
+        intern_user = i_res.scalar_one_or_none()
         from .notifications import add_notification
         add_notification(current.company_id, f"{etype.capitalize()} Evaluation Submitted",
-                         f"Score {overall}/100 ({score_band(overall)}) for intern {intern_id}", "success")
+                         f"Score {overall}/100 ({score_band(overall)}) for intern {intern_id}", "success",
+                         to_emails=intern_user.email if intern_user else None)
     except Exception:
         pass
     return {"id": str(ev.id), "overall_score": overall, "band": score_band(overall), "recommendation": recommendation}
@@ -430,7 +436,10 @@ async def extend(intern_id: str, payload: dict, db: AsyncSession = Depends(get_d
     await db.commit()
     try:
         from .notifications import add_notification
-        add_notification(current.company_id, "Internship Extended", f"New end date {end}", "info")
+        u_res = await db.execute(select(User).where(User.id == d.user_id))
+        intern_user = u_res.scalar_one_or_none()
+        add_notification(current.company_id, "Internship Extended", f"New end date {end}", "info",
+                         to_emails=intern_user.email if intern_user else None)
     except Exception:
         pass
     return await _serialize(db, d)
@@ -454,7 +463,8 @@ async def end_internship(intern_id: str, db: AsyncSession = Depends(get_db), cur
     try:
         from .notifications import add_notification
         add_notification(current.company_id, "Internship Completed",
-                         f"{user.first_name if user else intern_id} internship marked completed", "info")
+                         f"{user.first_name if user else intern_id} internship marked completed", "info",
+                         to_emails=user.email if user else None)
     except Exception:
         pass
     return await _serialize(db, d)

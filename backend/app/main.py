@@ -18,6 +18,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+import traceback
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request, exc):
+    # unhandled exceptions bypass CORSMiddleware (it sits outside it), so 500s must
+    # add CORS headers manually or the browser masks the real error as a CORS failure
+    traceback.print_exc()
+    origin = request.headers.get("origin")
+    headers = {"Access-Control-Allow-Credentials": "true"}
+    if origin in settings.cors_origins_list:
+        headers["Access-Control-Allow-Origin"] = origin
+    return JSONResponse(status_code=500, content={"detail": f"Internal server error: {exc}"}, headers=headers)
+
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(attendance.router, prefix="/api/v1")
