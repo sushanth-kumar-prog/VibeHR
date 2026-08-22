@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import Attendance from './pages/Attendance'
@@ -24,10 +25,11 @@ export default function App(){
     <QueryClientProvider client={qc}>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Landing/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/signup" element={<Signup/>}/>
           <Route element={<Protected><Layout/></Protected>}>
-            <Route path="/" element={<Dashboard/>}/>
+            <Route path="/dashboard" element={<Dashboard/>}/>
             <Route path="/profile/:id" element={<Profile/>}/>
             <Route path="/me" element={<Profile/>}/>
             <Route path="/attendance" element={<Attendance/>}/>
