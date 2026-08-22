@@ -1,4 +1,4 @@
-# VibeHR — Human Resource Management System
+# Dayflow — Human Resource Management System
 
 **Stack: React (Vite + TS + Tailwind + shadcn) + FastAPI + Supabase (Postgres + Storage)**
 
@@ -67,4 +67,4 @@ Basic 40% of wage, HRA 20%, Conveyance fixed, Special Allowance, PF 12% of basic
 Generated as `<Initials><seq>` e.g., Olive System + 1 → OS0001. Uniqueness per company.
 
 ---
-Built as VibeHR — plan committed features incrementally.
+Built as Dayflow — plan committed features incrementally.
