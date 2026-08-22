@@ -506,6 +506,7 @@ export default function Dashboard(){
                 <option value="employee">Employee</option>
                 <option value="hr">HR Officer</option>
                 <option value="admin">Admin</option>
+                <option value="intern">Intern</option>
               </select>
               <Button type="submit" className="md:col-span-2">Invite & Generate ID</Button>
             </form>

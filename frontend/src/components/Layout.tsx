@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
 import Chatbot from './Chatbot'
-import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video } from 'lucide-react'
+import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video, GraduationCap } from 'lucide-react'
 
 export default function Layout(){
   const { user, logout } = useAuth()
@@ -48,6 +48,7 @@ export default function Layout(){
     {label:'Notifications', path:'/notifications', icon: Bell, active: 'bg-amber-600 text-white shadow-md shadow-amber-600/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
     {label:'Company', path:'/company', icon: Building2, active: 'bg-zinc-700 text-white shadow-md shadow-zinc-700/20', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
     {label:'Meetings', path:'/meetings', icon: Video, active: 'bg-fuchsia-600 text-white shadow-md shadow-fuchsia-600/20', tint: 'bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/30 dark:text-fuchsia-300', hover: 'hover:bg-fuchsia-50 dark:hover:bg-fuchsia-900/20 hover:text-fuchsia-700 dark:hover:text-fuchsia-300'},
+    {label:'Interns', path:'/interns', icon: GraduationCap, active: 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20', tint: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-300'},
   ]
   const accountTabs = [
     {label:'My Profile', path:'/me', icon: User, active: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20', tint: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300', hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-700 dark:hover:text-indigo-300'},
