@@ -4,7 +4,7 @@ import { useAuth } from '../stores/auth'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import {
-  Eye, EyeOff, ArrowRight, ShieldCheck, Clock, Users, Lock, CheckCircle2, Building2, Sparkles
+  Eye, EyeOff, ArrowRight, Check, Star, Quote, ShieldCheck, Lock
 } from 'lucide-react'
 
 export default function Login(){
@@ -21,94 +21,85 @@ export default function Login(){
     finally{ setLoading(false)}
   }
   return (
-    <div className="h-screen overflow-hidden flex bg-white dark:bg-zinc-950">
-      {/* Left — Branding / Visual (split) */}
-      <div className="hidden lg:flex w-[52%] relative overflow-hidden bg-[#714B67] text-white flex-col">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#714B67] via-[#7a5771] to-[#8a6582]" />
-        <div className="absolute inset-0 opacity-[0.08]" style={{backgroundImage:`linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)`, backgroundSize:'48px 48px'}} />
-        <div className="absolute -top-32 -right-32 h-[520px] w-[520px] rounded-full bg-white/10 blur-[80px]" />
-        <div className="absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full bg-black/20 blur-[90px]" />
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-zinc-950">
+      {/* Left — Executive Branding */}
+      <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-[#3d1f36] text-white flex-col shrink-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#3d1f36] via-[#5a2e4d] to-[#714B67]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+        <div className="absolute -top-24 -right-24 h-[560px] w-[560px] rounded-full bg-white/[0.06] blur-[90px]" />
+        <div className="absolute -bottom-32 -left-32 h-[520px] w-[520px] rounded-full bg-[#8a6582]/20 blur-[80px]" />
 
-        <div className="relative z-10 flex flex-col h-full p-10 xl:p-12">
-          {/* top brand */}
-          <Link to="/" className="flex items-center gap-3">
-            <span className="h-9 w-9 rounded-xl bg-white flex items-center justify-center text-sm font-bold text-[#714B67] shadow">DF</span>
+        <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
+          <Link to="/" className="flex items-center gap-3 shrink-0">
+            <span className="h-9 w-9 rounded-xl bg-white flex items-center justify-center text-sm font-bold text-[#4A2C40]">DF</span>
             <span className="font-bold text-xl tracking-tight">Dayflow</span>
-            <span className="ml-1 text-[10px] tracking-[0.16em] border border-white/30 rounded-full px-2 py-0.5 opacity-80">HRMS</span>
+            <span className="text-[10px] tracking-[0.14em] text-white/60 ml-1">HRMS</span>
           </Link>
 
-          <div className="flex-1 flex flex-col justify-center max-w-[520px] mx-auto w-full py-10">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/15 border border-white/20 px-3 py-1.5 text-xs backdrop-blur">
-              <span className="h-2 w-2 rounded-full bg-green-300 animate-pulse" />
-              Trusted by 2,400+ teams worldwide
-              <Sparkles className="h-3 w-3 opacity-70" />
-            </div>
-            <h1 className="mt-6 text-[38px] xl:text-[44px] font-bold tracking-tight leading-[0.95]">
-              Every workday,<br />
-              <span className="text-white/90">perfectly aligned.</span>
+          <div className="flex-1 flex flex-col justify-center max-w-[480px]">
+            <div className="text-[11px] tracking-[0.16em] font-semibold text-white/60">TRUSTED BY LEADERS</div>
+            <h1 className="mt-3 text-[38px] xl:text-[42px] font-bold tracking-tight leading-[0.95]">
+              Lead your people<br />
+              <span className="font-light text-white/80 italic">with confidence.</span>
             </h1>
-            <p className="mt-4 text-[15px] leading-relaxed text-white/80">
-              Sign in to your workspace. Manage attendance, leaves and payroll — securely isolated by company.
+            <p className="mt-4 text-[15px] leading-relaxed text-white/70">
+              One clear view of your workforce — attendance, time off and payroll — so you can make confident decisions, every day.
             </p>
 
-            {/* feature bullets */}
-            <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="mt-8 space-y-3">
               {[
-                {icon: Clock, title:'Smart Attendance', desc:'Geo + IP, auto hours'},
-                {icon: Users, title:'Employee Grid', desc:'3×3 directory & profiles'},
-                {icon: ShieldCheck, title:'Role Access', desc:'Admin / HR / Employee'},
-                {icon: Lock, title:'Secure & Isolated', desc:'Company_id scoped'},
-              ].map(f=>(
-                <div key={f.title} className="rounded-xl bg-white/10 border border-white/15 backdrop-blur p-3 flex gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-white text-[#714B67] flex items-center justify-center shrink-0"><f.icon className="h-4 w-4" /></div>
-                  <div><div className="text-sm font-medium leading-none">{f.title}</div><div className="text-xs text-white/70 mt-1">{f.desc}</div></div>
+                'Complete visibility across every team',
+                'Payroll that’s accurate and on time',
+                'Insights that drive better decisions',
+              ].map(t=>(
+                <div key={t} className="flex items-center gap-3 text-sm text-white/90">
+                  <span className="h-6 w-6 rounded-full bg-white/15 border border-white/20 flex items-center justify-center shrink-0"><Check className="h-3.5 w-3.5" /></span>
+                  {t}
                 </div>
               ))}
             </div>
 
-            {/* mock card */}
-            <div className="mt-8 rounded-2xl bg-white p-4 shadow-[0_20px_60px_rgba(0,0,0,0.25)] text-zinc-900">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-medium text-zinc-700"><Building2 className="h-4 w-4 text-[#714B67]" /> Olive Systems Pvt. Ltd.</div>
-                <span className="text-[11px] px-2 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-green-500" />Live</span>
+            <div className="mt-10 rounded-2xl bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] text-zinc-900">
+              <div className="flex gap-1 text-amber-500">
+                <Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" />
               </div>
-              <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-2.5"><div className="text-lg font-bold">24</div><div className="text-[11px] text-zinc-500">Employees</div></div>
-                <div className="rounded-xl bg-green-50 border border-green-200 p-2.5"><div className="text-lg font-bold text-green-600">21</div><div className="text-[11px] text-zinc-500">Present</div></div>
-                <div className="rounded-xl bg-amber-50 border border-amber-200 p-2.5"><div className="text-lg font-bold text-amber-600">2</div><div className="text-[11px] text-zinc-500">Half-day</div></div>
+              <Quote className="h-5 w-5 text-zinc-300 mt-3" />
+              <p className="mt-1 text-[14px] leading-relaxed text-zinc-700">“Dayflow gave us clarity we never had. What took days now takes minutes — and our leadership finally trusts the numbers.”</p>
+              <div className="mt-4 flex items-center gap-3">
+                <img src="https://i.pravatar.cc/100?img=12" alt="avatar" className="h-9 w-9 rounded-full object-cover" />
+                <div>
+                  <div className="text-sm font-semibold">Ananya R.</div>
+                  <div className="text-xs text-zinc-500">Head of People, Olive Systems</div>
+                </div>
               </div>
-              <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500"><CheckCircle2 className="h-3.5 w-3.5 text-green-600" /> Payroll computed • 24 payslips ready</div>
             </div>
           </div>
 
-          <div className="text-xs text-white/60 flex items-center justify-between">
+          <div className="flex items-center justify-between text-xs text-white/50 pt-6 border-t border-white/10 shrink-0">
             <span>© 2026 Dayflow Technologies</span>
-            <span className="flex items-center gap-1.5">SOC2-ready • AES-256 • 99.9% uptime</span>
+            <span className="flex items-center gap-3"><span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> Secure</span><span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> Private</span></span>
           </div>
         </div>
       </div>
 
-      {/* Right — Form */}
-      <div className="flex-1 flex flex-col bg-zinc-50 dark:bg-zinc-950">
-        {/* mobile header */}
-        <div className="lg:hidden h-14 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4">
+      {/* Right — 50% Side Panel Card */}
+      <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:bg-white lg:dark:bg-zinc-950 lg:p-4 xl:p-5">
+        <div className="lg:hidden h-14 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
           <Link to="/" className="flex items-center gap-2 font-bold"><span className="h-7 w-7 rounded-lg bg-[#714B67] flex items-center justify-center text-xs font-bold text-white">DF</span> Dayflow</Link>
           <Link to="/signup" className="text-sm text-[#714B67] font-medium">Create Company</Link>
         </div>
 
-        <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-[440px]">
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-6 sm:p-8">
-              <div className="space-y-1.5">
+        <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-0 h-full">
+          <div className="w-full max-w-[440px] bg-white dark:bg-zinc-900 lg:rounded-2xl lg:border lg:border-zinc-200 lg:dark:border-zinc-800 lg:shadow-sm p-6 sm:p-8 flex flex-col max-h-full overflow-auto">
+              <div className="space-y-1.5 shrink-0">
                 <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">Welcome back</h2>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">Sign in with your Employee ID or work email.</p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">Sign in to your company workspace.</p>
               </div>
 
-              <form onSubmit={submit} className="mt-6 space-y-4">
+              <form onSubmit={submit} className="mt-6 space-y-4 flex-1">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Login ID / Email</label>
                   <Input value={email} onChange={e=>setEmail(e.target.value)} placeholder="OS0001 or email@company.com" required autoComplete="username" className="h-11" />
-                  <p className="text-xs text-zinc-500">Use auto-generated ID (e.g., OS0001) or your registered email.</p>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -135,19 +126,13 @@ export default function Login(){
                 </div>
 
                 <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">No company yet? <Link to="/signup" className="text-[#714B67] font-semibold hover:underline">Create Company — Free</Link></div>
-
-                <div className="rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 p-3 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-                  <div className="font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> Wireframe note</div>
-                  <div className="mt-1">Employee ID auto-generated (e.g., <span className="font-mono font-medium">OS0001</span> — Olive System initials + seq). Employees are invited by Admin/HR — temp password auto-generated. Verification required. Check In/Out flips status dot.</div>
-                </div>
               </form>
-            </div>
 
-            <div className="mt-4 text-center text-xs text-zinc-500 dark:text-zinc-500">
+            <div className="mt-4 text-center text-xs text-zinc-500 dark:text-zinc-500 shrink-0">
               By signing in you agree to our <a href="#" className="underline">Terms</a> and <a href="#" className="underline">Privacy</a>.
             </div>
 
-            <div className="hidden lg:flex mt-6 items-center justify-center gap-2 text-xs text-zinc-400">
+            <div className="hidden lg:flex mt-4 items-center justify-center gap-2 text-xs text-zinc-400 shrink-0">
               <Link to="/" className="hover:text-zinc-600 dark:hover:text-zinc-300">← Back to home</Link>
               <span>•</span>
               <span>Need help? support@Dayflow.co</span>
