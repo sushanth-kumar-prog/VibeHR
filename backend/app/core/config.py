@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     SMTP_USE_TLS: bool = False
     SMTP_USE_SSL: bool = True
     REQUIRE_EMAIL_VERIFICATION: bool = False
+    ANTHROPIC_API_KEY: str = ""
+    ANTHROPIC_MODEL: str = "claude-3-haiku-20240307"
 
     class Config:
         env_file = ".env"
