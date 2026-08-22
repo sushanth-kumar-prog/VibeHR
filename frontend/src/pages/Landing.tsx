@@ -23,7 +23,6 @@ export default function Landing() {
             <Link to="/" className="flex items-center gap-2.5">
               <img src="/logo.svg" alt="Dayflow logo" className="h-8 w-8 rounded-lg" />
               <span className="font-bold text-[18px] tracking-tight text-zinc-900">Dayflow</span>
-              <span className="hidden sm:inline text-[10px] tracking-[0.14em] text-zinc-500 border border-zinc-200 rounded-full px-2 py-0.5 ml-1 bg-zinc-50">HRMS</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-1 text-sm">
               <a href="#features" className="px-3 py-2 text-zinc-600 hover:text-zinc-900 transition">Features</a>

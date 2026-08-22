@@ -125,7 +125,6 @@ export default function Signup(){
           <Link to="/" className="flex items-center gap-3 shrink-0">
             <img src="/logo.svg" alt="Dayflow logo" className="h-9 w-9 rounded-xl" />
             <span className="font-bold text-xl tracking-tight">Dayflow</span>
-            <span className="text-[10px] tracking-[0.14em] text-white/60 ml-1">HRMS</span>
           </Link>
 
           <div className="mt-8 max-w-[440px]">
@@ -191,17 +190,17 @@ export default function Signup(){
         </div>
       </div>
 
-      {/* Right — 50% Side Panel Card */}
-        <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:bg-[#f5f3f5] lg:dark:bg-zinc-950 lg:p-4 xl:p-5 lg:overflow-auto">
+      {/* Right — 50% Side Panel Card - no outer space */}
+        <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-white dark:bg-zinc-900 lg:bg-white lg:dark:bg-zinc-900 lg:overflow-auto">
         <div className="lg:hidden h-12 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
           <Link to="/" className="flex items-center gap-2 font-bold text-sm"><img src="/logo.svg" alt="Dayflow logo" className="h-6 w-6 rounded-lg" /> Dayflow</Link>
           <Link to="/login" className="text-xs text-[#714B67] font-medium">Sign In</Link>
         </div>
 
-        {/* Side Panel Card — fits content, no extra space */}
-        <div className="flex flex-col bg-white dark:bg-zinc-900 lg:rounded-2xl lg:border lg:border-zinc-200 lg:dark:border-zinc-800 lg:shadow-sm overflow-hidden shrink-0">
+        {/* Side Panel Card — flush, no outer gap/border */}
+        <div className="flex flex-col flex-1 bg-white dark:bg-zinc-900 overflow-hidden">
           {/* header */}
-          <div className="px-5 py-3 border-b border-zinc-100 dark:border-zinc-800 shrink-0">
+          <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 shrink-0">
             <div className="hidden lg:flex items-center gap-1.5 text-xs">
               {steps.map((s,i)=>(
                 <div key={s.title} className="flex items-center gap-1.5">
@@ -228,14 +227,14 @@ export default function Signup(){
             </p>
           </div>
 
-          <form onSubmit={submit} className="px-5 py-3 space-y-3">
+          <form onSubmit={submit} className="px-6 py-4 space-y-4">
             {step===0 && (
               <div className="space-y-3">
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium">Company Name <span className="text-red-500">*</span></label>
                   <Input placeholder="Olive Systems Pvt. Ltd." value={form.companyName} onChange={e=>update('companyName',e.target.value)} className="h-9 text-sm" required />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-medium">Industry</label>
                     <select value={form.industry} onChange={e=>update('industry',e.target.value)} className="flex h-9 w-full rounded-md border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/50 px-2.5 text-xs">
@@ -260,19 +259,19 @@ export default function Signup(){
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium flex items-center gap-1.5"><ImageIcon className="h-3.5 w-3.5" /> Company Logo <span className="text-[11px] font-normal text-zinc-500">(optional)</span></label>
-                  <div className={`rounded-lg border-2 border-dashed p-2.5 flex items-center gap-3 ${form.logoPreview ? 'border-[#714B67]/30 bg-[#714B67]/5' : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/30'}`}>
-                    <div className="h-12 w-12 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
+                  <div className={`border border-dashed p-2.5 flex items-center gap-3 ${form.logoPreview ? 'border-[#714B67]/30 bg-[#714B67]/5' : 'border-zinc-200 dark:border-zinc-700'}`}>
+                    <div className="h-12 w-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
                       {form.logoPreview ? <img src={form.logoPreview} alt="preview" className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5 text-zinc-400" />}
                     </div>
                     <div className="flex-1 min-w-0 text-left">
                       <div className="text-xs font-medium truncate">{form.logo ? form.logo.name : 'Upload logo'}</div>
                       <div className="text-[11px] text-zinc-500 leading-tight">PNG or JPG, up to 5MB</div>
                       <div className="mt-1.5 flex gap-1.5">
-                        <label className="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-[#714B67] text-white text-[11px] font-medium cursor-pointer">
+                        <label className="inline-flex items-center gap-1 h-7 px-2.5 bg-[#714B67] text-white text-[11px] font-medium cursor-pointer">
                           <Upload className="h-3 w-3" /> {form.logo ? 'Change' : 'Choose file'}
                           <input type="file" accept="image/*" className="hidden" onChange={e=>handleLogo(e.target.files?.[0]||null)} />
                         </label>
-                        {form.logo && <button type="button" onClick={()=>handleLogo(null)} className="h-7 px-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-[11px] flex items-center gap-1"><X className="h-3 w-3" /> Remove</button>}
+                        {form.logo && <button type="button" onClick={()=>handleLogo(null)} className="h-7 px-2.5 border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-[11px] flex items-center gap-1"><X className="h-3 w-3" /> Remove</button>}
                       </div>
                     </div>
                   </div>
@@ -282,7 +281,7 @@ export default function Signup(){
 
             {step===1 && (
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-medium">First Name <span className="text-red-500">*</span></label>
                     <Input placeholder="Aarav" value={form.firstName} onChange={e=>update('firstName',e.target.value)} className="h-9 text-sm" required />
@@ -296,7 +295,7 @@ export default function Signup(){
                   <label className="text-xs font-medium">Work Email <span className="text-red-500">*</span></label>
                   <Input placeholder="admin@olivesys.com" type="email" value={form.email} onChange={e=>update('email',e.target.value)} className="h-9 text-sm" required />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-medium">Phone</label>
                     <Input placeholder="+91 98765 43210" value={form.phone} onChange={e=>update('phone',e.target.value)} className="h-9 text-sm" />
@@ -306,7 +305,7 @@ export default function Signup(){
                     <Input value={form.jobTitle} onChange={e=>update('jobTitle',e.target.value)} className="h-9 text-sm" />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-medium">Department</label>
                     <Input placeholder="Administration" value={form.department} onChange={e=>update('department',e.target.value)} className="h-9 text-sm" />
@@ -316,7 +315,7 @@ export default function Signup(){
                     <Input placeholder="Bengaluru, Karnataka" value={form.address} onChange={e=>update('address',e.target.value)} className="h-9 text-sm" />
                   </div>
                 </div>
-                <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 p-2.5 flex gap-2.5 items-center">
+                <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2.5 flex gap-2.5 items-center">
                   <div className="h-8 w-8 rounded-full bg-[#714B67] text-white flex items-center justify-center font-bold text-xs shrink-0">{(form.firstName[0]||'A')}{(form.lastName[0]||'A')}</div>
                   <div className="text-xs min-w-0">
                     <div className="font-medium truncate">{form.firstName||'First'} {form.lastName||'Last'}</div>
@@ -334,10 +333,10 @@ export default function Signup(){
                     <Input type={showPw ? 'text':'password'} placeholder="8+ chars, upper/lower/number/special" value={form.password} onChange={e=>update('password',e.target.value)} className="h-9 pr-9 text-sm" required />
                     <button type="button" onClick={()=>setShowPw(v=>!v)} className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-500">{showPw ? <EyeOff className="h-3.5 w-3.5"/> : <Eye className="h-3.5 w-3.5"/>}</button>
                   </div>
-                  <div className="flex gap-1">
-                    {[0,1,2,3,4].map(i=> <div key={i} className={`h-1 flex-1 rounded-full ${i < pwScore ? (pwScore===5 ? 'bg-green-500' : pwScore>=3 ? 'bg-amber-500' : 'bg-red-500') : 'bg-zinc-200 dark:bg-zinc-700'}`} />)}
+                  <div className="flex gap-1.5 pt-1">
+                    {[0,1,2,3,4].map(i=> <div key={i} className={`h-1.5 flex-1 rounded-full transition-colors ${i < pwScore ? (pwScore===5 ? 'bg-green-500' : pwScore>=3 ? 'bg-amber-500' : 'bg-red-500') : 'bg-zinc-200 dark:bg-zinc-700'}`} />)}
                   </div>
-                  <ul className="grid grid-cols-3 gap-1 text-[11px]">
+                  <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] pt-1">
                     {[
                       ['len','8+ chars'],
                       ['upper','Uppercase'],
@@ -345,8 +344,8 @@ export default function Signup(){
                       ['num','Number'],
                       ['special','Special'],
                     ].map(([k,label])=>(
-                      <li key={k} className={`flex items-center gap-1 ${ (passwordChecks as any)[k] ? 'text-green-600' : 'text-zinc-500'}`}>
-                        <Check className={`h-3 w-3 ${ (passwordChecks as any)[k] ? 'opacity-100' : 'opacity-30'}`} /> {label}
+                      <li key={k} className={`flex items-center gap-1.5 ${ (passwordChecks as any)[k] ? 'text-green-600' : 'text-zinc-500'}`}>
+                        <Check className={`h-3 w-3 shrink-0 ${ (passwordChecks as any)[k] ? 'opacity-100' : 'opacity-30'}`} /> {label}
                       </li>
                     ))}
                   </ul>
@@ -358,7 +357,7 @@ export default function Signup(){
                   {form.confirm && form.password===form.confirm && form.password && <p className="text-[11px] text-green-600 flex items-center gap-1"><Check className="h-3 w-3" /> Match</p>}
                 </div>
 
-                <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-2.5 space-y-1.5 bg-zinc-50 dark:bg-zinc-800/30">
+                <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2.5 space-y-1.5">
                   <div className="text-xs font-semibold flex items-center gap-1.5"><Users className="h-3.5 w-3.5 text-[#714B67]" /> Review</div>
                   <div className="text-[11px] leading-relaxed text-zinc-600 dark:text-zinc-400 space-y-0.5">
                     <div><span className="font-medium text-zinc-900 dark:text-white">Company:</span> {form.companyName || '—'} {form.industry && `• ${form.industry}`} {form.companySize && `• ${form.companySize}`}</div>
@@ -366,21 +365,21 @@ export default function Signup(){
                   </div>
                 </div>
 
-                <label className="flex gap-2.5 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 cursor-pointer">
+                <label className="flex gap-2.5 py-2.5 border-t border-zinc-200 dark:border-zinc-700 cursor-pointer">
                   <input type="checkbox" checked={form.agree} onChange={e=>update('agree',e.target.checked)} className="mt-0.5 h-3.5 w-3.5 rounded border-zinc-300 text-[#714B67] focus:ring-[#714B67] shrink-0" />
                   <span className="text-[11px] leading-snug text-zinc-600 dark:text-zinc-400">I agree to <a href="#" className="underline text-[#714B67]">Terms</a> and <a href="#" className="underline text-[#714B67]">Privacy</a> and confirm I am authorized to create this workspace.</span>
                 </label>
               </div>
             )}
 
-            {err && <div className="text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-2.5 rounded-lg leading-tight">{err}</div>}
+            {err && <div className="text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-2.5 leading-tight">{err}</div>}
 
             <div className="flex gap-2 pt-1">
-              {step>0 && <Button type="button" variant="outline" onClick={back} className="h-9 px-4 rounded-lg text-sm"><ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back</Button>}
+              {step>0 && <Button type="button" variant="outline" onClick={back} className="h-9 px-4 text-sm"><ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back</Button>}
               {step<2 ? (
-                <Button type="button" onClick={next} className="flex-1 h-9 rounded-lg text-sm">Continue <ArrowRight className="ml-1.5 h-3.5 w-3.5" /></Button>
+                <Button type="button" onClick={next} className="flex-1 h-9 text-sm">Continue <ArrowRight className="ml-1.5 h-3.5 w-3.5" /></Button>
               ) : (
-                <Button type="submit" disabled={loading || !canStep2} className="flex-1 h-9 rounded-lg text-sm">{loading?'Creating...':'Create Company & Sign In'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" /></Button>
+                <Button type="submit" disabled={loading || !canStep2} className="flex-1 h-9 text-sm">{loading?'Creating...':'Create Company & Sign In'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" /></Button>
               )}
             </div>
 
@@ -390,7 +389,7 @@ export default function Signup(){
             </div>
           </form>
 
-          <div className="px-5 py-2.5 border-t border-zinc-100 dark:border-zinc-800 text-center text-xs text-zinc-600 dark:text-zinc-400 shrink-0">
+          <div className="px-6 py-3 border-t border-zinc-100 dark:border-zinc-800 text-center text-xs text-zinc-600 dark:text-zinc-400 shrink-0">
             Already have an account? <Link to="/login" className="text-[#714B67] font-semibold hover:underline">Sign In</Link>
             <span className="mx-2 text-zinc-300">•</span>
             <Link to="/" className="hover:underline">Back to home</Link>
