@@ -19,6 +19,7 @@ export default function Profile(){
   const [docs, setDocs] = useState<any[]>([])
   const [pwd, setPwd] = useState({old:'', next:'', confirm:''})
   const [editField, setEditField] = useState<any>({phone: '', address: '', job_title: '', department: ''})
+  const [company, setCompany] = useState<any>(null)
 
   const canViewSalary = me?.role !== 'employee' || me?.id === id
   const canEditSalary = me?.role === 'admin' || me?.role === 'hr'
@@ -43,6 +44,10 @@ export default function Profile(){
     try{
       const d = await api.get(`/documents/${id}`)
       setDocs(d.data)
+    }catch{}
+    try{
+      const c = await api.get('/companies/me')
+      setCompany(c.data)
     }catch{}
   }
   useEffect(()=>{ load() },[id])
@@ -87,6 +92,15 @@ export default function Profile(){
     }catch(e:any){ setMsg(e.response?.data?.detail || 'Failed')}
   }
 
+  const uploadAvatar = async(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const file = e.target.files?.[0]
+    if(!file) return
+    const fd = new FormData()
+    fd.append('file', file)
+    await api.post(`/users/${id}/avatar`, fd, {headers:{'Content-Type':'multipart/form-data'}})
+    load()
+  }
+
   if(!user) return <div className="text-zinc-500">Loading...</div>
 
   return (
@@ -94,11 +108,14 @@ export default function Profile(){
       <Link to="/" className="text-sm text-zinc-400 hover:text-white">← Back to Employees</Link>
       <Card className="p-6">
         <div className="flex gap-4">
-          <div className="h-16 w-16 rounded-full bg-[#a855f7]/30 border border-[#a855f7]/50 flex items-center justify-center text-xl font-bold">{user.first_name[0]}{user.last_name[0]}</div>
-          <div>
+          <div className="h-16 w-16 rounded-full bg-[#a855f7]/30 border border-[#a855f7]/50 flex items-center justify-center text-xl font-bold overflow-hidden">
+            {user.avatar_url ? <img src={user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${user.avatar_url}` : user.avatar_url} alt="avatar" className="h-full w-full object-cover"/> : `${user.first_name[0]}${user.last_name[0]}`}
+          </div>
+          <div className="flex-1">
             <h2 className="text-xl font-bold">{user.first_name} {user.last_name}</h2>
-            <div className="text-sm text-zinc-500">{user.employee_id} • {user.role} • {user.job_title || '—'}</div>
-            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'}</div>
+            <div className="text-sm text-zinc-500">{user.employee_id} • {user.role} • {user.job_title || '—'} {company?.name && `• ${company.name}`}</div>
+            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={company.logo_url.startsWith('/uploads') ? `http://localhost:8000${company.logo_url}` : company.logo_url} target="_blank" className="text-[#a855f7]">Company Logo</a></span>}</div>
+            {(me?.id===id || me?.role!=='employee') && <div className="mt-2"><label className="text-xs bg-zinc-800 px-2 py-1 rounded cursor-pointer">Change Avatar<input type="file" accept="image/*" onChange={uploadAvatar} className="hidden"/></label></div>}
           </div>
         </div>
         <div className="flex gap-2 mt-4 border-t border-zinc-800 pt-4">

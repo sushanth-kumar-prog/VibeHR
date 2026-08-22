@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .db.session import engine, Base
-from .routers import auth, users, attendance, leave, payroll, documents, reports
+from .routers import auth, users, attendance, leave, payroll, documents, reports, companies, avatars, notifications
 # import models to register
 from .models import company, user, attendance as att_model, leave as leave_model, payroll as payroll_model, document as doc_model
+from fastapi.staticfiles import StaticFiles
+import os
 
 app = FastAPI(title="VibeHR API", version="1.0.0", description="HRMS - React FastAPI Supabase")
 
@@ -23,6 +25,13 @@ app.include_router(leave.router, prefix="/api/v1")
 app.include_router(payroll.router, prefix="/api/v1")
 app.include_router(documents.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
+app.include_router(companies.router, prefix="/api/v1")
+app.include_router(avatars.router, prefix="/api/v1")
+app.include_router(notifications.router, prefix="/api/v1")
+
+# serve local uploads fallback (for dev when Supabase not configured)
+if os.path.exists("uploads"):
+    app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get("/")
 async def root():
@@ -34,7 +43,10 @@ async def health():
 
 @app.on_event("startup")
 async def on_startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    except Exception as e:
+        print(f"[startup] DB auto-create skipped (configure DATABASE_URL): {e}")
 
 # For local dev: uvicorn app.main:app --reload
