@@ -1,4 +1,4 @@
-# Secrets — never commit real keys (Brevo BREVO_SMTP_KEY-*, Supabase service_role, etc.)
+# Secrets — never commit real keys (Brevo SMTP *, Supabase service_role, etc.)
 .env
 .env.*
 !.env.example
