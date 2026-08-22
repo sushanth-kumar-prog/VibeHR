@@ -66,6 +66,26 @@ async def compute(payload: dict, db: AsyncSession = Depends(get_db), current: Us
     result = compute_payroll(monthly, comps)
     return result
 
+@router.get("/all")
+async def list_all_payroll(db: AsyncSession = Depends(get_db), current: User = Depends(require_admin)):
+    # admin view payroll of all employees (spec 3.6.2)
+    q = select(SalaryStructure).where(SalaryStructure.company_id == current.company_id).order_by(SalaryStructure.created_at.desc())
+    res = await db.execute(q)
+    structs = res.scalars().all()
+    # keep latest per user
+    latest = {}
+    for s in structs:
+        uid = str(s.user_id)
+        if uid not in latest:
+            latest[uid] = s
+    # join user info
+    out = []
+    for uid, s in latest.items():
+        u = await db.execute(select(User).where(User.id == s.user_id))
+        user = u.scalar_one_or_none()
+        out.append({"user_id": uid, "employee_id": user.employee_id if user else "", "name": f"{user.first_name} {user.last_name}" if user else "", "monthly_wage": float(s.monthly_wage), "yearly_wage": float(s.yearly_wage), "breakdown": s.breakdown, "effective_from": s.effective_from.isoformat() if s.effective_from else None})
+    return out
+
 @router.get("/salary/{user_id}")
 async def get_salary(user_id: uuid.UUID, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
     # employee can only see own, admin can see all

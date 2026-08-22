@@ -11,12 +11,14 @@ export default function Reports(){
   const [leave,setLeave]=useState<any>(null)
   const [pay,setPay]=useState<any>(null)
   const [slip,setSlip]=useState<any>(null)
+  const [allPay,setAllPay]=useState<any[]>([])
 
   const load = async()=>{
     try{ const a=await api.get('/reports/attendance'); setAtt(a.data)}catch{}
     if(isAdmin){
       try{ const l=await api.get('/reports/leave'); setLeave(l.data)}catch{}
       try{ const p=await api.get('/reports/payroll'); setPay(p.data)}catch{}
+      try{ const ap=await api.get('/payroll/all'); setAllPay(ap.data)}catch{}
     }
     try{
       const s=await api.get(`/reports/salary-slip/${user?.id}`)
@@ -61,6 +63,20 @@ export default function Reports(){
           ): <div className="text-sm text-zinc-500">{isAdmin ? 'No payroll' : 'Requires admin/hr'}</div>}
         </Card>
       </div>
+
+      {isAdmin && allPay.length>0 && (
+        <Card className="p-4 overflow-auto">
+          <h3 className="font-semibold">All Employees Payroll (Admin/HR — spec 3.6.2)</h3>
+          <table className="w-full text-sm mt-3">
+            <thead className="bg-zinc-900 text-xs text-zinc-400"><tr><th className="p-2 text-left">Employee</th><th className="p-2 text-left">ID</th><th className="p-2 text-right">Monthly</th><th className="p-2 text-right">Yearly</th><th className="p-2 text-right">Effective From</th></tr></thead>
+            <tbody>
+              {allPay.map((row:any)=>(
+                <tr key={row.user_id} className="border-t border-zinc-800"><td className="p-2">{row.name}</td><td className="p-2 font-mono text-xs">{row.employee_id}</td><td className="p-2 text-right">₹{row.monthly_wage}</td><td className="p-2 text-right">₹{row.yearly_wage}</td><td className="p-2 text-right text-xs">{row.effective_from || '—'}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      )}
 
       <Card className="p-4">
         <div className="flex justify-between items-center">

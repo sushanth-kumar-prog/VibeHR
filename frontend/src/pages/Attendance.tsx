@@ -25,13 +25,22 @@ export default function Attendance(){
   useEffect(()=>{ load() },[])
 
   const weekRows = ()=>{
-    // group by week starting Monday
     if(view==='day') return rows
-    // simple: filter to last 7 days if no dates
+    // aggregate last 7 days when no filter
+    if(!from && !to){
+      const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-7)
+      return rows.filter(r=> new Date(r.date) >= cutoff)
+    }
     return rows
   }
 
   const display = weekRows()
+  const weekStats = view==='week' ? {
+    present: display.filter(r=>r.status==='present').length,
+    half: display.filter(r=>r.status==='half_day').length,
+    absent: display.filter(r=>r.status==='absent').length,
+    totalHrs: display.reduce((s,r)=>s+(r.working_hours||0),0).toFixed(1)
+  } : null
 
   return (
     <div className="space-y-4">
@@ -49,18 +58,18 @@ export default function Attendance(){
         <div className="ml-auto text-xs text-zinc-500">{display.length} records</div>
       </Card>
 
-      {view==='week' && (
+      {view==='week' && weekStats && (
         <Card className="p-4">
-          <h3 className="font-semibold text-sm">Week Summary (Advanced)</h3>
+          <h3 className="font-semibold text-sm">Week Summary (Advanced) — {display.length} records</h3>
           <div className="grid grid-cols-7 gap-2 mt-3 text-xs">
             {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>(
               <div key={d} className="border border-zinc-800 rounded p-2 text-center">
                 <div className="font-medium">{d}</div>
-                <div className="text-zinc-500">—</div>
+                <div className="text-zinc-500">counts in table</div>
               </div>
             ))}
           </div>
-          <div className="text-xs text-zinc-500 mt-2">Weekly view aggregates Mon-Sun. For full timeline use Day view with date range. Total hours this period: {display.reduce((s,r)=>s+(r.working_hours||0),0).toFixed(1)}h • Payable basis includes half-day as 0.5.</div>
+          <div className="text-xs text-zinc-500 mt-2">Present: {weekStats.present} • Half: {weekStats.half} • Absent: {weekStats.absent} • Total hours this period: {weekStats.totalHrs}h • Half-day counts as 0.5 payable day for payroll (spec 3.4 note).</div>
         </Card>
       )}
 

@@ -6,11 +6,7 @@ from ..db.session import get_db
 from ..core.deps import get_current_user, require_admin
 from ..models.document import Document
 from ..models.user import User
-
-router = APIRouter(prefix="/documents", tags=["documents"])
-
-UPLOAD_DIR = "uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+from ..services.storage import upload_bytes
 
 @router.post("/upload/{user_id}")
 async def upload_doc(user_id: uuid.UUID, file: UploadFile = File(...), db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
@@ -22,14 +18,11 @@ async def upload_doc(user_id: uuid.UUID, file: UploadFile = File(...), db: Async
     target = res.scalar_one_or_none()
     if not target:
         raise HTTPException(status_code=404, detail="Target user not in company")
-    # simple local save; for Supabase Storage would use supabase client
+    # Supabase Storage (or local fallback)
     ext = file.filename.split(".")[-1] if "." in file.filename else "bin"
     fname = f"{user_id}_{uuid.uuid4().hex}.{ext}"
-    path = os.path.join(UPLOAD_DIR, fname)
     content = await file.read()
-    with open(path, "wb") as f:
-        f.write(content)
-    file_url = f"/{path}"
+    file_url = await upload_bytes("employee-documents", fname, content, file.content_type or "application/octet-stream")
     doc = Document(user_id=user_id, company_id=current.company_id, name=file.filename, file_url=file_url, mime_type=file.content_type)
     db.add(doc)
     await db.commit()
