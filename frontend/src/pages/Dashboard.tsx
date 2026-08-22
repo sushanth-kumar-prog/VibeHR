@@ -3,13 +3,11 @@ import { api } from '../api/client'
 import { Link } from 'react-router-dom'
 import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
-import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
 import {
-  Users, UserPlus, Clock, CalendarDays, Wallet, TrendingUp, TrendingDown,
-  CheckCircle2, AlertTriangle, ArrowUpRight, ArrowDownRight, Search, X, Building2, Briefcase, Mail, Shield
+  Users, Clock, CalendarDays, Wallet, TrendingUp,
+  CheckCircle2, AlertTriangle, ArrowUpRight, Building2, Briefcase, Shield
 } from 'lucide-react'
-import CommunicationHub from '../components/CommunicationHub'
 
 function resolveFileUrl(url?: string){
   if(!url) return ''
@@ -30,7 +28,6 @@ export default function Dashboard(){
   const { user } = useAuth()
   const isAdmin = user?.role === 'admin' || user?.role === 'hr'
   const [employees, setEmployees] = useState<Employee[]>([])
-  const [search,setSearch]=useState('')
   const [stats,setStats]=useState<any>(null)
   const [leaveQueue,setLeaveQueue]=useState<any[]>([])
   const [balances,setBalances]=useState<any>(null)
@@ -38,13 +35,10 @@ export default function Dashboard(){
   const [week,setWeek]=useState<any>(null)
   const [todayMap,setTodayMap]=useState<Record<string,string>>({})
   const [myLeaves,setMyLeaves]=useState<any[]>([])
-  const [showInvite,setShowInvite]=useState(false)
-  const [invite,setInvite]=useState({firstName:'',lastName:'',email:'',jobTitle:'',department:'', role:'employee'})
-  const [msg,setMsg]=useState('')
 
   const load = async()=>{
     try{
-      const {data} = await api.get('/users', {params: {search: search || undefined}})
+      const {data} = await api.get('/users')
       setEmployees(data)
     }catch{}
     try{ const r = await api.get('/reports/attendance'); setStats(r.data)}catch{}
@@ -66,19 +60,7 @@ export default function Dashboard(){
       try{ const l=await api.get('/leave/my'); setMyLeaves(l.data)}catch{}
     }
   }
-  useEffect(()=>{ load() },[search])
   useEffect(()=>{ load() },[])
-
-  const doInvite = async(e:React.FormEvent)=>{
-    e.preventDefault(); setMsg('')
-    try{
-      const {data}=await api.post('/auth/invite', invite)
-      setMsg(`Invited ${data.employee_id} — temp password: ${data.temp_password}`)
-      setInvite({firstName:'',lastName:'',email:'',jobTitle:'',department:'', role:'employee'})
-      setTimeout(()=>setShowInvite(false), 1200)
-      load()
-    }catch(ex:any){ setMsg(ex.response?.data?.detail || 'Invite failed')}
-  }
 
   const deptStats = useMemo(()=>{
     const map: Record<string, number> = {}
@@ -229,17 +211,7 @@ export default function Dashboard(){
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-sm text-zinc-500 mt-1">Company overview • {employees.length} employees • {todayPresent} present today • {pendingLeaves} pending leaves</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative hidden sm:block">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400"/>
-            <Input placeholder="Search employees..." value={search} onChange={e=>setSearch(e.target.value)} className="pl-8 w-64 bg-white dark:bg-zinc-900"/>
-          </div>
-          <Button onClick={()=>setShowInvite(true)} className="gap-2"><UserPlus className="h-4 w-4"/> Invite Employee</Button>
-        </div>
-      </div>
-      <div className="sm:hidden relative">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400"/>
-        <Input placeholder="Search employees..." value={search} onChange={e=>setSearch(e.target.value)} className="pl-8 w-full bg-white dark:bg-zinc-900"/>
+        <Link to="/employees" className="shrink-0"><Button variant="outline" className="gap-2"><Users className="h-4 w-4"/> All Employees</Button></Link>
       </div>
 
       {/* KPIs */}
