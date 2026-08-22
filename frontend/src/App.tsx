@@ -10,6 +10,9 @@ import TimeOff from './pages/TimeOff'
 import Reports from './pages/Reports'
 import Payroll from './pages/Payroll'
 import Settings from './pages/Settings'
+import Documents from './pages/Documents'
+import Notifications from './pages/Notifications'
+import Company from './pages/Company'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Privacy from './pages/Privacy'
@@ -63,6 +66,9 @@ export default function App(){
             <Route path="/time-off" element={<TimeOff/>}/>
             <Route path="/payroll" element={<Payroll/>}/>
             <Route path="/reports" element={<Reports/>}/>
+            <Route path="/documents" element={<Documents/>}/>
+            <Route path="/notifications" element={<Notifications/>}/>
+            <Route path="/company" element={<Company/>}/>
             <Route path="/settings" element={<Settings/>}/>
           </Route>
           <Route path="*" element={<Navigate to="/" replace/>}/>

@@ -4,7 +4,7 @@ import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
-import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2 } from 'lucide-react'
 
 export default function Layout(){
   const { user, logout } = useAuth()
@@ -43,6 +43,9 @@ export default function Layout(){
     {label:'Time Off', path:'/time-off', icon: CalendarDays, active: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
     {label:'Payroll', path:'/payroll', icon: Wallet, active: 'bg-teal-600 text-white shadow-md shadow-teal-600/20', tint: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-300', hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-700 dark:hover:text-teal-300'},
     {label:'Reports', path:'/reports', icon: BarChart3, active: 'bg-sky-600 text-white shadow-md shadow-sky-600/20', tint: 'bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300', hover: 'hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-700 dark:hover:text-sky-300'},
+    {label:'Documents', path:'/documents', icon: FileText, active: 'bg-orange-600 text-white shadow-md shadow-orange-600/20', tint: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-300', hover: 'hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300'},
+    {label:'Notifications', path:'/notifications', icon: Bell, active: 'bg-amber-600 text-white shadow-md shadow-amber-600/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
+    {label:'Company', path:'/company', icon: Building2, active: 'bg-zinc-700 text-white shadow-md shadow-zinc-700/20', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
   ]
   const accountTabs = [
     {label:'My Profile', path:'/me', icon: User, active: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20', tint: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300', hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-700 dark:hover:text-indigo-300'},
@@ -186,7 +189,7 @@ export default function Layout(){
               <button onClick={()=>setShowNotifs(s=>!s)} className="relative h-8 w-8 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-xs">🔔{notifs.length>0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] flex items-center justify-center text-white">{notifs.length}</span>}</button>
               {showNotifs && (
                 <div className="absolute right-0 mt-2 w-80 rounded-lg border bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 p-3 shadow-xl max-h-80 overflow-auto">
-                  <div className="font-medium text-sm mb-2">Notifications & Email Alerts</div>
+                  <div className="font-medium text-sm mb-2 flex items-center justify-between">Notifications & Email Alerts <Link to="/notifications" onClick={()=>setShowNotifs(false)} className="text-xs font-normal text-violet-600 dark:text-violet-400 hover:underline">View All →</Link></div>
                   {notifs.length===0 ? <div className="text-xs text-zinc-500">No alerts — invite/leave actions appear here (mock email via Supabase SMTP would send)</div> :
                     notifs.map(n=>(
                       <div key={n.id} className="border-t border-zinc-200 dark:border-zinc-800 py-2">
@@ -194,6 +197,7 @@ export default function Layout(){
                         <div className="text-xs text-zinc-500 dark:text-zinc-400">{n.message}</div>
                       </div>
                     ))}
+                  <Link to="/notifications" onClick={()=>setShowNotifs(false)} className="mt-2 block text-center text-xs py-1.5 rounded-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90">Open Notifications Page</Link>
                 </div>
               )}
             </div>
