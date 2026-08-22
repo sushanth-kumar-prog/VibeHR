@@ -51,8 +51,8 @@ export default function Verify() {
         <div className="h-1 bg-gradient-to-r from-[#714B67] via-[#b58aa6] to-[#e0b64c]" />
         <div className="p-8 text-center">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <img src="/logo.svg" alt="Dayflow logo" className="h-9 w-9 rounded-xl" />
-            <span className="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">Dayflow</span>
+            <img src="/logo.svg" alt="VibeHR logo" className="h-9 w-9 rounded-xl" />
+            <span className="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">VibeHR</span>
           </Link>
 
           {state === 'verifying' && (

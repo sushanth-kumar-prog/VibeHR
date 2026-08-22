@@ -18,6 +18,7 @@ export default function Layout(){
   const [checking, setChecking] = useState(false)
   const [notifs, setNotifs] = useState<any[]>([])
   const [showNotifs, setShowNotifs] = useState(false)
+  const [settingStatus, setSettingStatus] = useState(false)
 
   const fetchToday = async()=> {
     try { const {data}=await api.get('/attendance/today'); setToday(data)} catch {}
@@ -38,6 +39,16 @@ export default function Layout(){
       await fetchToday()
     } catch(e:any){ toast.error(e.response?.data?.detail || e.message || 'Failed')}
     finally{ setChecking(false)}
+  }
+
+  const handleSetStatus = async(status:string)=>{
+    setSettingStatus(true)
+    try{
+      await api.post('/attendance/status', {status})
+      toast.success(`Status set to ${status} ✓`)
+      await fetchToday()
+    } catch(e:any){ toast.error(e.response?.data?.detail || e.message || 'Failed')}
+    finally{ setSettingStatus(false) }
   }
 
   const coreTabs = [
@@ -61,10 +72,10 @@ export default function Layout(){
 
   const [mobileOpen, setMobileOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(()=>{
-    try { return localStorage.getItem('Dayflow-sidebar-collapsed')==='1' } catch { return false }
+    try { return localStorage.getItem('VibeHR-sidebar-collapsed')==='1' } catch { return false }
   })
   useEffect(()=>{
-    try { localStorage.setItem('Dayflow-sidebar-collapsed', collapsed ? '1' : '0') } catch {}
+    try { localStorage.setItem('VibeHR-sidebar-collapsed', collapsed ? '1' : '0') } catch {}
   },[collapsed])
 
   const NavItem = ({t, onNavigate, collapsed: isCollapsed}:{t:any, onNavigate?:()=>void, collapsed?:boolean})=>{
@@ -112,9 +123,9 @@ export default function Layout(){
         <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
           <Link to="/dashboard" className={`flex items-center gap-2.5 font-bold text-lg tracking-tight ${collapsed ? 'justify-center' : ''}`}>
             <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#714B67] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm shrink-0">
-              <img src="/logo.svg" alt="Dayflow logo" className="h-5 w-5 rounded-md brightness-0 invert" />
+              <img src="/logo.svg" alt="VibeHR logo" className="h-5 w-5 rounded-md brightness-0 invert" />
             </span>
-            {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">Dayflow</span>}
+            {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">VibeHR</span>}
           </Link>
           <button
             onClick={()=>setCollapsed(v=>!v)}
@@ -151,7 +162,7 @@ export default function Layout(){
           <aside className="absolute left-0 top-0 bottom-0 w-[280px] bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col shadow-xl">
             <div className="h-14 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800">
               <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
-                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#714B67] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="Dayflow logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> Dayflow
+                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#714B67] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="VibeHR logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> VibeHR
               </Link>
               <button onClick={()=>setMobileOpen(false)} className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <X className="h-5 w-5" />
@@ -184,7 +195,7 @@ export default function Layout(){
               <button onClick={()=>setMobileOpen(true)} className="md:hidden h-8 w-8 rounded-md border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <Menu className="h-5 w-5" />
               </button>
-              <span className="md:hidden font-bold flex items-center gap-2"><img src="/logo.svg" alt="Dayflow logo" className="h-6 w-6 rounded" /> Dayflow</span>
+              <span className="md:hidden font-bold flex items-center gap-2"><img src="/logo.svg" alt="VibeHR logo" className="h-6 w-6 rounded" /> VibeHR</span>
               <span className="hidden md:block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {tabs.find(t=>t.path===loc.pathname)?.label ?? 'Dashboard'}
               </span>
@@ -212,7 +223,21 @@ export default function Layout(){
             ) : !today?.checked_out ? (
               <Button size="sm" variant="outline" disabled={checking} onClick={()=>handleCheck('out')}>Check Out</Button>
             ) : (
-              <span className="hidden sm:inline text-xs text-zinc-500">Done today • {today?.working_hours ?? '-'}h • {today?.status}</span>
+              <div className="hidden sm:flex items-center gap-2 text-xs text-zinc-500">
+                <span>{today?.working_hours ?? '-'}h</span>
+                <select
+                  value={today?.status ?? 'absent'}
+                  disabled={settingStatus}
+                  onChange={(e)=>handleSetStatus(e.target.value)}
+                  title="Set status"
+                  className="capitalize rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:border-violet-300 dark:hover:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-violet-400 transition disabled:opacity-50"
+                >
+                  <option value="present">Present</option>
+                  <option value="break">Break</option>
+                  <option value="absent">Absent</option>
+                  {!['present','break','absent'].includes(today?.status) && <option value={today?.status}>{today?.status}</option>}
+                </select>
+              </div>
             )}
             <div className="relative">
               <button onClick={()=>setShowProfile(s=>!s)} className="relative h-8 w-8 rounded-full bg-[#714B67] flex items-center justify-center text-sm font-bold text-white">

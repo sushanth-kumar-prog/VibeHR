@@ -5,7 +5,7 @@ export function useTheme() {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('Dayflow-theme')
+    const saved = localStorage.getItem('VibeHR-theme')
     const shouldDark = saved === 'dark'
     // default is light (white) per spec — ignore system preference unless explicitly saved
     setIsDark(shouldDark)
@@ -16,7 +16,7 @@ export function useTheme() {
     const next = !isDark
     setIsDark(next)
     document.documentElement.classList.toggle('dark', next)
-    localStorage.setItem('Dayflow-theme', next ? 'dark' : 'light')
+    localStorage.setItem('VibeHR-theme', next ? 'dark' : 'light')
   }
 
   return { isDark, toggle }

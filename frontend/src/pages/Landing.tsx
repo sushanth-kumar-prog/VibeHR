@@ -20,8 +20,8 @@ export default function Landing() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5">
-              <img src="/logo.svg" alt="Dayflow logo" className="h-8 w-8 rounded-lg" />
-              <span className="font-bold text-[18px] tracking-tight text-zinc-900">Dayflow</span>
+              <img src="/logo.svg" alt="VibeHR logo" className="h-8 w-8 rounded-lg" />
+              <span className="font-bold text-[18px] tracking-tight text-zinc-900">VibeHR</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-1 text-sm">
               <a href="#features" className="px-3 py-2 text-zinc-600 hover:text-zinc-900 transition">Features</a>
@@ -107,7 +107,7 @@ export default function Landing() {
                   <span className="text-[#8B5A7A]">perfectly aligned.</span>
                 </h1>
                 <p className="text-[14px] sm:text-[15px] leading-relaxed text-[#5A6B7A] max-w-[520px]">
-                  Dayflow is a powerful HRMS that simplifies employee management, attendance, leave, payroll and more — so your team can focus on what truly matters.
+                  VibeHR is a powerful HRMS that simplifies employee management, attendance, leave, payroll and more — so your team can focus on what truly matters.
                 </p>
               </div>
 
@@ -182,10 +182,10 @@ export default function Landing() {
                 {/* employees */}
                 <div className="relative grid grid-cols-2 gap-2.5 sm:gap-3 mt-3.5">
                   {[
-                    { n: 'Aarav Sharma', id: 'OS0002', role: 'Engineering', email: 'aarav.sharma@dayflow.co', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=11' },
-                    { n: 'Priya Nair', id: 'OS0003', role: 'Design', email: 'priya.nair@dayflow.co', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=5' },
-                    { n: 'Kenji Tanaka', id: 'OS0004', role: 'HR', email: 'kenji.tanaka@dayflow.co', color: 'bg-amber-500', ring: 'ring-amber-100', dotBg: 'bg-amber-500', img: 'https://i.pravatar.cc/100?img=8' },
-                    { n: 'Sofia Lee', id: 'OS0005', role: 'Sales', email: 'sofia.lee@dayflow.co', color: 'bg-rose-500', ring: 'ring-rose-100', dotBg: 'bg-rose-500', img: 'https://i.pravatar.cc/100?img=9' },
+                    { n: 'Aarav Sharma', id: 'OS0002', role: 'Engineering', email: 'aarav.sharma@vibehr.co', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=11' },
+                    { n: 'Priya Nair', id: 'OS0003', role: 'Design', email: 'priya.nair@vibehr.co', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=5' },
+                    { n: 'Kenji Tanaka', id: 'OS0004', role: 'HR', email: 'kenji.tanaka@vibehr.co', color: 'bg-amber-500', ring: 'ring-amber-100', dotBg: 'bg-amber-500', img: 'https://i.pravatar.cc/100?img=8' },
+                    { n: 'Sofia Lee', id: 'OS0005', role: 'Sales', email: 'sofia.lee@vibehr.co', color: 'bg-rose-500', ring: 'ring-rose-100', dotBg: 'bg-rose-500', img: 'https://i.pravatar.cc/100?img=9' },
                   ].map(e => (
                     <div key={e.id} className="group relative rounded-[16px] border border-zinc-200 bg-white p-3 flex gap-3 items-start hover:border-zinc-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all">
                       <span className={`absolute top-3 right-3 h-2.5 w-2.5 rounded-full ${e.dotBg} ring-4 ${e.ring} shadow-sm`} />
@@ -266,7 +266,7 @@ export default function Landing() {
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <h2 className="text-[28px] sm:text-4xl font-bold tracking-tight text-zinc-900">One platform for every HR need</h2>
-          <p className="text-sm sm:text-[15px] text-zinc-600">From welcoming new hires to running payroll — Dayflow keeps your records accurate, your team informed, and your people happy.</p>
+          <p className="text-sm sm:text-[15px] text-zinc-600">From welcoming new hires to running payroll — VibeHR keeps your records accurate, your team informed, and your people happy.</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mt-10">
@@ -314,7 +314,7 @@ export default function Landing() {
               <div className="h-10 w-10 rounded-xl bg-[#714B67] flex items-center justify-center shrink-0"><Layers className="h-5 w-5 text-white" /></div>
               <div>
                 <h3 className="font-semibold text-zinc-900">Built to grow with you</h3>
-                <p className="text-sm text-zinc-600 mt-1">Whether you run one company or many, each workspace stays fully separate and secure. Add teams, offices and employees — Dayflow scales as you do, without complexity.</p>
+                <p className="text-sm text-zinc-600 mt-1">Whether you run one company or many, each workspace stays fully separate and secure. Add teams, offices and employees — VibeHR scales as you do, without complexity.</p>
                 <div className="flex flex-wrap gap-2 mt-3 text-xs">
                   <span className="px-2.5 py-1 rounded-full bg-white border border-zinc-200 shadow-sm">Ready for 5 to 5,000+ employees</span>
                   <span className="px-2.5 py-1 rounded-full bg-white border border-zinc-200 shadow-sm">Secure document storage</span>
@@ -351,7 +351,7 @@ export default function Landing() {
               <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs text-zinc-600 shadow-sm">How it works • 3 simple steps</div>
               <h2 className="mt-3 text-[28px] sm:text-4xl font-bold tracking-tight text-zinc-900">From setup to payroll in minutes</h2>
             </div>
-            <p className="text-sm text-zinc-600 max-w-md">No spreadsheets. No manual work. Dayflow handles the busywork so you can focus on your people.</p>
+            <p className="text-sm text-zinc-600 max-w-md">No spreadsheets. No manual work. VibeHR handles the busywork so you can focus on your people.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mt-10 relative">
@@ -479,9 +479,9 @@ export default function Landing() {
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-10">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2"><img src="/logo.svg" alt="Dayflow logo" className="h-7 w-7 rounded-lg" /><span className="font-bold text-zinc-900">Dayflow</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
+              <div className="flex items-center gap-2"><img src="/logo.svg" alt="VibeHR logo" className="h-7 w-7 rounded-lg" /><span className="font-bold text-zinc-900">VibeHR</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
               <p className="mt-3 text-sm text-zinc-600 max-w-sm">The complete HR platform for modern teams. Secure, reliable, and loved by HR leaders everywhere.</p>
-              <div className="mt-4 text-xs text-zinc-500">© 2026 Dayflow Technologies Pvt. Ltd. All rights reserved.</div>
+              <div className="mt-4 text-xs text-zinc-500">© 2026 VibeHR Technologies Pvt. Ltd. All rights reserved.</div>
             </div>
             <div>
               <div className="text-sm font-semibold text-zinc-900">Product</div>
