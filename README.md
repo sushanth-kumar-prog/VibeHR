@@ -2,6 +2,12 @@
 
 VibeHR is a multi-tenant human resource management system for employee records, attendance, leave, payroll, documents, meetings, and workforce reporting. It combines a React web application with a FastAPI API and Supabase-backed PostgreSQL and Storage.
 
+## Product Preview
+
+![VibeHR landing page](image.png)
+
+The landing page highlights VibeHR's workforce management experience: streamlined employee attendance tracking, attendance summaries, and an HR-friendly dashboard designed for modern companies.
+
 ## Highlights
 
 - Company registration and JWT authentication with email or employee ID login.
