@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {
   Clock, CalendarCheck, Wallet, Users, ShieldCheck, Bell,
   ArrowRight, Check, Sparkles, Building2, UserPlus, BarChart3,
-  MapPin, Timer, FileText, Layers, TrendingUp, Lock, Globe, Zap, Menu, X, Play, ChevronRight, Star
+  MapPin, Timer, FileText, Layers, TrendingUp, Lock, Globe, Zap, Menu, X, Play, ChevronRight
 } from 'lucide-react'
 import { useAuth } from '../stores/auth'
 
@@ -446,32 +446,6 @@ export default function Landing() {
             ))}
           </div>
           <p className="text-center text-xs text-zinc-500 mt-6">All prices in INR. GST extra. Cancel anytime. Pre-configured for Indian payroll — ready to use from day one.</p>
-        </div>
-      </section>
-
-      {/* ---------- TESTIMONIALS - with blobs ---------- */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -left-[6%] top-[12%] w-[320px] h-[320px] bg-[#FDF0E2]/50 rounded-[60%_40%_40%_60%/60%_40%_60%_40%] opacity-60" />
-          <div className="absolute -right-[7%] bottom-[-8%] w-[400px] h-[400px] bg-[#C2E9DF]/32 rounded-[40%_60%_55%_45%/50%_60%_40%_50%] opacity-60" />
-          <div className="absolute left-[45%] top-[-10%] w-[360px] h-[200px] bg-[#DDCFF2]/28 rounded-[50%_50%_40%_60%/60%_40%_60%_40%]" />
-          <div className="absolute right-[32%] bottom-[28%] w-[120px] h-[120px] bg-[#F8C5C0]/20 rounded-full blur-[14px]" />
-          <div className="absolute inset-0 opacity-[0.022] bg-[radial-gradient(#714B67_1px,transparent_1px)] [background-size:20px_20px]" />
-        </div>
-        <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16">
-        <div className="grid md:grid-cols-3 gap-5">
-          {[
-            { q: 'Dayflow cut our payroll time from 3 days to 30 minutes. Accurate, on time, and our team loves the clarity.', a: 'Ananya R.', r: 'Head of People, Olive Systems' },
-            { q: 'Attendance tracking finally gave us trust and transparency. No more manual registers — just one tap for the team.', a: 'Rahul M.', r: 'HR Manager, FinLoom' },
-            { q: 'The cleanest HR platform we’ve used. We had our whole company set up and running in one afternoon.', a: 'Sara K.', r: 'Founder, Dayflow Labs' },
-          ].map(t => (
-            <div key={t.a} className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-              <div className="flex gap-1 text-amber-500"><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /><Star className="h-4 w-4 fill-amber-500" /></div>
-              <p className="mt-3 text-sm leading-relaxed text-zinc-700">“{t.q}”</p>
-              <div className="mt-4 text-xs font-medium text-zinc-900">{t.a} <span className="text-zinc-500 font-normal">• {t.r}</span></div>
-            </div>
-          ))}
-        </div>
         </div>
       </section>
 
