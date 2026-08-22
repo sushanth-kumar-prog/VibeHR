@@ -19,7 +19,7 @@ Current `backend/.env` has:
 - `SMTP_HOST=smtp-relay.brevo.com`
 - `SMTP_PORT=465`
 - `SMTP_USER=a2301b001@smtp-brevo.com`
-- `SMTP_PASSWORD=<REDACTED>` ← **Auth failed 535** on 465/587 — please go Brevo → Transactional → SMTP → Regenerate key and re-share
+- `SMTP_PASSWORD=<REDACTED>` — please regenerate and re-share
 - `SMTP_FROM_EMAIL=noreply@Dayflow.susindran.in` (domain must be authenticated in Brevo → Senders & Domains → verify SPF/DKIM or use a verified Brevo sender)
 - `SMTP_USE_TLS=false`
 - `SMTP_USE_SSL=true`
