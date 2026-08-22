@@ -133,6 +133,34 @@ export default function Signup(){
             <p className="mt-3 text-sm leading-relaxed text-white/70">A private, secure home for your entire workforce. You’ll be the owner — invite your team when you’re ready.</p>
           </div>
 
+          {/* Live workspace preview */}
+          <div className="mt-6 max-w-[440px] shrink-0">
+            <div className="relative overflow-hidden rounded-2xl bg-white p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/30 text-zinc-900">
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#714B67] via-[#b58aa6] to-[#e0b64c]" />
+              <div className="flex items-center gap-3 pt-1">
+                <div className={`h-11 w-11 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${form.logoPreview ? '' : 'bg-gradient-to-br from-[#714B67] to-[#4A2C40] shadow-inner'}`}>
+                  {form.logoPreview ? <img src={form.logoPreview} alt="logo" className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5 text-white/90" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold truncate leading-tight">{form.companyName || 'Your Company'}</div>
+                  <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${form.industry ? 'bg-[#714B67]/10 border border-[#714B67]/25 text-[#714B67]' : 'bg-zinc-100 border border-zinc-200 text-zinc-400'}`}>{form.industry || 'Industry'}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${form.companySize ? 'bg-sky-50 border border-sky-200 text-sky-700' : 'bg-zinc-100 border border-zinc-200 text-zinc-400'}`}>{form.companySize || 'Size'}</span>
+                  </div>
+                </div>
+                {form.companyName && <span className="h-6 px-2 rounded-full bg-green-50 border border-green-200 text-green-700 text-[11px] font-medium flex items-center gap-1 shrink-0"><span className="h-1.5 w-1.5 rounded-full bg-green-500" />Ready</span>}
+              </div>
+              {(form.firstName || form.email) && (
+                <div className="mt-3 flex items-center gap-2 text-xs text-zinc-600 border-t border-zinc-100 pt-3">
+                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#714B67] to-[#4A2C40] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">{(form.firstName[0]||'A')}{(form.lastName[0]||'A')}</div>
+                  <span className="truncate font-medium">{form.firstName} {form.lastName}</span>
+                  <span className="text-zinc-300">•</span>
+                  <span className="truncate text-zinc-500">{form.email || 'admin@company.com'}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="mt-8 flex-1 min-h-0 relative">
             <div className="absolute left-[15px] top-[14px] bottom-[14px] w-px bg-white/15" />
             <div className="space-y-6 relative">
@@ -155,26 +183,6 @@ export default function Signup(){
           </div>
 
           <div className="mt-6 shrink-0 space-y-3">
-            <div className="rounded-2xl bg-white p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] text-zinc-900">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center overflow-hidden shrink-0">
-                  {form.logoPreview ? <img src={form.logoPreview} alt="logo" className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5 text-zinc-400" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate leading-tight">{form.companyName || 'Your Company'}</div>
-                  <div className="text-xs text-zinc-500 truncate">{form.industry || 'Industry'} • {form.companySize || 'Size'}</div>
-                </div>
-                {form.companyName && <span className="h-6 px-2 rounded-full bg-green-50 border border-green-200 text-green-700 text-[11px] font-medium flex items-center gap-1 shrink-0"><span className="h-1.5 w-1.5 rounded-full bg-green-500" />Ready</span>}
-              </div>
-              {(form.firstName || form.email) && (
-                <div className="mt-3 flex items-center gap-2 text-xs text-zinc-600 border-t border-zinc-100 pt-3">
-                  <div className="h-7 w-7 rounded-full bg-[#714B67] text-white flex items-center justify-center font-bold text-xs shrink-0">{(form.firstName[0]||'A')}{(form.lastName[0]||'A')}</div>
-                  <span className="truncate font-medium">{form.firstName} {form.lastName}</span>
-                  <span className="text-zinc-300">•</span>
-                  <span className="truncate text-zinc-500">{form.email || 'admin@company.com'}</span>
-                </div>
-              )}
-            </div>
             <div className="rounded-xl bg-white/10 border border-white/15 backdrop-blur p-3 flex gap-3">
               <Quote className="h-4 w-4 text-white/40 shrink-0 mt-0.5" />
               <div>
