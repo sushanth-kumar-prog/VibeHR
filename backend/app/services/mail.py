@@ -15,7 +15,9 @@ def send_email(to_email: str, subject: str, html_body: str, text_body: str | Non
     From: SMTP_FROM_EMAIL
     """
     if not settings.SMTP_HOST or not settings.SMTP_USER or not settings.SMTP_PASSWORD:
-        raise RuntimeError("SMTP not configured: set SMTP_HOST, SMTP_USER, SMTP_PASSWORD in backend/.env")
+        logger.warning(f"[MAIL MOCK] To: {to_email} | Subject: {subject} — SMTP not configured, skipping real send")
+        print(f"[MAIL MOCK] To={to_email} Subject={subject}")
+        return False
 
     msg = MIMEMultipart("alternative")
     msg["From"] = settings.SMTP_FROM_EMAIL
@@ -67,27 +69,19 @@ def verification_email_html(name: str, verify_url: str, employee_id: str) -> str
     </div>
     """
 
-def invite_email_html(name: str, employee_id: str, email: str, temp_password: str, company: str, login_url: str, verify_url: str | None = None) -> str:
-    verify_section = ""
-    if verify_url:
-        verify_section = f"""
-        <p style="margin-top:16px;"><b>Step 1 — Activate your account:</b></p>
-        <a href="{verify_url}" style="display:inline-block; background:#2563eb; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;">Verify Email</a>
-        <p style="color:#6b7280; font-size:12px; margin-top:8px;">Or copy: <a href="{verify_url}">{verify_url}</a><br/>This link expires in 24 hours.</p>
-        <p style="margin-top:12px;"><b>Step 2 — Sign in</b> with your Employee ID / Email and Temp Password below.</p>
-        """
+def invite_email_html(name: str, employee_id: str, email: str, temp_password: str, company: str, login_url: str) -> str:
     return f"""
     <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; border:1px solid #e5e7eb; border-radius:8px; padding:24px;\">
       <h2 style=\"color:#a855f7;\">You've been invited to {company} on Dayflow</h2>
       <p>Hi {name},</p>
-      <p>You have been added to <b>{company}</b> HRMS.</p>{verify_section}
+      <p>You have been added to <b>{company}</b> HRMS.</p>
       <table style=\"background:#f9fafb; padding:12px; border-radius:6px; width:100%; margin:12px 0;\">
         <tr><td><b>Employee ID</b></td><td>{employee_id}</td></tr>
         <tr><td><b>Email</b></td><td>{email}</td></tr>
         <tr><td><b>Temp Password</b></td><td style=\"font-family:monospace; background:#fff; padding:2px 6px; border:1px solid #e5e7eb;\">{temp_password}</td></tr>
       </table>
-      <a href="{login_url}" style="display:inline-block; background:#a855f7; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;">Sign In</a>
-      <p><b>Please change your password after first login.</b></p>
+      <p><b>Please change your password on first login.</b></p>
+      <a href=\"{login_url}\" style=\"display:inline-block; background:#a855f7; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;\">Sign In</a>
       <p style=\"color:#6b7280; font-size:12px; margin-top:24px;\">Login ID is your Employee ID or Email. Contact HR if blocked.</p>
     </div>
     """
