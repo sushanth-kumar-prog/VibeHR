@@ -4,7 +4,7 @@ import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
-import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, LayoutDashboard } from 'lucide-react'
+import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight } from 'lucide-react'
 
 export default function Layout(){
   const { user, logout } = useAuth()
@@ -51,8 +51,14 @@ export default function Layout(){
   const tabs = [...coreTabs, ...accountTabs]
 
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(()=>{
+    try { return localStorage.getItem('Dayflow-sidebar-collapsed')==='1' } catch { return false }
+  })
+  useEffect(()=>{
+    try { localStorage.setItem('Dayflow-sidebar-collapsed', collapsed ? '1' : '0') } catch {}
+  },[collapsed])
 
-  const NavItem = ({t, onNavigate}:{t:any, onNavigate?:()=>void})=>{
+  const NavItem = ({t, onNavigate, collapsed: isCollapsed}:{t:any, onNavigate?:()=>void, collapsed?:boolean})=>{
     const active = loc.pathname===t.path
     const Icon = t.icon
     return (
@@ -60,29 +66,31 @@ export default function Layout(){
         key={t.path}
         to={t.path}
         onClick={onNavigate}
+        title={isCollapsed ? t.label : undefined}
         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
+          ${isCollapsed ? 'justify-center px-2' : ''}
           ${active ? t.active : `text-zinc-600 dark:text-zinc-400 ${t.hover}`}`}
       >
         <span className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 transition ${active ? 'bg-white/20' : t.tint}`}>
           <Icon className="h-[16px] w-[16px] shrink-0" />
         </span>
-        {t.label}
+        {!isCollapsed && t.label}
       </Link>
     )
   }
 
-  const SidebarNav = ({ onNavigate }: { onNavigate?: () => void }) => (
-    <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+  const SidebarNav = ({ onNavigate, collapsed: isCollapsed = false }: { onNavigate?: () => void, collapsed?: boolean }) => (
+    <nav className={`flex-1 px-3 py-4 space-y-4 overflow-y-auto ${isCollapsed ? 'px-2' : ''}`}>
       <div>
-        <div className="px-3 mb-1.5 text-[11px] font-semibold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase">Core</div>
+        {!isCollapsed && <div className="px-3 mb-1.5 text-[11px] font-semibold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase">Core</div>}
         <div className="space-y-1.5">
-          {coreTabs.map(t=> <NavItem key={t.path} t={t} onNavigate={onNavigate} />)}
+          {coreTabs.map(t=> <NavItem key={t.path} t={t} onNavigate={onNavigate} collapsed={isCollapsed} />)}
         </div>
       </div>
       <div>
-        <div className="px-3 mb-1.5 text-[11px] font-semibold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase">Account</div>
+        {!isCollapsed && <div className="px-3 mb-1.5 text-[11px] font-semibold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase">Account</div>}
         <div className="space-y-1.5">
-          {accountTabs.map(t=> <NavItem key={t.path} t={t} onNavigate={onNavigate} />)}
+          {accountTabs.map(t=> <NavItem key={t.path} t={t} onNavigate={onNavigate} collapsed={isCollapsed} />)}
         </div>
       </div>
     </nav>
@@ -91,28 +99,38 @@ export default function Layout(){
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex">
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-[260px] shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-gradient-to-b from-white to-zinc-50/80 dark:from-zinc-900 dark:to-zinc-900 sticky top-0 h-screen">
-        <div className="h-14 flex items-center gap-2.5 px-5 border-b border-zinc-200 dark:border-zinc-800">
-          <Link to="/dashboard" className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
-            <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#714B67] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm">
+      <aside className={`hidden md:flex shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-gradient-to-b from-white to-zinc-50/80 dark:from-zinc-900 dark:to-zinc-900 sticky top-0 h-screen transition-all duration-200 ${collapsed ? 'w-[72px]' : 'w-[260px]'}`}>
+        <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
+          <Link to="/dashboard" className={`flex items-center gap-2.5 font-bold text-lg tracking-tight ${collapsed ? 'justify-center' : ''}`}>
+            <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#714B67] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm shrink-0">
               <img src="/logo.svg" alt="Dayflow logo" className="h-5 w-5 rounded-md brightness-0 invert" />
             </span>
-            <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">Dayflow</span>
+            {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">Dayflow</span>}
           </Link>
+          <button
+            onClick={()=>setCollapsed(v=>!v)}
+            title={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
+            aria-label={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
+            className="h-7 w-7 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-700 transition shrink-0"
+          >
+            {collapsed ? <ChevronsRight className="h-4 w-4 text-zinc-600 dark:text-zinc-300" /> : <ChevronsLeft className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />}
+          </button>
         </div>
-        <SidebarNav />
-        <div className="p-3 border-t border-zinc-200 dark:border-zinc-800">
-          <Link to="/me" className="flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-violet-300 dark:hover:border-zinc-600 transition">
+        <SidebarNav collapsed={collapsed} />
+        <div className={`p-3 border-t border-zinc-200 dark:border-zinc-800 ${collapsed ? 'px-2' : ''}`}>
+          <Link to="/me" title={collapsed ? `${user?.first_name} ${user?.last_name} • ${user?.employee_id}` : undefined} className={`flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-violet-300 dark:hover:border-zinc-600 transition ${collapsed ? 'justify-center px-1' : ''}`}>
             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#714B67] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-violet-100 dark:ring-zinc-700">
               {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-medium truncate leading-none">{user?.first_name} {user?.last_name}</div>
-              <div className="text-xs text-zinc-500 truncate">{user?.employee_id} • <span className="capitalize text-violet-600 dark:text-violet-300">{user?.role}</span></div>
-            </div>
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium truncate leading-none">{user?.first_name} {user?.last_name}</div>
+                <div className="text-xs text-zinc-500 truncate">{user?.employee_id} • <span className="capitalize text-violet-600 dark:text-violet-300">{user?.role}</span></div>
+              </div>
+            )}
           </Link>
-          <button onClick={()=>{logout(); nav('/login')}} className="mt-2 w-full flex items-center gap-2 px-2.5 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
-            <LogOut className="h-4 w-4" /> Log Out
+          <button onClick={()=>{logout(); nav('/login')}} title={collapsed ? 'Log Out' : undefined} className={`mt-2 w-full flex items-center gap-2 px-2.5 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition ${collapsed ? 'justify-center px-1' : ''}`}>
+            <LogOut className="h-4 w-4 shrink-0" /> {!collapsed && 'Log Out'}
           </button>
         </div>
       </aside>

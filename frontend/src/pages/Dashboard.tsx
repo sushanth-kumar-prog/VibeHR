@@ -10,6 +10,16 @@ import {
   CheckCircle2, AlertTriangle, ArrowUpRight, ArrowDownRight, Search, X, Building2, Briefcase, Mail, Shield
 } from 'lucide-react'
 
+function resolveFileUrl(url?: string){
+  if(!url) return ''
+  if(url.startsWith('http://') || url.startsWith('https://')) return url
+  if(url.startsWith('/uploads')){
+    const base = (import.meta.env.VITE_API_URL as string || 'http://localhost:8001/api/v1').replace(/\/api\/v1\/?$/, '')
+    return `${base}${url}`
+  }
+  return url
+}
+
 type Employee = {
   id: string, employee_id: string, email: string, first_name: string, last_name: string,
   role: string, avatar_url?: string, department?: string, job_title?: string
@@ -418,7 +428,7 @@ export default function Dashboard(){
               return (
                 <Link key={emp.id} to={`/profile/${emp.id}`} className="flex items-center gap-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 p-2 transition">
                   <div className="relative h-9 w-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-xs overflow-hidden shrink-0">
-                    {emp.avatar_url ? <img src={emp.avatar_url.startsWith('/uploads')?`http://localhost:8000${emp.avatar_url}`:emp.avatar_url} className="h-full w-full object-cover"/> : `${emp.first_name[0]}${emp.last_name[0]}`}
+                    {emp.avatar_url ? <img src={resolveFileUrl(emp.avatar_url)} className="h-full w-full object-cover"/> : `${emp.first_name[0]}${emp.last_name[0]}`}
                     <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-900 ${color}`} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -450,7 +460,7 @@ export default function Dashboard(){
                   <div className={`absolute top-3 right-3 h-3 w-3 rounded-full ${color} ring-2 ring-white dark:ring-zinc-900`} title={`Attendance: ${st}`} />
                   <div className="flex gap-3">
                     <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden text-zinc-600 dark:text-zinc-200">
-                      {emp.avatar_url ? <img src={emp.avatar_url.startsWith('/uploads')?`http://localhost:8000${emp.avatar_url}`:emp.avatar_url} className="h-full w-full object-cover"/> : `${emp.first_name[0]}${emp.last_name[0]}`}
+                      {emp.avatar_url ? <img src={resolveFileUrl(emp.avatar_url)} className="h-full w-full object-cover"/> : `${emp.first_name[0]}${emp.last_name[0]}`}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="font-medium truncate flex items-center gap-1">{emp.first_name} {emp.last_name} {emp.role!=='employee' && <Shield className="h-3 w-3 text-violet-500"/>}</div>
