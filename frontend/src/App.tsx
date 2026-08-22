@@ -13,6 +13,7 @@ import Settings from './pages/Settings'
 import Documents from './pages/Documents'
 import Notifications from './pages/Notifications'
 import Company from './pages/Company'
+import Meetings from './pages/Meetings'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Privacy from './pages/Privacy'
@@ -69,6 +70,7 @@ export default function App(){
             <Route path="/documents" element={<Documents/>}/>
             <Route path="/notifications" element={<Notifications/>}/>
             <Route path="/company" element={<Company/>}/>
+            <Route path="/meetings" element={<Meetings/>}/>
             <Route path="/settings" element={<Settings/>}/>
           </Route>
           <Route path="*" element={<Navigate to="/" replace/>}/>
