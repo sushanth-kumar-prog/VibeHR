@@ -33,7 +33,6 @@ export default function Login(){
           <Link to="/" className="flex items-center gap-3 shrink-0">
             <img src="/logo.svg" alt="Dayflow logo" className="h-9 w-9 rounded-xl" />
             <span className="font-bold text-xl tracking-tight">Dayflow</span>
-            <span className="text-[10px] tracking-[0.14em] text-white/60 ml-1">HRMS</span>
           </Link>
 
           <div className="flex-1 flex flex-col justify-center max-w-[480px]">
