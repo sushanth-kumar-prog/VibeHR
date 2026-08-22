@@ -210,5 +210,11 @@ async def invite_employee(payload: InviteEmployeeRequest, current: User = Depend
     db.add(user)
     await db.commit()
     await db.refresh(user)
-    # TODO: send email via SMTP
+    # mock email alert
+    try:
+        from .notifications import add_notification
+        add_notification(current.company_id, "New Employee Invited", f"{payload.firstName} {payload.lastName} ({emp_id}) invited with temp password. Email verification pending.", "invite")
+        print(f"[MOCK EMAIL] To: {payload.email} | Temp password: {temp_pw} | Employee ID: {emp_id}")
+    except Exception as e:
+        print(f"notify failed: {e}")
     return {"id": str(user.id), "employee_id": emp_id, "email": payload.email, "temp_password": temp_pw, "role": role}
