@@ -4,6 +4,7 @@ import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
+import Chatbot from './Chatbot'
 import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video } from 'lucide-react'
 
 export default function Layout(){
@@ -238,6 +239,8 @@ export default function Layout(){
       <main className="w-full max-w-[1400px] mx-auto px-4 py-6 flex-1">
         <Outlet/>
       </main>
+      {/* AI HR Chatbot — floats on all pages (Add ons.md Integration 2) */}
+      <Chatbot/>
     </div>
   </div>
   )

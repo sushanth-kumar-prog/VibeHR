@@ -68,7 +68,7 @@ export default function Company(){
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><Building2 className="h-6 w-6 text-[#714B67]"/> Company</h1>
-        <p className="text-sm text-zinc-500 mt-1">Multi-tenant workspace • All data scoped by <b>company_id</b> • Logo bucket `company-logos` • Managed via `backend/app/routers/companies.py`</p>
+        <p className="text-sm text-zinc-500 mt-1">Your organization's profile and branding.</p>
       </div>
 
       {!company ? (
@@ -93,7 +93,7 @@ export default function Company(){
             </div>
           </Card>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4 md:items-start">
             <Card className="p-6 space-y-4">
               <h3 className="font-semibold flex items-center gap-2"><Building2 className="h-4 w-4"/> Company Details</h3>
               <div>
@@ -102,11 +102,7 @@ export default function Company(){
                   <Input value={name} onChange={e=>setName(e.target.value)} disabled={!isAdmin} className="bg-white dark:bg-zinc-900"/>
                   <Button onClick={saveName} disabled={!isAdmin}>Save</Button>
                 </div>
-                <p className="text-xs text-zinc-500 mt-1">Slug auto-generated from name (e.g. “Olive Systems” → OS). Used for Employee ID `OS0001`.</p>
-              </div>
-              <div className="rounded-lg bg-zinc-50 dark:bg-zinc-800/50 p-3 text-xs text-zinc-500 space-y-1">
-                <div><b>API:</b> <code>GET /companies/me</code> • <code>PATCH /companies/me</code> (admin)</div>
-                <div><b>Isolation:</b> `users.company_id` • `attendance.company_id` • `leave.company_id` all filtered server-side.</div>
+                <p className="text-xs text-zinc-500 mt-1">A short slug is auto-generated from the name.</p>
               </div>
               {!isAdmin && <div className="text-xs text-amber-600 dark:text-amber-400">Only admin/hr can edit company name.</div>}
             </Card>
@@ -119,7 +115,7 @@ export default function Company(){
                 <input id="logo-input-company" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={e=>handleFileChange(e.target.files?.[0]||null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-zinc-900 file:text-white file:text-xs hover:file:bg-zinc-800 dark:file:bg-zinc-700 file:cursor-pointer" disabled={!isAdmin}/>
                 <Button size="sm" variant="outline" onClick={uploadLogo} disabled={!isAdmin || !logoFile || uploading}>{uploading ? 'Uploading…' : 'Upload Logo'}</Button>
               </div>
-              {logoFile && <div className="text-xs text-zinc-500">{logoFile.name} • {(logoFile.size/1024).toFixed(0)}KB • Click Upload Logo to save via <code>POST /companies/logo</code> → bucket `company-logos`.</div>}
+              {logoFile && <div className="text-xs text-zinc-500">{logoFile.name} • {(logoFile.size/1024).toFixed(0)}KB • Click Upload Logo to save.</div>}
               {!isAdmin && <div className="text-xs text-amber-600 dark:text-amber-400">Only admin/hr can upload logo.</div>}
             </Card>
           </div>
