@@ -9,6 +9,14 @@ class SignupCompanyRequest(BaseModel):
     email: EmailStr
     phone: Optional[str] = None
     password: str
+    # extended fields for multi-panel signup (optional, forwarded but not all persisted yet)
+    industry: Optional[str] = None
+    companySize: Optional[str] = None
+    website: Optional[str] = None
+    jobTitle: Optional[str] = None
+    department: Optional[str] = None
+    address: Optional[str] = None
+    agreeTerms: Optional[bool] = None
 
 class LoginRequest(BaseModel):
     email: str  # email or employee_id

@@ -14,6 +14,17 @@ import { useAuth } from './stores/auth'
 
 const qc = new QueryClient()
 
+function ThemeInit(){
+  // ensure saved theme is applied even on pages without ThemeToggle
+  // (Landing is white-only visually, but underlying html class still dictates app theme)
+  if(typeof window !== 'undefined'){
+    const saved = localStorage.getItem('Dayfloww-theme')
+    if(saved === 'dark') document.documentElement.classList.add('dark')
+    else if(saved === 'light') document.documentElement.classList.remove('dark')
+  }
+  return null
+}
+
 function Protected({children}:{children:React.ReactNode}){
   const { token } = useAuth()
   if(!token) return <Navigate to="/login" replace/>
@@ -23,6 +34,7 @@ function Protected({children}:{children:React.ReactNode}){
 export default function App(){
   return (
     <QueryClientProvider client={qc}>
+      <ThemeInit/>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing/>}/>

@@ -53,10 +53,10 @@ export default function TimeOff(){
             <Button size="sm" variant="outline" onClick={loadQueue}>Refresh</Button>
           </div>
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900 text-zinc-400 text-xs"><tr><th className="text-left p-2">Employee</th><th className="text-left p-2">Type</th><th className="text-left p-2">Start</th><th className="text-left p-2">End</th><th className="text-left p-2">Days</th><th className="text-left p-2">Status</th><th className="text-left p-2">Action</th></tr></thead>
+            <thead className="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 text-xs"><tr><th className="text-left p-2">Employee</th><th className="text-left p-2">Type</th><th className="text-left p-2">Start</th><th className="text-left p-2">End</th><th className="text-left p-2">Days</th><th className="text-left p-2">Status</th><th className="text-left p-2">Action</th></tr></thead>
             <tbody>
               {queue.map(q=>(
-                <tr key={q.id} className="border-t border-zinc-800">
+                <tr key={q.id} className="border-t border-zinc-200 dark:border-zinc-800">
                   <td className="p-2"><div className="font-medium">{q.name}</div><div className="text-xs text-zinc-500">{q.employee_id}</div></td>
                   <td className="p-2">{q.type}</td>
                   <td className="p-2">{q.start_date}</td>
@@ -83,7 +83,7 @@ export default function TimeOff(){
                 return d.getMonth()===i
               })
               return (
-                <div key={i} className="border border-zinc-800 rounded p-2 bg-zinc-900/30">
+                <div key={i} className="border border-zinc-200 dark:border-zinc-800 rounded p-2 bg-zinc-50 dark:bg-zinc-900/30">
                   <div className="font-medium">{month}</div>
                   {monthLeaves.map(l=>(
                     <div key={l.id} className={`mt-1 px-1 py-0.5 rounded text-[10px] ${l.status==='pending'?'bg-amber-900': l.status==='approved'?'bg-green-900':'bg-red-900'}`}>{l.start_date.slice(5)} → {l.end_date.slice(5)} {l.type}</div>
@@ -95,7 +95,7 @@ export default function TimeOff(){
           <div className="mt-4 space-y-2">
             <h4 className="text-sm font-medium">My Requests</h4>
             {myLeaves.map(l=>(
-              <div key={l.id} className="flex justify-between items-center border border-zinc-800 rounded p-2 text-sm">
+              <div key={l.id} className="flex justify-between items-center border border-zinc-200 dark:border-zinc-800 rounded p-2 text-sm">
                 <div>{l.start_date} → {l.end_date} • {l.type} • {l.days}d</div>
                 <span className={`px-2 py-0.5 rounded text-xs ${l.status==='pending'?'bg-amber-900': l.status==='approved'?'bg-green-900':'bg-red-900'}`}>{l.status}</span>
               </div>
@@ -106,7 +106,7 @@ export default function TimeOff(){
         <Card className="p-4 space-y-3 h-fit">
           <h3 className="font-semibold">Time-off Type Request</h3>
           <form onSubmit={submit} className="space-y-3">
-            <select value={form.type} onChange={e=>setForm({...form, type:e.target.value})} className="w-full h-10 rounded-md border border-zinc-800 bg-zinc-900 px-3 text-sm">
+            <select value={form.type} onChange={e=>setForm({...form, type:e.target.value})} className="w-full h-10 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-900 px-3 text-sm">
               <option value="paid">Paid Time Off</option>
               <option value="sick">Sick Leave</option>
               <option value="unpaid">Unpaid Leave</option>
@@ -122,9 +122,9 @@ export default function TimeOff(){
             <Input placeholder="Doc URL (optional, for sick cert)" value={form.doc_url} onChange={e=>setForm({...form, doc_url:e.target.value})}/>
             <div className="text-xs text-zinc-500">Types: Paid • Sick • Unpaid | Paid 24 days / Sick 7 days per year. Attachment required for sick if &gt;2 days.</div>
             <Button type="submit" className="w-full">Request</Button>
-            {msg && <div className="text-sm p-2 rounded bg-zinc-900 border border-zinc-800">{msg}</div>}
+            {msg && <div className="text-sm p-2 rounded bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
           </form>
-          <div className="rounded bg-zinc-900 border border-zinc-800 p-3 text-xs text-zinc-400">
+          <div className="rounded bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 text-xs text-zinc-400">
             <div className="font-semibold text-zinc-300">Note</div>
             <div>Employees can only see their own time-off records, while Admins and HR Officers can view & approve/reject for all employees.</div>
           </div>

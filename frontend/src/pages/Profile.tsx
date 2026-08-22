@@ -105,20 +105,20 @@ export default function Profile(){
 
   return (
     <div className="space-y-4">
-      <Link to="/" className="text-sm text-zinc-400 hover:text-white">← Back to Employees</Link>
+      <Link to="/" className="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">← Back to Employees</Link>
       <Card className="p-6">
         <div className="flex gap-4">
-          <div className="h-16 w-16 rounded-full bg-[#a855f7]/30 border border-[#a855f7]/50 flex items-center justify-center text-xl font-bold overflow-hidden">
+          <div className="h-16 w-16 rounded-full bg-[#714B67]/30 border border-[#714B67]/50 flex items-center justify-center text-xl font-bold overflow-hidden">
             {user.avatar_url ? <img src={user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${user.avatar_url}` : user.avatar_url} alt="avatar" className="h-full w-full object-cover"/> : `${user.first_name[0]}${user.last_name[0]}`}
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold">{user.first_name} {user.last_name}</h2>
             <div className="text-sm text-zinc-500">{user.employee_id} • {user.role} • {user.job_title || '—'} {company?.name && `• ${company.name}`}</div>
-            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={company.logo_url.startsWith('/uploads') ? `http://localhost:8000${company.logo_url}` : company.logo_url} target="_blank" className="text-[#a855f7]">Company Logo</a></span>}</div>
-            {(me?.id===id || me?.role!=='employee') && <div className="mt-2"><label className="text-xs bg-zinc-800 px-2 py-1 rounded cursor-pointer">Change Avatar<input type="file" accept="image/*" onChange={uploadAvatar} className="hidden"/></label></div>}
+            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={company.logo_url.startsWith('/uploads') ? `http://localhost:8000${company.logo_url}` : company.logo_url} target="_blank" className="text-[#714B67]">Company Logo</a></span>}</div>
+            {(me?.id===id || me?.role!=='employee') && <div className="mt-2"><label className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded cursor-pointer">Change Avatar<input type="file" accept="image/*" onChange={uploadAvatar} className="hidden"/></label></div>}
           </div>
         </div>
-        <div className="flex gap-2 mt-4 border-t border-zinc-800 pt-4">
+        <div className="flex gap-2 mt-4 border-t border-zinc-200 dark:border-zinc-800 pt-4">
           <Button variant={tab==='resume'?'default':'ghost'} size="sm" onClick={()=>setTab('resume')}>Resume</Button>
           <Button variant={tab==='private'?'default':'ghost'} size="sm" onClick={()=>setTab('private')}>Private Info</Button>
           <Button variant={tab==='salary'?'default':'ghost'} size="sm" onClick={()=>setTab('salary')} disabled={!canViewSalary}>Salary Info {(!canViewSalary) && '(Admin only)'}</Button>
@@ -177,21 +177,21 @@ export default function Profile(){
           <Button size="sm" onClick={saveProfile}>Save Profile</Button>
           <div className="text-xs text-zinc-500">Employees can edit limited fields (phone, address, avatar). Admin can edit all employee details (job, dept, role). Salary structure visible in Salary Info tab.</div>
 
-          <div className="border-t border-zinc-800 pt-4 space-y-3">
+          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 space-y-3">
             <h4 className="font-medium">Documents (Supabase Storage)</h4>
             <input type="file" onChange={uploadDoc} className="text-sm"/>
             <div className="space-y-1">
               {docs.map((d:any)=>(
-                <div key={d.id} className="flex justify-between items-center text-sm border border-zinc-800 rounded p-2">
+                <div key={d.id} className="flex justify-between items-center text-sm border border-zinc-200 dark:border-zinc-800 rounded p-2">
                   <div>{d.name} <span className="text-xs text-zinc-500">{d.mime_type}</span></div>
-                  <a href={d.file_url} target="_blank" className="text-xs text-[#a855f7]">View</a>
+                  <a href={d.file_url} target="_blank" className="text-xs text-[#714B67]">View</a>
                 </div>
               ))}
               {docs.length===0 && <div className="text-xs text-zinc-500">No documents — upload resume, ID, etc.</div>}
             </div>
           </div>
 
-          <div className="border-t border-zinc-800 pt-4 space-y-3">
+          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 space-y-3">
             <h4 className="font-medium">Change Password {user.is_temp_password && <span className="text-amber-400 text-xs">— temp password, change required</span>}</h4>
             <div className="grid md:grid-cols-3 gap-3">
               <Input type="password" placeholder="Current" value={pwd.old} onChange={e=>setPwd({...pwd, old:e.target.value})}/>
@@ -200,7 +200,7 @@ export default function Profile(){
             </div>
             <Button size="sm" variant="outline" onClick={changePwd}>Change Password</Button>
           </div>
-          {msg && <div className="text-sm p-2 rounded bg-zinc-900 border border-zinc-800">{msg}</div>}
+          {msg && <div className="text-sm p-2 rounded bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
         </Card>
       )}
 
@@ -223,15 +223,15 @@ export default function Profile(){
             </div>
             {components.length>0 && <div className="text-xs text-zinc-500">Template components: {components.map(c=>`${c.name} ${c.value_type==='percentage'?c.value+'%': '₹'+c.value} (${c.type})`).join(' • ')}</div>}
             {canEditSalary && <Button onClick={saveSalary}>Compute & Save Salary</Button>}
-            {msg && <div className="text-sm p-2 rounded bg-zinc-900 border border-zinc-800">{msg}</div>}
+            {msg && <div className="text-sm p-2 rounded bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
             {salary?.breakdown && (
-              <div className="border border-zinc-800 rounded-lg overflow-hidden">
-                <div className="bg-zinc-900 px-3 py-2 text-sm font-medium">Breakdown — Net Pay ₹{salary.breakdown.net_pay} / month</div>
+              <div className="border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
+                <div className="bg-zinc-50 dark:bg-zinc-900 px-3 py-2 text-sm font-medium">Breakdown — Net Pay ₹{salary.breakdown.net_pay} / month</div>
                 <table className="w-full text-sm">
-                  <thead className="bg-zinc-900/50 text-zinc-400 text-xs"><tr><th className="text-left p-2">Component</th><th className="text-right p-2">Type</th><th className="text-right p-2">Monthly</th><th className="text-right p-2">Yearly</th></tr></thead>
+                  <thead className="bg-zinc-100 dark:bg-zinc-900/50 text-zinc-400 text-xs"><tr><th className="text-left p-2">Component</th><th className="text-right p-2">Type</th><th className="text-right p-2">Monthly</th><th className="text-right p-2">Yearly</th></tr></thead>
                   <tbody>
                     {salary.breakdown.breakdown.map((b:any,i:number)=>(
-                      <tr key={i} className="border-t border-zinc-800"><td className="p-2">{b.name}</td><td className="p-2 text-right text-xs">{b.type}</td><td className="p-2 text-right">₹{b.amount_monthly}</td><td className="p-2 text-right">₹{b.amount_yearly}</td></tr>
+                      <tr key={i} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-2">{b.name}</td><td className="p-2 text-right text-xs">{b.type}</td><td className="p-2 text-right">₹{b.amount_monthly}</td><td className="p-2 text-right">₹{b.amount_yearly}</td></tr>
                     ))}
                   </tbody>
                 </table>
