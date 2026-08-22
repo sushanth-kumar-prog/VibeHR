@@ -123,7 +123,7 @@ export default function Company(){
           <Card className="p-5">
             <h3 className="font-semibold">Quick Links</h3>
             <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-              <a href="/dashboard" className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 hover:border-violet-300 dark:hover:border-violet-700 transition">👥 Employees</a>
+              <a href="/employees" className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 hover:border-violet-300 dark:hover:border-violet-700 transition">👥 Employees</a>
               <a href="/documents" className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 hover:border-violet-300 dark:hover:border-violet-700 transition">📄 Documents</a>
               <a href="/notifications" className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 hover:border-violet-300 dark:hover:border-violet-700 transition">🔔 Notifications</a>
               <a href="/settings" className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 hover:border-violet-300 dark:hover:border-violet-700 transition">⚙️ Settings</a>
