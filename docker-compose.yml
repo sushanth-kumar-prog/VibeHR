@@ -28,7 +28,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: vibehr
+      POSTGRES_DB: dayflow
     volumes:
       - pgdata:/var/lib/postgresql/data
 

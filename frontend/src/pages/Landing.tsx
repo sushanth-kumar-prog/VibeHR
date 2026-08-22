@@ -20,8 +20,8 @@ export default function Landing() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-[#a855f7] flex items-center justify-center font-bold text-sm">VH</div>
-              <span className="font-bold text-[18px] tracking-tight">VibeHR</span>
+              <div className="h-8 w-8 rounded-lg bg-[#a855f7] flex items-center justify-center font-bold text-sm">DF</div>
+              <span className="font-bold text-[18px] tracking-tight">Dayflow</span>
               <span className="hidden sm:inline text-[10px] tracking-[0.14em] text-zinc-500 border border-zinc-800 rounded-full px-2 py-0.5 ml-1">HRMS</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-1 text-sm">
@@ -88,7 +88,7 @@ export default function Landing() {
                   <span className="bg-gradient-to-r from-[#a855f7] via-[#d8b4fe] to-[#a855f7] bg-clip-text text-transparent">perfectly aligned.</span>
                 </h1>
                 <p className="text-[15px] sm:text-[17px] leading-relaxed text-zinc-400 max-w-[560px]">
-                  VibeHR is the modern HRMS for growing teams. Manage employees, attendance, leave and payroll — multi-tenant, secure, and beautifully simple.
+                  Dayflow is the modern HRMS for growing teams. Manage employees, attendance, leave and payroll — multi-tenant, secure, and beautifully simple.
                 </p>
               </div>
 
@@ -137,7 +137,7 @@ export default function Landing() {
                   </div>
                   <div className="hidden sm:flex items-center gap-1 text-[11px] text-zinc-500">
                     <span className="h-6 px-2 rounded-full bg-zinc-800 flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-green-500" /> Attendance: present</span>
-                    <span className="hidden md:inline">vibehr.app/dashboard</span>
+                    <span className="hidden md:inline">dayflow.app/dashboard</span>
                   </div>
                   <div className="h-6 w-6 rounded-full bg-[#a855f7] flex items-center justify-center text-xs font-bold">OS</div>
                 </div>
@@ -172,7 +172,7 @@ export default function Landing() {
                       <div className="min-w-0">
                         <div className="text-sm font-medium truncate">{e.n}</div>
                         <div className="text-[11px] text-zinc-500">{e.id} • {e.role}</div>
-                        <div className="text-[11px] text-zinc-600 truncate">{e.n.toLowerCase().replace(' ', '.')}@vibehr.co</div>
+                        <div className="text-[11px] text-zinc-600 truncate">{e.n.toLowerCase().replace(' ', '.')}@dayflow.co</div>
                       </div>
                     </div>
                   ))}
@@ -226,7 +226,7 @@ export default function Landing() {
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#a855f7]/10 border border-[#a855f7]/20 px-3 py-1 text-xs text-[#d8b4fe]"><Sparkles className="h-3.5 w-3.5" /> Everything HR needs</div>
           <h2 className="text-[28px] sm:text-4xl font-bold tracking-tight">One platform for every HR workflow</h2>
-          <p className="text-sm sm:text-[15px] text-zinc-400">From Day-1 onboarding to payroll day — VibeHR keeps your data consistent, your compliance clean, and your people happy.</p>
+          <p className="text-sm sm:text-[15px] text-zinc-400">From Day-1 onboarding to payroll day — Dayflow keeps your data consistent, your compliance clean, and your people happy.</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mt-10">
@@ -302,7 +302,7 @@ export default function Landing() {
               <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs text-zinc-400">How it works • 3 steps</div>
               <h2 className="mt-3 text-[28px] sm:text-4xl font-bold tracking-tight">From zero to payroll in minutes</h2>
             </div>
-            <p className="text-sm text-zinc-400 max-w-md">No spreadsheets. No manual IDs. VibeHR automates the busywork so you can focus on people.</p>
+            <p className="text-sm text-zinc-400 max-w-md">No spreadsheets. No manual IDs. Dayflow automates the busywork so you can focus on people.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mt-10 relative">
@@ -382,7 +382,7 @@ export default function Landing() {
       <section className="mx-auto max-w-[1280px] px-4 sm:px-6 py-16">
         <div className="grid md:grid-cols-3 gap-5">
           {[
-            { q: 'VibeHR cut our payroll time from 3 days to 30 minutes. The breakdown warnings alone saved us lakhs.', a: 'Ananya R.', r: 'Head of People, Olive Systems' },
+            { q: 'Dayflow cut our payroll time from 3 days to 30 minutes. The breakdown warnings alone saved us lakhs.', a: 'Ananya R.', r: 'Head of People, Olive Systems' },
             { q: 'Attendance with geo + IP finally gave us trust. No more manual registers. Employees love the one-tap check-in.', a: 'Rahul M.', r: 'HR Manager, FinLoom' },
             { q: 'Cleanest HRMS I’ve used. Multi-tenant just works — we spun up a second company in seconds.', a: 'Sara K.', r: 'Founder, Dayflow Labs' },
           ].map(t => (
@@ -418,9 +418,9 @@ export default function Landing() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-10">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2"><div className="h-7 w-7 rounded-lg bg-[#a855f7] flex items-center justify-center text-xs font-bold">VH</div><span className="font-bold">VibeHR</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
+              <div className="flex items-center gap-2"><div className="h-7 w-7 rounded-lg bg-[#a855f7] flex items-center justify-center text-xs font-bold">DF</div><span className="font-bold">Dayflow</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
               <p className="mt-3 text-sm text-zinc-500 max-w-sm">Modern HRMS — React (Vite + TS + Tailwind) + FastAPI + Supabase. Multi-tenant, role-based, payroll-ready. Based on Dayflow spec.</p>
-              <div className="mt-4 text-xs text-zinc-600">© 2026 VibeHR Technologies Pvt. Ltd. All rights reserved.</div>
+              <div className="mt-4 text-xs text-zinc-600">© 2026 Dayflow Technologies Pvt. Ltd. All rights reserved.</div>
             </div>
             <div>
               <div className="text-sm font-semibold">Product</div>
