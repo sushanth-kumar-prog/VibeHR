@@ -71,7 +71,7 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     try:
         from ..services.mail import send_email, verification_email_html
         html = verification_email_html(f"{payload.adminFirstName} {payload.adminLastName}", verify_url, emp_id)
-        send_email(payload.email, f"Verify your VibeHR account — {company.name}", html, f"Verify: {verify_url} | Employee ID: {emp_id}")
+        send_email(payload.email, f"Verify your Dayflow account — {company.name}", html, f"Verify: {verify_url} | Employee ID: {emp_id}")
     except Exception as e:
         print(f"[MAIL] verification send failed: {e}")
 
@@ -229,7 +229,7 @@ async def invite_employee(payload: InviteEmployeeRequest, current: User = Depend
         from ..services.mail import send_email, invite_email_html
         login_url = "https://dayflow.susindran.in/login"
         html = invite_email_html(f"{payload.firstName} {payload.lastName}", emp_id, payload.email, temp_pw, company.name, login_url)
-        send_email(payload.email, f"You're invited to {company.name} on VibeHR — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}")
+        send_email(payload.email, f"You're invited to {company.name} on Dayflow — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}")
         print(f"[MAIL] Invite sent to {payload.email} ({emp_id})")
     except Exception as e:
         print(f"[MAIL] invite send failed: {e}")

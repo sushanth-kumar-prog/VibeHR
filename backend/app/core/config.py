@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/vibehr"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/dayflow"
     SUPABASE_URL: str = ""
     SUPABASE_SERVICE_KEY: str = ""
     SUPABASE_ANON_KEY: str = ""

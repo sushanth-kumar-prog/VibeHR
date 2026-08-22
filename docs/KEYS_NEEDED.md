@@ -1,4 +1,4 @@
-# VibeHR — Keys & Env Vars Needed (Give These Later)
+# Dayflow — Keys & Env Vars Needed (Give These Later)
 
 > Backend is already running on `postgresql+asyncpg://postgres.axhiwzngefjkerrmimyk:***@aws-0-ap-south-1.pooler.supabase.com:5432/postgres` (pooler).
 > Everything below is **already wired** — paste values into `backend/.env` and `frontend/.env` and restart.
