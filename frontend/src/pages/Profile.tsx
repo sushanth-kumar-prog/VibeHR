@@ -5,6 +5,7 @@ import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
+import CommunicationHub from '../components/CommunicationHub'
 
 function resolveFileUrl(url?: string){
   if(!url) return '#'
@@ -150,6 +151,17 @@ export default function Profile(){
           <Button variant={tab==='salary'?'default':'ghost'} size="sm" onClick={()=>setTab('salary')} disabled={!canViewSalary}>Salary Info {(!canViewSalary) && '(Admin only)'}</Button>
         </div>
       </Card>
+
+      {/* Communication Hub — Full Mode (Add ons.md Integration 3) */}
+      {me?.id !== id && (
+        <Card className="p-5">
+          <h3 className="font-semibold flex items-center gap-2">Communication Hub <span className="text-xs font-normal text-zinc-500">• One-click Call, WhatsApp, Email, Meet</span></h3>
+          <p className="text-xs text-zinc-500 mt-1">Contact {user.first_name} instantly — uses <code>tel:</code> / <code>wa.me</code> / <code>mailto:</code> / <code>POST /meetings/instant</code> (Add ons.md:184)</p>
+          <div className="mt-3">
+            <CommunicationHub user={user} currentUserId={me?.id} />
+          </div>
+        </Card>
+      )}
 
       {tab==='resume' && (
         <div className="space-y-4">

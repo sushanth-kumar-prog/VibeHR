@@ -36,7 +36,7 @@ export default function Payroll(){
         <p className="text-sm text-zinc-500">Monthly wage • breakdown • PF 12% of Basic • PT ₹200 • attendance-based payroll (spec 3.6). {isAdmin ? 'Admin/HR can manage all.' : 'Employees see own slip via Reports → My Salary Slip.'}</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         <Card className="p-4">
           <h3 className="font-semibold text-sm">Payroll Overview</h3>
           {pay ? (
@@ -55,14 +55,6 @@ export default function Payroll(){
             </div>
           ): <div className="text-xs text-zinc-500 mt-2">No components. Admin can seed defaults (Basic 40% wage, HRA 20%, PF 12% basic, PT 200).</div>}
           {isAdmin && <Button size="sm" variant="outline" className="mt-3" onClick={seed}>Seed Defaults</Button>}
-        </Card>
-        <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
-          <h3 className="font-semibold text-sm text-amber-800 dark:text-amber-200">Important</h3>
-          <div className="text-xs text-amber-700 dark:text-amber-300 mt-2 space-y-1 leading-relaxed">
-            <p>Fixed vs % of Wage/Basic. Total earnings must not exceed wage.</p>
-            <p>Example: Wage 50k, Basic 40% → 20k. PF 12% of Basic → 2.4k/month.</p>
-            <Link to="/reports" className="underline">View salary slips in Reports →</Link>
-          </div>
         </Card>
       </div>
 
