@@ -36,7 +36,7 @@ export default function Layout(){
   }
 
   const tabs = [
-    {label:'Employees', path:'/'},
+    {label:'Employees', path:'/dashboard'},
     {label:'Attendance', path:'/attendance'},
     {label:'Time Off', path:'/time-off'},
     {label:'Reports', path:'/reports'},
@@ -48,7 +48,7 @@ export default function Layout(){
       <header className="sticky top-0 z-30 border-b border-zinc-800 bg-[#0a0a0f]/90 backdrop-blur">
         <div className="mx-auto max-w-[1400px] px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link to="/" className="font-bold text-lg tracking-tight">VibeHR</Link>
+            <Link to="/dashboard" className="font-bold text-lg tracking-tight">VibeHR</Link>
             <nav className="hidden md:flex items-center gap-1">
               {tabs.map(t=>(
                 <Link key={t.path} to={t.path} className={`px-3 py-1.5 rounded-md text-sm ${loc.pathname===t.path ? 'bg-zinc-900 text-white' : 'text-zinc-400 hover:text-white'}`}>{t.label}</Link>

@@ -14,11 +14,12 @@ export default function Login(){
   const nav = useNavigate()
   const submit = async(e:React.FormEvent)=>{
     e.preventDefault(); setErr(''); setLoading(true)
-    try{ await login(email,password); nav('/') } catch(ex:any){ setErr(ex.response?.data?.detail || 'Invalid credentials — check Login ID/Email and Password')}
+    try{ await login(email,password); nav('/dashboard') } catch(ex:any){ setErr(ex.response?.data?.detail || 'Invalid credentials — check Login ID/Email and Password')}
     finally{ setLoading(false)}
   }
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <Link to="/" className="mb-6 flex items-center gap-2 text-sm text-zinc-400 hover:text-white"><span className="h-7 w-7 rounded-lg bg-[#a855f7] flex items-center justify-center text-xs font-bold text-white">VH</span> VibeHR <span className="text-zinc-600">•</span> Back to home</Link>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">Sign In</CardTitle>
