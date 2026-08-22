@@ -11,6 +11,10 @@ from ..schemas.auth import SignupCompanyRequest, LoginRequest, TokenResponse, In
 from ..core.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
 from ..core.deps import get_current_user, require_admin
 from ..services.id_generator import generate_employee_id, generate_temp_password
+from ..services.validators import validate_password
+from jose import jwt
+from datetime import datetime, timedelta, timezone
+from ..core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -20,6 +24,7 @@ def slugify(name: str) -> str:
 
 @router.post("/signup-company", response_model=TokenResponse)
 async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depends(get_db)):
+    validate_password(payload.password)
     # check email exists
     existing = await db.execute(select(User).where(User.email == payload.email))
     if existing.scalar_one_or_none():
@@ -51,7 +56,8 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
         first_name=payload.adminFirstName,
         last_name=payload.adminLastName,
         phone=payload.phone,
-        is_temp_password=False
+        is_temp_password=False,
+        email_verified=False
     )
     db.add(user)
     await db.flush()
@@ -59,13 +65,16 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     await db.commit()
     await db.refresh(user)
 
+    # email verification token (mock - would send via SMTP/Supabase)
+    verify_token = jwt.encode({"sub": str(user.id), "type": "verify", "exp": datetime.now(timezone.utc)+timedelta(days=1)}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
     access = create_access_token({"sub": str(user.id), "company_id": str(company.id), "role": user.role})
     refresh = create_refresh_token({"sub": str(user.id)})
 
     return TokenResponse(
         access_token=access,
         refresh_token=refresh,
-        user={"id": str(user.id), "employee_id": emp_id, "email": user.email, "role": user.role, "company_id": str(company.id), "company_slug": slug}
+        user={"id": str(user.id), "employee_id": emp_id, "email": user.email, "role": user.role, "company_id": str(company.id), "company_slug": slug, "verify_token": verify_token}
     )
 
 @router.post("/login", response_model=TokenResponse)
@@ -74,9 +83,9 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where((User.email == payload.email) | (User.employee_id == payload.email)))
     user = result.scalar_one_or_none()
     if not user or not verify_password(payload.password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials - check Login ID/Email and Password")
     if not user.is_active:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account disabled")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account disabled — contact Admin")
 
     # fetch company slug
     comp = await db.execute(select(Company).where(Company.id == user.company_id))
@@ -126,6 +135,48 @@ async def me(current: User = Depends(get_current_user), db: AsyncSession = Depen
         "avatar_url": current.avatar_url,
         "is_temp_password": current.is_temp_password
     }
+
+@router.post("/change-password")
+async def change_password(payload: dict, current: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    old = payload.get("old_password")
+    new = payload.get("new_password")
+    if not old or not new:
+        raise HTTPException(status_code=400, detail="old_password and new_password required")
+    if not verify_password(old, current.password_hash):
+        raise HTTPException(status_code=400, detail="Current password incorrect")
+    validate_password(new)
+    current.password_hash = hash_password(new)
+    current.is_temp_password = False
+    await db.commit()
+    return {"message": "Password updated — please re-login"}
+
+@router.post("/verify-email")
+async def verify_email(payload: dict, db: AsyncSession = Depends(get_db)):
+    token = payload.get("token")
+    if not token:
+        raise HTTPException(status_code=400, detail="token required")
+    try:
+        data = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        if data.get("type") != "verify":
+            raise HTTPException(status_code=400, detail="Invalid verify token")
+        uid = data.get("sub")
+        res = await db.execute(select(User).where(User.id == uid))
+        user = res.scalar_one_or_none()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        user.email_verified = True
+        await db.commit()
+        return {"verified": True, "email": user.email}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid or expired token: {e}")
+
+@router.get("/verify-token/{user_id}")
+async def get_verify_token(user_id: str, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    # for demo: allow user to fetch their own verify token if not verified
+    if str(current.id) != user_id and current.role not in ("admin","hr"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+    token = jwt.encode({"sub": user_id, "type": "verify", "exp": datetime.now(timezone.utc)+timedelta(days=1)}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return {"token": token, "verify_url": f"/auth/verify-email with token"}
 
 @router.post("/invite")
 async def invite_employee(payload: InviteEmployeeRequest, current: User = Depends(require_admin), db: AsyncSession = Depends(get_db)):
