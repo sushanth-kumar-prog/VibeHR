@@ -93,6 +93,8 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials - check Login ID/Email and Password")
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account disabled — contact Admin")
+    if settings.REQUIRE_EMAIL_VERIFICATION and not user.email_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified — check inbox for verification link or request resend via /auth/verify-token/{id}")
 
     # fetch company slug
     comp = await db.execute(select(Company).where(Company.id == user.company_id))
