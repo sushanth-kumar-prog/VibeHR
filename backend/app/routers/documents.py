@@ -8,6 +8,8 @@ from ..models.document import Document
 from ..models.user import User
 from ..services.storage import upload_bytes
 
+router = APIRouter(prefix="/documents", tags=["documents"])
+
 @router.post("/upload/{user_id}")
 async def upload_doc(user_id: uuid.UUID, file: UploadFile = File(...), db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
     # employee can upload own, admin for anyone in company
