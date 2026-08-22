@@ -26,12 +26,13 @@ export default function Signup(){
         fd.append('file', logo)
         try{ await api.post('/companies/logo', fd, {headers: {'Content-Type':'multipart/form-data'}})} catch(e){ console.warn('logo upload failed', e)}
       }
-      nav('/')
+      nav('/dashboard')
     }catch(ex:any){ setErr(ex.response?.data?.detail || 'Signup failed')}
     finally{ setLoading(false)}
   }
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <Link to="/" className="mb-6 flex items-center gap-2 text-sm text-zinc-400 hover:text-white"><span className="h-7 w-7 rounded-lg bg-[#a855f7] flex items-center justify-center text-xs font-bold text-white">VH</span> VibeHR <span className="text-zinc-600">•</span> Back to home</Link>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center">Sign Up — Create Company</CardTitle>
