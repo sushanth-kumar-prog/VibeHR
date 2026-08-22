@@ -99,7 +99,7 @@ export default function Signup(){
       if(form.logo){
         const fd = new FormData()
         fd.append('file', form.logo)
-        try{ await api.post('/companies/logo', fd, {headers: {'Content-Type':'multipart/form-data'}})} catch(e){ console.warn('logo upload failed', e)}
+        try{ await api.post('/companies/logo', fd)} catch(e){ console.warn('logo upload failed', e)}
       }
       nav('/dashboard')
     }catch(ex:any){ setErr(ex.response?.data?.detail || 'Signup failed — try a different email or company name.')}

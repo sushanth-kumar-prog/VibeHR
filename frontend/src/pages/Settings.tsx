@@ -22,6 +22,8 @@ export default function Settings(){
   const [name,setName]=useState('')
   const [msg,setMsg]=useState('')
   const [logoFile,setLogoFile]=useState<File|null>(null)
+  const [logoPreview,setLogoPreview]=useState<string|null>(null)
+  const [uploading,setUploading]=useState(false)
   const [pwd,setPwd]=useState({old:'', next:'', confirm:''})
 
   const load = async()=>{
@@ -33,10 +35,33 @@ export default function Settings(){
     setMsg('')
     try{ const {data}=await api.patch('/companies/me', {name}); setCompany(data); setMsg('Company name updated')} catch(e:any){ setMsg(e.response?.data?.detail||'failed')}
   }
+  const handleFileChange = (f: File | null)=>{
+    setLogoFile(f)
+    if(f){
+      if(f.size > 2*1024*1024){ setMsg('Logo must be <2MB'); setLogoFile(null); setLogoPreview(null); return }
+      if(!f.type.startsWith('image/')){ setMsg('Only image files allowed'); setLogoFile(null); setLogoPreview(null); return }
+      setLogoPreview(URL.createObjectURL(f)); setMsg('')
+    } else { setLogoPreview(null)}
+  }
   const uploadLogo = async()=>{
-    if(!logoFile) return setMsg('Pick image first')
+    if(!logoFile) return setMsg('Pick an image file first — click Choose File')
+    setUploading(true); setMsg('')
     const fd=new FormData(); fd.append('file', logoFile)
-    try{ const {data}=await api.post('/companies/logo', fd, {headers:{'Content-Type':'multipart/form-data'}}); setCompany((c:any)=> ({...c, logo_url:data.logo_url})); setMsg('Logo uploaded')} catch(e:any){ setMsg(e.response?.data?.detail||'upload failed')}
+    try{
+      // do NOT set Content-Type manually — let axios add boundary
+      const {data}=await api.post('/companies/logo', fd)
+      setCompany((c:any)=> ({...c, logo_url:data.logo_url}))
+      setMsg('Logo uploaded ✓')
+      setLogoFile(null); setLogoPreview(null)
+      // reset file input visually
+      const el = document.getElementById('logo-input') as HTMLInputElement | null
+      if(el) el.value=''
+    } catch(e:any){
+      const detail = e.response?.data?.detail
+      if(Array.isArray(detail)) setMsg(detail.map((d:any)=> d.msg || JSON.stringify(d)).join(', '))
+      else if(typeof detail==='string') setMsg(detail)
+      else setMsg(e.response?.data?.message || e.message || 'upload failed')
+    } finally{ setUploading(false) }
   }
   const changePwd = async()=>{
     if(pwd.next!==pwd.confirm) return setMsg('Next passwords mismatch')
@@ -58,11 +83,14 @@ export default function Settings(){
           </div>
           <div>
             <label className="text-sm">Company Logo</label>
-            {company.logo_url && <img src={resolveFileUrl(company.logo_url)} alt="logo" className="h-16 mt-2 border border-zinc-200 dark:border-zinc-800 rounded"/>}
-            <div className="flex gap-2 mt-2">
-              <input type="file" accept="image/*" onChange={e=>setLogoFile(e.target.files?.[0]||null)} className="text-sm"/>
-              <Button size="sm" variant="outline" onClick={uploadLogo} disabled={!isAdmin}>Upload Logo</Button>
+            {company.logo_url && <img src={resolveFileUrl(company.logo_url)} alt="logo" className="h-16 mt-2 border border-zinc-200 dark:border-zinc-800 rounded object-contain bg-white"/>}
+            {logoPreview && <img src={logoPreview} alt="preview" className="h-16 mt-2 border border-violet-300 rounded object-contain bg-white"/>}
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              <input id="logo-input" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={e=>handleFileChange(e.target.files?.[0]||null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-zinc-900 file:text-white file:text-xs hover:file:bg-zinc-800 dark:file:bg-zinc-700" disabled={!isAdmin}/>
+              <Button size="sm" variant="outline" onClick={uploadLogo} disabled={!isAdmin || !logoFile || uploading}>{uploading ? 'Uploading…' : 'Upload Logo'}</Button>
+              {logoFile && <span className="text-xs text-zinc-600 truncate max-w-[180px]">{logoFile.name} • {(logoFile.size/1024).toFixed(0)}KB</span>}
             </div>
+            {logoFile && <div className="text-xs text-zinc-500">Ready to upload — click Upload Logo. Max 2MB, image/*.</div>}
           </div>
           <div className="text-xs text-zinc-500">Wireframe Sign Up `Upload Logo` → this stored as `logo_url` on Company.</div>
         </Card>
