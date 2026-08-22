@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../stores/auth'
+import { api } from '../api/client'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import {
@@ -13,12 +14,22 @@ export default function Login(){
   const [showPw,setShowPw]=useState(false)
   const [err,setErr]=useState('')
   const [loading,setLoading]=useState(false)
+  const [resending,setResending]=useState(false)
+  const [resent,setResent]=useState(false)
   const { login } = useAuth()
   const nav = useNavigate()
+  const notVerified = err.toLowerCase().includes('not verified')
   const submit = async(e:React.FormEvent)=>{
-    e.preventDefault(); setErr(''); setLoading(true)
+    e.preventDefault(); setErr(''); setResent(false); setLoading(true)
     try{ await login(email,password); nav('/dashboard') } catch(ex:any){ setErr(ex.response?.data?.detail || 'Invalid credentials — check Login ID/Email and Password')}
     finally{ setLoading(false)}
+  }
+  const resend = async()=>{
+    if(!email) return
+    setResending(true); setErr('')
+    try{ await api.post('/auth/resend-verification',{ email }); setResent(true) }
+    catch{ setErr('Could not resend verification email — please try again') }
+    finally{ setResending(false)}
   }
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-zinc-950">
@@ -98,7 +109,17 @@ export default function Login(){
                   </div>
                 </div>
 
-                {err && <div className="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-3 rounded-xl">{err}</div>}
+                {err && (
+                  <div className="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-3 rounded-xl">
+                    <div>{err}</div>
+                    {notVerified && !resent && (
+                      <button type="button" onClick={resend} disabled={resending} className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#714B67] dark:text-[#c9a3bd] hover:underline disabled:opacity-60">
+                        ↻ {resending ? 'Sending…' : 'Resend verification email'}
+                      </button>
+                    )}
+                    {resent && <div className="mt-2 text-xs font-medium text-emerald-700 dark:text-emerald-400">✓ Verification email sent — check your inbox.</div>}
+                  </div>
+                )}
 
                 <Button type="submit" disabled={loading} className="w-full h-11 text-[15px] rounded-xl">
                   {loading ? 'Signing in...' : <><span>Sign In</span> <ArrowRight className="ml-2 h-4 w-4" /></>}

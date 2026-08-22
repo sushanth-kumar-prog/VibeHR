@@ -101,9 +101,6 @@ export default function Landing() {
           <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-8 items-center">
             {/* left - matches reference */}
             <div className="space-y-6 relative">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FDF2F8]/80 border border-[#F5D6E8]/60 px-3.5 py-1.5 text-xs font-medium text-[#8A5A7B] shadow-sm backdrop-blur">
-                <Sparkles className="h-3.5 w-3.5 text-[#8A5A7B]" /> Modern HRMS for Modern Teams
-              </div>
               <div className="space-y-4">
                 <h1 className="text-[36px] sm:text-[52px] lg:text-[58px] font-extrabold tracking-tight leading-[0.95]">
                   <span className="text-[#0F2F4D]">Every workday,</span><br />
@@ -268,7 +265,6 @@ export default function Landing() {
         </div>
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl text-center space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#FDF2F8] border border-[#F5D6E8]/60 px-3 py-1 text-xs font-medium text-[#8A5A7B]">✦ Features that flow</div>
           <h2 className="text-[28px] sm:text-4xl font-bold tracking-tight text-zinc-900">One platform for every HR need</h2>
           <p className="text-sm sm:text-[15px] text-zinc-600">From welcoming new hires to running payroll — Dayflow keeps your records accurate, your team informed, and your people happy.</p>
         </div>

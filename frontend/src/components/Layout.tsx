@@ -5,10 +5,12 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
 import Chatbot from './Chatbot'
+import { useToast } from './ui/toast'
 import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video, GraduationCap, LayoutDashboard } from 'lucide-react'
 
 export default function Layout(){
   const { user, logout } = useAuth()
+  const toast = useToast()
   const nav = useNavigate()
   const loc = useLocation()
   const [showProfile, setShowProfile] = useState(false)
@@ -31,10 +33,10 @@ export default function Layout(){
         navigator.geolocation.getCurrentPosition(res, rej, {timeout: 5000})
       }).catch(()=> null as any)
       const payload = pos ? {lat: pos.coords.latitude, lng: pos.coords.longitude} : {}
-      if(type==='in') await api.post('/attendance/check-in', payload)
-      else await api.post('/attendance/check-out', payload)
+      if(type==='in'){ await api.post('/attendance/check-in', payload); toast.success(`Checked in at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ✓`) }
+      else { await api.post('/attendance/check-out', payload); toast.success(`Checked out at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ✓`) }
       await fetchToday()
-    } catch(e:any){ alert(e.response?.data?.detail || e.message || 'Failed')}
+    } catch(e:any){ toast.error(e.response?.data?.detail || e.message || 'Failed')}
     finally{ setChecking(false)}
   }
 
@@ -194,7 +196,7 @@ export default function Layout(){
               {showNotifs && (
                 <div className="absolute right-0 mt-2 w-80 rounded-lg border bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 p-3 shadow-xl max-h-80 overflow-auto">
                   <div className="font-medium text-sm mb-2 flex items-center justify-between">Notifications & Email Alerts <Link to="/notifications" onClick={()=>setShowNotifs(false)} className="text-xs font-normal text-violet-600 dark:text-violet-400 hover:underline">View All →</Link></div>
-                  {notifs.length===0 ? <div className="text-xs text-zinc-500">No alerts — invite/leave actions appear here (mock email via Supabase SMTP would send)</div> :
+                  {notifs.length===0 ? <div className="text-xs text-zinc-500">No alerts — invite/leave actions appear here (emails sent via Brevo SMTP)</div> :
                     notifs.map(n=>(
                       <div key={n.id} className="border-t border-zinc-200 dark:border-zinc-800 py-2">
                         <div className="text-xs font-medium">{n.title} <span className="text-zinc-500">• {new Date(n.created_at).toLocaleString()}</span></div>
@@ -235,7 +237,7 @@ export default function Layout(){
       {(user as any)?.email_verified===false && (
         <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs px-4 py-2 flex justify-between gap-4">
           <span>Email verification required — check your invite email or fetch token via API /auth/verify-token/{user?.id}</span>
-          <button onClick={async()=>{ const t=await api.get(`/auth/verify-token/${user?.id}`); await api.post('/auth/verify-email',{token:t.data.token}); alert('Verified!'); window.location.reload()}} className="underline shrink-0">Verify Now (mock)</button>
+          <button onClick={async()=>{ try{ const t=await api.get(`/auth/verify-token/${user?.id}`); await api.post('/auth/verify-email',{token:t.data.token}); toast.success('Email verified ✓'); window.location.reload() }catch(e:any){ toast.error(e.response?.data?.detail || 'Verification failed') }}} className="underline shrink-0">Verify Now (mock)</button>
         </div>
       )}
       <main className="w-full max-w-[1400px] mx-auto px-4 py-6 flex-1">

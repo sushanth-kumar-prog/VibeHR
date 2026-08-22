@@ -5,6 +5,7 @@ import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
+import { useToast } from '../components/ui/toast'
 import CommunicationHub from '../components/CommunicationHub'
 
 function resolveFileUrl(url?: string){
@@ -20,6 +21,7 @@ function resolveFileUrl(url?: string){
 export default function Profile(){
   const { id: paramId } = useParams()
   const { user: me } = useAuth()
+  const toast = useToast()
   const id = paramId || me?.id
   const [user, setUser] = useState<any>(null)
   const [tab, setTab] = useState<'resume'|'private'|'salary'>('resume')
@@ -89,9 +91,12 @@ export default function Profile(){
   }
 
   const seed = async()=>{
-    await api.post('/payroll/seed-defaults')
-    const c = await api.get('/payroll/components')
-    setComponents(c.data)
+    try{
+      await api.post('/payroll/seed-defaults')
+      const c = await api.get('/payroll/components')
+      setComponents(c.data)
+      toast.success('Default salary components seeded ✓')
+    }catch(e:any){ toast.error(e.response?.data?.detail || 'Failed to seed components') }
   }
 
   const uploadDoc = async(e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -99,15 +104,20 @@ export default function Profile(){
     if(!file) return
     const fd = new FormData()
     fd.append('file', file)
-    await api.post(`/documents/upload/${id}`, fd, {headers: {'Content-Type':'multipart/form-data'}})
-    const d = await api.get(`/documents/${id}`)
-    setDocs(d.data)
+    try{
+      await api.post(`/documents/upload/${id}`, fd, {headers: {'Content-Type':'multipart/form-data'}})
+      const d = await api.get(`/documents/${id}`)
+      setDocs(d.data)
+      toast.success(`Document "${file.name}" uploaded ✓`)
+    }catch(ex:any){ toast.error(ex.response?.data?.detail || 'Upload failed') }
   }
 
   const saveProfile = async()=>{
-    await api.patch(`/users/${id}`, editField)
-    load()
-    setMsg('Profile updated')
+    try{
+      await api.patch(`/users/${id}`, editField)
+      load()
+      toast.success('Profile updated ✓')
+    }catch(e:any){ toast.error(e.response?.data?.detail || 'Failed to update profile') }
   }
 
   const changePwd = async()=>{
@@ -124,8 +134,11 @@ export default function Profile(){
     if(!file) return
     const fd = new FormData()
     fd.append('file', file)
-    await api.post(`/users/${id}/avatar`, fd, {headers:{'Content-Type':'multipart/form-data'}})
-    load()
+    try{
+      await api.post(`/users/${id}/avatar`, fd, {headers:{'Content-Type':'multipart/form-data'}})
+      load()
+      toast.success('Avatar updated ✓')
+    }catch(ex:any){ toast.error(ex.response?.data?.detail || 'Avatar upload failed') }
   }
 
   if(!user) return <div className="text-zinc-500">Loading...</div>

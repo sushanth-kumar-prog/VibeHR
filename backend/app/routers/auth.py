@@ -22,6 +22,15 @@ def slugify(name: str) -> str:
     s = re.sub(r'[^a-zA-Z0-9]+', '-', name.lower()).strip('-')
     return s[:50]
 
+def make_verify_token(user_id: str) -> str:
+    return jwt.encode(
+        {"sub": str(user_id), "type": "verify", "exp": datetime.now(timezone.utc) + timedelta(days=1)},
+        settings.SECRET_KEY, algorithm=settings.ALGORITHM,
+    )
+
+def make_verify_url(token: str) -> str:
+    return f"{settings.FRONTEND_URL.rstrip('/')}/verify?token={token}"
+
 @router.post("/signup-company", response_model=TokenResponse)
 async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depends(get_db)):
     validate_password(payload.password)
@@ -60,7 +69,9 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
         department=payload.department or "Administration",
         address=payload.address,
         is_temp_password=False,
-        email_verified=False
+        # company owner signs up interactively and receives session tokens immediately —
+        # never lock the admin out; email verification applies to invited users only
+        email_verified=True
     )
     db.add(user)
     await db.flush()
@@ -68,23 +79,13 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     await db.commit()
     await db.refresh(user)
 
-    # email verification token + real SMTP send via Brevo
-    verify_token = jwt.encode({"sub": str(user.id), "type": "verify", "exp": datetime.now(timezone.utc)+timedelta(days=1)}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    verify_url = f"https://Dayflow.susindran.in/verify?token={verify_token}"  # frontend verify page (or backend /auth/verify-email)
-    try:
-        from ..services.mail import send_email, verification_email_html
-        html = verification_email_html(f"{payload.adminFirstName} {payload.adminLastName}", verify_url, emp_id)
-        send_email(payload.email, f"Verify your Dayflow account — {company.name}", html, f"Verify: {verify_url} | Employee ID: {emp_id}")
-    except Exception as e:
-        print(f"[MAIL] verification send failed: {e}")
-
     access = create_access_token({"sub": str(user.id), "company_id": str(company.id), "role": user.role})
     refresh = create_refresh_token({"sub": str(user.id)})
 
     return TokenResponse(
         access_token=access,
         refresh_token=refresh,
-        user={"id": str(user.id), "employee_id": emp_id, "email": user.email, "role": user.role, "company_id": str(company.id), "company_slug": slug, "verify_token": verify_token}
+        user={"id": str(user.id), "employee_id": emp_id, "email": user.email, "role": user.role, "company_id": str(company.id), "company_slug": slug}
     )
 
 @router.post("/login", response_model=TokenResponse)
@@ -97,7 +98,7 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account disabled — contact Admin")
     if settings.REQUIRE_EMAIL_VERIFICATION and not user.email_verified:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified — check inbox for verification link or request resend via /auth/verify-token/{id}")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified — check your inbox for the verification link or use the Resend button below")
 
     # fetch company slug
     comp = await db.execute(select(Company).where(Company.id == user.company_id))
@@ -182,13 +183,36 @@ async def verify_email(payload: dict, db: AsyncSession = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid or expired token: {e}")
 
+@router.post("/resend-verification")
+async def resend_verification(payload: dict, db: AsyncSession = Depends(get_db)):
+    email = (payload.get("email") or "").strip().lower()
+    if not email:
+        raise HTTPException(status_code=400, detail="email required")
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if user and not user.email_verified:
+        comp = await db.execute(select(Company).where(Company.id == user.company_id))
+        company = comp.scalar_one_or_none()
+        verify_token = make_verify_token(user.id)
+        verify_url = make_verify_url(verify_token)
+        try:
+            from ..services.mail import send_email, verification_email_html
+            name = f"{user.first_name or ''} {user.last_name or ''}".strip() or user.employee_id
+            html = verification_email_html(name, verify_url, user.employee_id)
+            send_email(user.email, f"Verify your Dayflow account — {company.name if company else 'Dayflow'}", html, f"Verify: {verify_url} | Employee ID: {user.employee_id}")
+            print(f"[MAIL] verification resent to {user.email} ({user.employee_id})")
+        except Exception as e:
+            print(f"[MAIL] verification resend failed: {e}")
+    # generic response to avoid email enumeration
+    return {"message": "If that account needs verification, a new link has been sent."}
+
 @router.get("/verify-token/{user_id}")
 async def get_verify_token(user_id: str, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
     # for demo: allow user to fetch their own verify token if not verified
     if str(current.id) != user_id and current.role not in ("admin","hr"):
         raise HTTPException(status_code=403, detail="Forbidden")
-    token = jwt.encode({"sub": user_id, "type": "verify", "exp": datetime.now(timezone.utc)+timedelta(days=1)}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return {"token": token, "verify_url": f"/auth/verify-email with token"}
+    token = make_verify_token(user_id)
+    return {"token": token, "verify_url": make_verify_url(token)}
 
 @router.post("/invite")
 async def invite_employee(payload: InviteEmployeeRequest, current: User = Depends(require_admin), db: AsyncSession = Depends(get_db)):
@@ -222,18 +246,20 @@ async def invite_employee(payload: InviteEmployeeRequest, current: User = Depend
     db.add(user)
     await db.commit()
     await db.refresh(user)
+    # verification link so the invitee can activate their account before first login
+    verify_url = make_verify_url(make_verify_token(user.id))
     # real email via Brevo SMTP + notification
     try:
         from .notifications import add_notification
-        add_notification(current.company_id, "New Employee Invited", f"{payload.firstName} {payload.lastName} ({emp_id}) invited with temp password. Email verification pending.", "invite")
+        add_notification(current.company_id, "New Employee Invited", f"{payload.firstName} {payload.lastName} ({emp_id}) invited with temp password. Email verification link sent.", "invite")
     except Exception as e:
         print(f"notify failed: {e}")
     try:
         from ..services.mail import send_email, invite_email_html
-        login_url = "https://Dayflow.susindran.in/login"
-        html = invite_email_html(f"{payload.firstName} {payload.lastName}", emp_id, payload.email, temp_pw, company.name, login_url)
-        send_email(payload.email, f"You're invited to {company.name} on Dayflow — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}")
+        login_url = f"{settings.FRONTEND_URL.rstrip('/')}/login"
+        html = invite_email_html(f"{payload.firstName} {payload.lastName}", emp_id, payload.email, temp_pw, company.name, login_url, verify_url)
+        send_email(payload.email, f"You're invited to {company.name} on Dayflow — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}\nVerify your email: {verify_url}")
         print(f"[MAIL] Invite sent to {payload.email} ({emp_id})")
     except Exception as e:
         print(f"[MAIL] invite send failed: {e}")
-    return {"id": str(user.id), "employee_id": emp_id, "email": payload.email, "temp_password": temp_pw, "role": role}
+    return {"id": str(user.id), "employee_id": emp_id, "email": payload.email, "temp_password": temp_pw, "role": role, "verify_url": verify_url}
