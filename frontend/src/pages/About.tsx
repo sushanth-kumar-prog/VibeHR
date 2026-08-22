@@ -9,7 +9,6 @@ export default function About(){
           <Link to="/" className="flex items-center gap-2.5">
             <img src="/logo.svg" alt="Dayflow logo" className="h-8 w-8 rounded-lg" />
             <span className="font-bold text-[18px] tracking-tight">Dayflow</span>
-            <span className="hidden sm:inline text-[10px] tracking-[0.14em] text-zinc-500 border border-zinc-200 rounded-full px-2 py-0.5 ml-1 bg-zinc-50">HRMS</span>
           </Link>
           <Link to="/signup"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#714B67] text-white hover:bg-[#5f4057]">Create Company <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
         </div>
