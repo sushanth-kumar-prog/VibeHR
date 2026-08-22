@@ -27,6 +27,7 @@ export default function Meetings(){
   const [showSchedule, setShowSchedule] = useState(false)
   const [msg, setMsg] = useState('')
   const [createdLink, setCreatedLink] = useState<string | null>(null)
+  const [createdDemo, setCreatedDemo] = useState(false)
   const [copied, setCopied] = useState(false)
   const [tab, setTab] = useState<'upcoming'|'all'>('upcoming')
   const [search, setSearch] = useState('')
@@ -61,9 +62,10 @@ export default function Meetings(){
         attendee_ids: form.attendees
       })
       setCreatedLink(data.meet_link)
+      setCreatedDemo(data.source === 'mock')
       setForm({title:'', description:'', date:'', startTime:'', endTime:'', attendees: []})
       await load()
-      setTimeout(()=>{ setShowSchedule(false); setCreatedLink(null) }, 2500)
+      setTimeout(()=>{ setShowSchedule(false); setCreatedLink(null); setCreatedDemo(false) }, 2500)
     }catch(ex:any){ setMsg(ex.response?.data?.detail || 'Failed to schedule') }
     finally{ setSubmitting(false) }
   }
@@ -93,7 +95,6 @@ export default function Meetings(){
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><Video className="h-6 w-6 text-violet-600"/> Meetings</h1>
-          <p className="text-sm text-zinc-500 mt-1">Google Calendar + Meet • Auto-generated video links • Email invites via SMTP (Add ons.md Integration 1)</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={instantMeet} className="gap-2"><Radio className="h-4 w-4"/> Instant Meet</Button>
@@ -167,17 +168,18 @@ export default function Meetings(){
       {/* Schedule Modal */}
       {showSchedule && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={()=>{setShowSchedule(false); setCreatedLink(null)}}/>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={()=>{setShowSchedule(false); setCreatedLink(null); setCreatedDemo(false)}}/>
           <Card className="relative w-full max-w-xl p-6 shadow-xl max-h-[90vh] overflow-auto">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-lg flex items-center gap-2"><CalendarPlus className="h-5 w-5"/> Schedule Meeting</h3>
-              <button onClick={()=>{setShowSchedule(false); setCreatedLink(null)}} className="h-8 w-8 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center"><X className="h-4 w-4"/></button>
+              <button onClick={()=>{setShowSchedule(false); setCreatedLink(null); setCreatedDemo(false)}} className="h-8 w-8 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center"><X className="h-4 w-4"/></button>
             </div>
             {createdLink ? (
               <div className="mt-4 space-y-3">
                 <div className="rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-4">
                   <div className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Meeting scheduled ✓</div>
                   <div className="mt-2 text-xs font-mono break-all bg-white dark:bg-zinc-900 p-2 rounded border">{createdLink}</div>
+                  {createdDemo && <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">Demo link — Google Calendar API is not configured on the server, so this Meet code won't work.</p>}
                 </div>
                 <div className="flex gap-2">
                   <button onClick={()=>copy(createdLink)} className="flex-1 h-9 rounded-md border text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800">{copied?'Copied ✓':'Copy Link'}</button>
@@ -227,7 +229,7 @@ export default function Meetings(){
                   </div>
                   )}
                 </div>
-                <p className="text-xs text-zinc-500">Google Calendar event + Meet link auto-generated; email invites sent in background. Falls back to mock link without service account.</p>
+                <p className="text-xs text-zinc-500">Creates a real Google Calendar event with an auto-generated Meet link; email invites are sent in background. Without server credentials a demo link is returned instead.</p>
                 <Button type="submit" disabled={submitting} className="w-full">{submitting ? 'Scheduling…' : 'Schedule & Generate Meet Link'}</Button>
               </form>
             )}

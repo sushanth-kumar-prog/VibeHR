@@ -29,6 +29,8 @@ function isValidPhone(cleaned: string) {
 export function CommunicationHub({ user, compact = false, currentUserId }: { user: UserLike, compact?: boolean, currentUserId?: string }) {
   const [meetLink, setMeetLink] = useState<string | null>(null)
   const [meetLoading, setMeetLoading] = useState(false)
+  const [meetError, setMeetError] = useState<string | null>(null)
+  const [meetDemo, setMeetDemo] = useState(false)
   const [copied, setCopied] = useState(false)
 
   // don't show for own profile
@@ -40,24 +42,19 @@ export function CommunicationHub({ user, compact = false, currentUserId }: { use
 
   const handleInstantMeet = async () => {
     setMeetLoading(true)
+    setMeetError(null)
     try {
-      // try real endpoint if exists, fallback to mock
-      try {
-        const { data } = await api.post('/meetings/instant', { attendee_id: user.id })
-        if (data?.meet_link || data?.link || data?.url) {
-          const link = data.meet_link || data.link || data.url
-          setMeetLink(link)
-          window.open(link, '_blank')
-          return
-        }
-      } catch {
-        // ignore, fallback to mock
+      const { data } = await api.post('/meetings/instant', { attendee_id: user.id })
+      if (data?.meet_link || data?.link || data?.url) {
+        const link = data.meet_link || data.link || data.url
+        setMeetLink(link)
+        setMeetDemo(data.source === 'mock')
+        window.open(link, '_blank')
+      } else {
+        setMeetError('Could not create meeting link')
       }
-      // mock generation
-      const part = () => Math.random().toString(36).substring(2, 5)
-      const mock = `https://meet.google.com/${part()}-${part()}${part().slice(0,1)}-${part()}`
-      setMeetLink(mock)
-      window.open(mock, '_blank')
+    } catch (ex: any) {
+      setMeetError(ex.response?.data?.detail || 'Failed to create Meet link')
     } finally {
       setMeetLoading(false)
     }
@@ -173,14 +170,23 @@ export function CommunicationHub({ user, compact = false, currentUserId }: { use
         </button>
       </div>
 
+      {meetError && (
+        <div className="text-xs p-2.5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300">{meetError}</div>
+      )}
+
       {meetLink && (
-        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800">
-          <span className="flex-1 text-xs font-mono truncate text-violet-700 dark:text-violet-300">{meetLink}</span>
-          <button onClick={copy} className="h-7 px-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-violet-200 dark:border-violet-800 flex items-center gap-1.5 text-xs font-medium hover:bg-violet-100 dark:hover:bg-zinc-800 transition shrink-0">
-            {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-            {copied ? 'Copied' : 'Copy'}
-          </button>
-          <a href={meetLink} target="_blank" rel="noopener noreferrer" className="h-7 px-2.5 rounded-lg bg-violet-600 text-white flex items-center text-xs font-medium hover:bg-violet-700 transition shrink-0">Join</a>
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800">
+            <span className="flex-1 text-xs font-mono truncate text-violet-700 dark:text-violet-300">{meetLink}</span>
+            <button onClick={copy} className="h-7 px-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-violet-200 dark:border-violet-800 flex items-center gap-1.5 text-xs font-medium hover:bg-violet-100 dark:hover:bg-zinc-800 transition shrink-0">
+              {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+            <a href={meetLink} target="_blank" rel="noopener noreferrer" className="h-7 px-2.5 rounded-lg bg-violet-600 text-white flex items-center text-xs font-medium hover:bg-violet-700 transition shrink-0">Join</a>
+          </div>
+          {meetDemo && (
+            <p className="text-[11px] text-amber-600 dark:text-amber-400">Demo link — Google Calendar API is not configured on the server, so this Meet code won't work.</p>
+          )}
         </div>
       )}
     </div>

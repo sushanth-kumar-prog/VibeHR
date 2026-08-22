@@ -47,3 +47,34 @@ Paste either:
 - Brevo API key if you prefer API over SMTP (we support `sib-api-v3-sdk` alternative)
 
 > I'm continuing on other tasks (verification gate, weekly ISO, per-employee dot batch, Company Settings, printable PDF slip, Resume full) while you gather keys — no block.
+
+## 6) Google Calendar + Meet (real Meet links)
+
+There is no standalone "Meet API" — VibeHR creates a **Google Calendar event** with
+`conferenceData` and extracts the generated `https://meet.google.com/xxx-yyyy-zzz` link.
+Until credentials below are set, meetings return flagged **demo** links (`source: "mock"`)
+that Meet rejects ("Check your meeting code").
+
+Setup (Google Cloud Console):
+1. Create/select a project → **APIs & Services → Library** → enable **Google Calendar API**.
+2. **APIs & Services → Credentials → Create Credentials → Service account**.
+3. Open the service account → **Keys → Add key → Create new key → JSON** → download.
+4. Pick ONE auth option for `backend/.env`:
+   - **Option A — Workspace (recommended):** Admin Console → Security → API controls →
+     **Domain-wide delegation**: authorize the service account's client ID for scope
+     `https://www.googleapis.com/auth/calendar`, then set
+     `GOOGLE_SERVICE_ACCOUNT_JSON=/path/to/key.json` and
+     `GOOGLE_IMPERSONATE_EMAIL=hr@yourdomain.com`.
+   - **Option B — any account:** share your calendar with the service-account address
+     (Calendar → Settings → Share with specific people → "Make changes to events"), then set
+     `GOOGLE_SERVICE_ACCOUNT_JSON=/path/to/key.json` and `GOOGLE_CALENDAR_ID=<your@gmail.com>`.
+   - **Option C — personal Gmail via OAuth:** set `GOOGLE_OAUTH_CLIENT_ID`,
+     `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REFRESH_TOKEN` (refresh token granted the
+     `https://www.googleapis.com/auth/calendar` scope).
+5. Restart the backend. Verify: create an Instant Meet — the returned link should open a real
+   Meet lobby and the event should appear in the target calendar.
+
+Notes:
+- Attendee emails are added to the event, so Workspace users also get Calendar invites;
+  the app additionally sends its own HTML invite email via Brevo.
+- Cancelling a meeting deletes the backing Calendar event.
