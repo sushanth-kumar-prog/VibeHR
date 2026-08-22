@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
 import Chatbot from './Chatbot'
-import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video, GraduationCap } from 'lucide-react'
+import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video, GraduationCap, LayoutDashboard } from 'lucide-react'
 
 export default function Layout(){
   const { user, logout } = useAuth()
@@ -39,7 +39,8 @@ export default function Layout(){
   }
 
   const coreTabs = [
-    {label:'Employees', path:'/dashboard', icon: Users, active: 'bg-[#714B67] text-white shadow-md shadow-[#714B67]/20', tint: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300', hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'},
+    {label:'Dashboard', path:'/dashboard', icon: LayoutDashboard, active: 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
+    {label:'Employees', path:'/employees', icon: Users, active: 'bg-[#714B67] text-white shadow-md shadow-[#714B67]/20', tint: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300', hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'},
     {label:'Attendance', path:'/attendance', icon: Clock, active: 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20', tint: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-300'},
     {label:'Time Off', path:'/time-off', icon: CalendarDays, active: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
     {label:'Payroll', path:'/payroll', icon: Wallet, active: 'bg-teal-600 text-white shadow-md shadow-teal-600/20', tint: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-300', hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-700 dark:hover:text-teal-300'},

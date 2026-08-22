@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
+import Employees from './pages/Employees'
 import Profile from './pages/Profile'
 import Attendance from './pages/Attendance'
 import TimeOff from './pages/TimeOff'
@@ -62,6 +63,7 @@ export default function App(){
           <Route path="/support" element={<Support/>}/>
           <Route element={<Protected><Layout/></Protected>}>
             <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/employees" element={<Employees/>}/>
             <Route path="/profile/:id" element={<Profile/>}/>
             <Route path="/me" element={<Profile/>}/>
             <Route path="/attendance" element={<Attendance/>}/>
