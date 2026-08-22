@@ -2,8 +2,6 @@
 
 VibeHR is a multi-tenant human resource management system for employee records, attendance, leave, payroll, documents, meetings, and workforce reporting. It combines a React web application with a FastAPI API and Supabase-backed PostgreSQL and Storage.
 
-The current application UI and API retain the original Dayflow product labels in a few places.
-
 ## Highlights
 
 - Company registration and JWT authentication with email or employee ID login.

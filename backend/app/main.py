@@ -8,7 +8,7 @@ from .models import company, user, attendance as att_model, leave as leave_model
 from fastapi.staticfiles import StaticFiles
 import os
 
-app = FastAPI(title="Dayflow API", version="1.0.0", description="HRMS - React FastAPI Supabase")
+app = FastAPI(title="VibeHR API", version="1.0.0", description="HRMS - React FastAPI Supabase")
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,7 +52,7 @@ if os.path.exists("uploads"):
 
 @app.get("/")
 async def root():
-    return {"message": "Dayflow API running", "docs": "/docs"}
+    return {"message": "VibeHR API running", "docs": "/docs"}
 
 @app.get("/health")
 async def health():
@@ -63,6 +63,9 @@ async def on_startup():
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+            # existing DBs: add 'break' label to attendancestatus enum (idempotent, PG 10+)
+            from sqlalchemy import text
+            await conn.execute(text("ALTER TYPE attendancestatus ADD VALUE IF NOT EXISTS 'break'"))
     except Exception as e:
         print(f"[startup] DB auto-create skipped (configure DATABASE_URL): {e}")
 

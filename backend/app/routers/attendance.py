@@ -65,6 +65,26 @@ async def check_out(payload: dict, request: Request, db: AsyncSession = Depends(
     await db.refresh(rec)
     return {"message":"Checked out","record": {"id": str(rec.id), "check_out": rec.check_out, "working_hours": wh, "status": rec.status}}
 
+@router.post("/status")
+async def set_status(payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    """Manually set own attendance status for today (present/absent/break) — header dropdown"""
+    status = payload.get("status")
+    if status not in ("present", "absent", "break"):
+        raise HTTPException(status_code=400, detail="status must be present, absent or break")
+    today = date.today()
+    res = await db.execute(select(AttendanceRecord).where(AttendanceRecord.user_id==current.id, AttendanceRecord.date==today))
+    rec = res.scalar_one_or_none()
+    if rec is None:
+        rec = AttendanceRecord(user_id=current.id, company_id=current.company_id, date=today, status=status)
+        db.add(rec)
+    else:
+        rec.status = status
+        if status == "break":
+            rec.working_hours = None if rec.check_in is None else rec.working_hours
+    await db.commit()
+    await db.refresh(rec)
+    return {"message": f"Status set to {status}", "record": {"id": str(rec.id), "status": status}}
+
 @router.get("")
 async def list_attendance(
     user_id: uuid.UUID | None = None,

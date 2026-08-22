@@ -1,7 +1,7 @@
 # VibeHR — Add-On Features & Integrations
 ## Complete Ideation Document
 
-**Project:** VibeHR (Dayflow HRMS)
+**Project:** VibeHR (VibeHR HRMS)
 **Hackathon:** Odoo Hackathon — August 2026
 **Role:** Add-on / Integration Specialist
 **Base Stack:** React + TypeScript + Tailwind (Frontend) | FastAPI + PostgreSQL + Supabase (Backend)

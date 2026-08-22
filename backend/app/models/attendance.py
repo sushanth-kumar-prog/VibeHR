@@ -13,6 +13,7 @@ class AttendanceStatus(str, enum.Enum):
     absent = "absent"
     half_day = "half_day"
     leave = "leave"
+    break_ = "break"
 
 class AttendanceRecord(Base):
     __tablename__ = "attendance_records"
@@ -22,7 +23,10 @@ class AttendanceRecord(Base):
     date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     check_in: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     check_out: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    status: Mapped[str] = mapped_column(Enum(AttendanceStatus), default=AttendanceStatus.present)
+    status: Mapped[str] = mapped_column(
+        Enum(AttendanceStatus, values_callable=lambda e: [m.value for m in e]),
+        default=AttendanceStatus.present,
+    )
     working_hours: Mapped[float] = mapped_column(Float, nullable=True)
     location_in: Mapped[dict] = mapped_column(JSONB, nullable=True)
     location_out: Mapped[dict] = mapped_column(JSONB, nullable=True)

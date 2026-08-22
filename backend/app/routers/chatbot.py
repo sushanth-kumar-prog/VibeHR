@@ -188,6 +188,35 @@ def _rule_answer(question: str, ctx: dict) -> str | None:
     return None
 
 
+async def _openai_answer(question: str, ctx: dict, company_hint: str) -> str | None:
+    """Call an OpenAI-compatible chat API with employee context. Returns None if unavailable."""
+    api_key = settings.OPENAI_API_KEY
+    if not api_key:
+        return None
+    try:
+        from openai import AsyncOpenAI
+        client = AsyncOpenAI(api_key=api_key, base_url=settings.OPENAI_BASE_URL)
+        system = (
+            f"You are an HR assistant for {company_hint}. Answer ONLY using the provided JSON context about "
+            "the authenticated employee. Never fabricate data; say so if info is missing. Refuse questions about "
+            "other employees, medical/legal advice, or non-HR topics. Be concise (max 120 words)."
+        )
+        user_msg = f"Employee data:\n{ctx}\n\nQuestion: {question}"
+        resp = await client.chat.completions.create(
+            model=settings.OPENAI_MODEL,
+            max_tokens=300,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_msg},
+            ],
+        )
+        text = (resp.choices[0].message.content or "").strip() if resp.choices else ""
+        return text or None
+    except Exception as e:
+        print(f"[CHATBOT] openai failed: {e}")
+    return None
+
+
 async def _claude_answer(question: str, ctx: dict, company_hint: str) -> str | None:
     """Call Anthropic Claude API with employee context. Returns None if unavailable."""
     import httpx
@@ -239,12 +268,18 @@ async def ask(payload: dict, db: AsyncSession = Depends(get_db), current: User =
 
     ctx, sources = await build_context(db, current)
 
-    answer = await _claude_answer(question, ctx, "Dayflow")
-    used_claude = answer is not None
+    engine = "rules"
+    answer = await _openai_answer(question, ctx, "VibeHR")
+    if answer:
+        engine = "openai"
+    else:
+        answer = await _claude_answer(question, ctx, "VibeHR")
+        if answer:
+            engine = "claude"
     if not answer:
         answer = _rule_answer(question, ctx)
     if not answer:
         answer = ("I don't have that information yet. Try asking about leave balance, attendance, "
                   "salary, meetings, or your profile.")
 
-    return {"answer": answer, "data_used": sources, "engine": "claude" if used_claude else "rules"}
+    return {"answer": answer, "data_used": sources, "engine": engine}

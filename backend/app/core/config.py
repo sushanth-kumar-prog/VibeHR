@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/Dayflow"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/VibeHR"
     SUPABASE_URL: str = ""
     SUPABASE_SERVICE_KEY: str = ""
     SUPABASE_ANON_KEY: str = ""
@@ -17,12 +17,15 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 465
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
-    SMTP_FROM_EMAIL: str = "noreply@Dayflow.susindran.in"
+    SMTP_FROM_EMAIL: str = "noreply@VibeHR.susindran.in"
     SMTP_USE_TLS: bool = False
     SMTP_USE_SSL: bool = True
     REQUIRE_EMAIL_VERIFICATION: bool = False
     ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-3-haiku-20240307"
+    OPENAI_API_KEY: str = ""
+    OPENAI_BASE_URL: str = "https://api.openai.com/v1"
+    OPENAI_MODEL: str = "gpt-4o-mini"
 
     class Config:
         env_file = ".env"
