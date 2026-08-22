@@ -36,7 +36,7 @@ export default function Settings(){
   return (
     <div className="space-y-6 max-w-3xl">
       <h1 className="text-2xl font-bold">Company Settings</h1>
-      <p className="text-sm text-zinc-500">Admin/HR only can edit company.Logo stored via Supabase Storage `company-logos` (fallback `uploads/company-logos`).</p>
+      <p className="text-sm text-zinc-500">Admin/HR only can edit company.Logo  `company-logos` (fallback `uploads/company-logos`).</p>
       {company ? (
         <Card className="p-6 space-y-4">
           <div>
