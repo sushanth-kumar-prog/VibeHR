@@ -12,8 +12,12 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
     SMTP_HOST: str = ""
+    SMTP_PORT: int = 465
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
+    SMTP_FROM_EMAIL: str = "noreply@dayflow.susindran.in"
+    SMTP_USE_TLS: bool = False
+    SMTP_USE_SSL: bool = True
 
     class Config:
         env_file = ".env"
