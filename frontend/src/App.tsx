@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Verify from './pages/Verify'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Employees from './pages/Employees'
@@ -24,6 +25,7 @@ import HelpCenter from './pages/HelpCenter'
 import GettingStarted from './pages/GettingStarted'
 import Support from './pages/Support'
 import Layout from './components/Layout'
+import { ToastProvider } from './components/ui/toast'
 import { useAuth } from './stores/auth'
 
 const qc = new QueryClient()
@@ -48,12 +50,14 @@ function Protected({children}:{children:React.ReactNode}){
 export default function App(){
   return (
     <QueryClientProvider client={qc}>
+      <ToastProvider>
       <ThemeInit/>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Landing/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/signup" element={<Signup/>}/>
+          <Route path="/verify" element={<Verify/>}/>
           <Route path="/about" element={<About/>}/>
           <Route path="/contact" element={<Contact/>}/>
           <Route path="/privacy" element={<Privacy/>}/>
@@ -80,6 +84,7 @@ export default function App(){
           <Route path="*" element={<Navigate to="/" replace/>}/>
         </Routes>
       </BrowserRouter>
+      </ToastProvider>
     </QueryClientProvider>
   )
 }
