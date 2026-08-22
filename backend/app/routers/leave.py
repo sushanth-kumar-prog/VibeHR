@@ -72,12 +72,22 @@ async def approve(leave_id: uuid.UUID, payload: dict, db: AsyncSession = Depends
     lr.reviewer_id = current.id
     lr.reviewer_comment = payload.get("comment")
     lr.reviewed_at = datetime.now(timezone.utc)
-    # mock notification
+    # notification + email
     try:
         from .notifications import add_notification
         add_notification(current.company_id, "Leave Approved", f"{lr.type} leave {lr.start_date} → {lr.end_date} approved for {lr.user_id}", "leave")
     except Exception:
         pass
+    try:
+        from ..services.mail import send_email, leave_status_html
+        # fetch employee
+        u = await db.execute(select(User).where(User.id == lr.user_id))
+        emp = u.scalar_one_or_none()
+        if emp and emp.email:
+            html = leave_status_html(f"{emp.first_name} {emp.last_name}", lr.type, str(lr.start_date), str(lr.end_date), "approved", payload.get("comment"))
+            send_email(emp.email, f"Leave Approved — {lr.type} {lr.start_date} → {lr.end_date}", html)
+    except Exception as e:
+        print(f"[MAIL] leave approve email failed: {e}")
     # update balance
     bal_res = await db.execute(select(LeaveBalance).where(LeaveBalance.user_id==lr.user_id, LeaveBalance.year==lr.start_date.year))
     bal = bal_res.scalar_one_or_none()
@@ -111,6 +121,15 @@ async def reject(leave_id: uuid.UUID, payload: dict, db: AsyncSession = Depends(
         add_notification(current.company_id, "Leave Rejected", f"{lr.type} leave {lr.start_date} → {lr.end_date} rejected for {lr.user_id}", "leave")
     except Exception:
         pass
+    try:
+        from ..services.mail import send_email, leave_status_html
+        u = await db.execute(select(User).where(User.id == lr.user_id))
+        emp = u.scalar_one_or_none()
+        if emp and emp.email:
+            html = leave_status_html(f"{emp.first_name} {emp.last_name}", lr.type, str(lr.start_date), str(lr.end_date), "rejected", payload.get("comment"))
+            send_email(emp.email, f"Leave Rejected — {lr.type} {lr.start_date} → {lr.end_date}", html)
+    except Exception as e:
+        print(f"[MAIL] leave reject email failed: {e}")
     await db.commit()
     return {"status":"rejected"}
 
