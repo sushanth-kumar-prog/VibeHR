@@ -126,16 +126,43 @@ export default function Profile(){
       </Card>
 
       {tab==='resume' && (
-        <Card className="p-6 space-y-2">
-          <h3 className="font-semibold">About & Experience</h3>
-          <p className="text-sm text-zinc-400">Resume data would go here (experience, skills, education, certifications). Edit limited fields below.</p>
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div><span className="text-zinc-500">Address:</span> {user.address || '—'}</div>
-            <div><span className="text-zinc-500">Phone:</span> {user.phone || '—'}</div>
-            <div><span className="text-zinc-500">Date of Joining:</span> {user.date_of_joining || '—'}</div>
-            <div><span className="text-zinc-500">Department:</span> {user.department || '—'}</div>
+        <div className="space-y-4">
+          <Card className="p-6 space-y-3">
+            <h3 className="font-semibold">About</h3>
+            <p className="text-sm text-zinc-400">Resume view — personal + job + docs as per spec 3.3.1 (personal details, job details, salary structure, documents, profile picture). Admin edits all via Private Info; Salary in next tab.</p>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div><span className="text-zinc-500">Full Name:</span> {user.first_name} {user.last_name}</div>
+              <div><span className="text-zinc-500">Employee ID:</span> {user.employee_id}</div>
+              <div><span className="text-zinc-500">Email:</span> {user.email}</div>
+              <div><span className="text-zinc-500">Phone:</span> {user.phone || '—'}</div>
+              <div><span className="text-zinc-500">Address:</span> {user.address || '—'}</div>
+              <div><span className="text-zinc-500">Department:</span> {user.department || '—'}</div>
+              <div><span className="text-zinc-500">Job Title:</span> {user.job_title || '—'}</div>
+              <div><span className="text-zinc-500">Date of Joining:</span> {user.date_of_joining || '—'}</div>
+              <div><span className="text-zinc-500">Company:</span> {company?.name || '—'} {company?.slug && `(${company.slug})`}</div>
+              <div><span className="text-zinc-500">Role:</span> {user.role}</div>
+            </div>
+          </Card>
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card className="p-6">
+              <h4 className="font-medium">Experience & Skills</h4>
+              <ul className="text-sm text-zinc-400 list-disc ml-5 mt-2 space-y-1">
+                <li>Experience data placeholder — integrate HRIS later</li>
+                <li>Skills: React, FastAPI, Supabase (example)</li>
+                <li>Education: B.E. Computer Science (example)</li>
+              </ul>
+            </Card>
+            <Card className="p-6">
+              <h4 className="font-medium">Certifications & Documents</h4>
+              <div className="text-sm text-zinc-400 mt-2">{docs.length} document(s) uploaded</div>
+              <div className="mt-2 space-y-1">
+                {docs.slice(0,3).map((d:any)=>(<div key={d.id} className="text-xs truncate">{d.name}</div>))}
+                {docs.length===0 && <div className="text-xs text-zinc-500">No certs yet — upload in Private Info</div>}
+              </div>
+              <Button size="sm" variant="outline" className="mt-3" onClick={()=>setTab('private')}>Manage Docs</Button>
+            </Card>
           </div>
-        </Card>
+        </div>
       )}
 
       {tab==='private' && (
