@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     SMTP_FROM_EMAIL: str = "noreply@dayflow.susindran.in"
     SMTP_USE_TLS: bool = False
     SMTP_USE_SSL: bool = True
+    REQUIRE_EMAIL_VERIFICATION: bool = False
 
     class Config:
         env_file = ".env"

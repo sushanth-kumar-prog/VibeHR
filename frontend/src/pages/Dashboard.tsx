@@ -17,6 +17,7 @@ export default function Dashboard(){
   const [invite,setInvite]=useState({firstName:'',lastName:'',email:'',jobTitle:'',department:'', role:'employee'})
   const [msg,setMsg]=useState('')
   const [stats,setStats]=useState<any>(null)
+  const [todayMap,setTodayMap]=useState<Record<string,string>>({})
 
   const load = async()=>{
     const {data} = await api.get('/users', {params: {search: search || undefined}})
@@ -25,6 +26,15 @@ export default function Dashboard(){
       const r = await api.get('/reports/attendance')
       setStats(r.data)
     }catch{}
+    // per-employee today dot (admin batch)
+    if(user?.role!=='employee'){
+      try{
+        const b=await api.get('/attendance/today/batch')
+        const m:Record<string,string>={}
+        b.data.forEach((x:any)=> m[x.user_id]=x.status)
+        setTodayMap(m)
+      }catch{}
+    }
   }
   useEffect(()=>{ load() },[search])
 
@@ -84,13 +94,16 @@ export default function Dashboard(){
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {employees.map(emp=>(
+        {employees.map(emp=>{
+          const st=todayMap[emp.id]||'absent'
+          const color=st==='present'?'bg-green-500':st==='half_day'?'bg-amber-500':st==='leave'?'bg-yellow-500':'bg-red-500'
+          return (
           <Link key={emp.id} to={`/profile/${emp.id}`}>
             <Card className="p-4 hover:border-zinc-700 transition-colors h-full relative group">
-              <div className="absolute top-3 right-3 h-3 w-3 rounded-full bg-red-500 ring-2 ring-zinc-900" title="Attendance status (today) — red/green/yellow per wireframe" />
+              <div className={`absolute top-3 right-3 h-3 w-3 rounded-full ${color} ring-2 ring-zinc-900`} title={`Attendance: ${st}`} />
               <div className="flex gap-3">
-                <div className="h-12 w-12 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-sm shrink-0">
-                  {emp.first_name[0]}{emp.last_name[0]}
+                <div className="h-12 w-12 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                  {emp.avatar_url ? <img src={emp.avatar_url.startsWith('/uploads')?`http://localhost:8000${emp.avatar_url}`:emp.avatar_url} className="h-full w-full object-cover"/> : `${emp.first_name[0]}${emp.last_name[0]}`}
                 </div>
                 <div className="min-w-0">
                   <div className="font-medium truncate">{emp.first_name} {emp.last_name}</div>
@@ -101,7 +114,7 @@ export default function Dashboard(){
               </div>
             </Card>
           </Link>
-        ))}
+        )})}
       </div>
 
       <Card className="p-6">

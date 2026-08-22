@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
-from datetime import datetime, date, timezone
+from datetime import datetime, date, timezone, timedelta
 from ..db.session import get_db
 from ..core.deps import get_current_user
 from ..models.attendance import AttendanceRecord
@@ -79,12 +79,10 @@ async def list_attendance(
     if current.role == "employee" and str(target_user) != str(current.id):
         raise HTTPException(status_code=403, detail="Employees can only view own attendance")
     q = select(AttendanceRecord).where(AttendanceRecord.company_id==current.company_id)
-    if target_user:
+    if current.role == "employee":
+        q = q.where(AttendanceRecord.user_id==current.id)
+    elif user_id:
         q = q.where(AttendanceRecord.user_id==target_user)
-    else:
-        # admin view all
-        if current.role not in ("admin","hr"):
-            q = q.where(AttendanceRecord.user_id==current.id)
     if date_from:
         q = q.where(AttendanceRecord.date >= date_from)
     if date_to:
@@ -102,3 +100,61 @@ async def today_status(db: AsyncSession = Depends(get_db), current: User = Depen
     if not rec:
         return {"checked_in": False, "checked_out": False, "status": "absent"}
     return {"checked_in": bool(rec.check_in), "checked_out": bool(rec.check_out), "status": rec.status, "check_in": rec.check_in.isoformat() if rec.check_in else None, "check_out": rec.check_out.isoformat() if rec.check_out else None, "working_hours": rec.working_hours}
+
+@router.get("/today/batch")
+async def today_batch(db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    """Admin/HR: today's status for all employees in company for per-card dot (image.png)"""
+    if current.role not in ("admin","hr"):
+        raise HTTPException(status_code=403, detail="Admin/HR only")
+    today = date.today()
+    # fetch all users in company
+    from ..models.user import User as U
+    ures = await db.execute(select(U).where(U.company_id==current.company_id))
+    users = ures.scalars().all()
+    ares = await db.execute(select(AttendanceRecord).where(AttendanceRecord.company_id==current.company_id, AttendanceRecord.date==today))
+    by_user = {str(r.user_id): r for r in ares.scalars().all()}
+    out = []
+    for u in users:
+        r = by_user.get(str(u.id))
+        if not r:
+            status = "absent"
+            checked = False
+        else:
+            status = r.status
+            checked = bool(r.check_in)
+        # if on approved leave today, override to leave
+        out.append({"user_id": str(u.id), "employee_id": u.employee_id, "status": status, "checked_in": checked})
+    return out
+
+@router.get("/week")
+async def week_view(start: date | None = None, user_id: uuid.UUID | None = None, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    """ISO week Mon-Sun aggregation for weekly view (wireframe Attendance List view week)"""
+    ref = start or date.today()
+    # ISO Monday
+    monday = ref - timedelta(days=ref.weekday())
+    sunday = monday + timedelta(days=6)
+    target = user_id or current.id
+    if current.role == "employee" and str(target) != str(current.id):
+        raise HTTPException(status_code=403, detail="Employees can only view own attendance")
+    q = select(AttendanceRecord).where(AttendanceRecord.company_id==current.company_id, AttendanceRecord.date >= monday, AttendanceRecord.date <= sunday)
+    if current.role == "employee":
+        q = q.where(AttendanceRecord.user_id==current.id)
+    elif target:
+        q = q.where(AttendanceRecord.user_id==target)
+    q = q.order_by(AttendanceRecord.date.asc())
+    res = await db.execute(q)
+    rows = res.scalars().all()
+    by_date = {r.date.isoformat(): r for r in rows}
+    days = []
+    total_hrs = 0
+    for i in range(7):
+        d = monday + timedelta(days=i)
+        r = by_date.get(d.isoformat())
+        if r:
+            total_hrs += r.working_hours or 0
+            days.append({"date": d.isoformat(), "weekday": d.strftime("%a"), "check_in": r.check_in.isoformat() if r.check_in else None, "check_out": r.check_out.isoformat() if r.check_out else None, "working_hours": r.working_hours, "status": r.status})
+        else:
+            days.append({"date": d.isoformat(), "weekday": d.strftime("%a"), "check_in": None, "check_out": None, "working_hours": None, "status": "absent"})
+    # payroll basis: half_day 0.5, absent 0, present 1, leave 1
+    payable = sum(0 if d["status"]=="absent" else 0.5 if d["status"]=="half_day" else 1 for d in days)
+    return {"monday": monday.isoformat(), "sunday": sunday.isoformat(), "days": days, "total_hours": round(total_hrs,2), "payable_days": payable}
