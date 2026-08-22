@@ -19,11 +19,11 @@ export default function Login(){
   }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <Link to="/" className="mb-6 flex items-center gap-2 text-sm text-zinc-400 hover:text-white"><span className="h-7 w-7 rounded-lg bg-[#a855f7] flex items-center justify-center text-xs font-bold text-white">VH</span> VibeHR <span className="text-zinc-600">•</span> Back to home</Link>
+      <Link to="/" className="mb-6 flex items-center gap-2 text-sm text-zinc-400 hover:text-white"><span className="h-7 w-7 rounded-lg bg-[#a855f7] flex items-center justify-center text-xs font-bold text-white">DF</span> Dayflow <span className="text-zinc-600">•</span> Back to home</Link>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">Sign In</CardTitle>
-          <p className="text-center text-xs text-zinc-500">VibeHR — Human Resource Management</p>
+          <p className="text-center text-xs text-zinc-500">Dayflow — Human Resource Management</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-4">
