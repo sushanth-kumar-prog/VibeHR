@@ -14,7 +14,7 @@ export default function Login(){
   const nav = useNavigate()
   const submit = async(e:React.FormEvent)=>{
     e.preventDefault(); setErr(''); setLoading(true)
-    try{ await login(email,password); nav('/') } catch(ex:any){ setErr(ex.response?.data?.detail || 'Login failed')}
+    try{ await login(email,password); nav('/') } catch(ex:any){ setErr(ex.response?.data?.detail || 'Invalid credentials — check Login ID/Email and Password')}
     finally{ setLoading(false)}
   }
   return (
@@ -34,12 +34,12 @@ export default function Login(){
               <label className="text-sm">Password</label>
               <Input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/>
             </div>
-            {err && <div className="text-sm text-red-400">{err}</div>}
+            {err && <div className="text-sm text-red-400 bg-red-950/30 border border-red-900 p-2 rounded">{err}</div>}
             <Button type="submit" disabled={loading} className="w-full">{loading ? 'Signing in...' : 'Sign In'}</Button>
-            <div className="text-center text-sm text-zinc-500">Don't have an account? <Link to="/signup" className="text-[#a855f7]">Sign Up</Link></div>
+            <div className="text-center text-sm text-zinc-500">Don't have an account? <Link to="/signup" className="text-[#a855f7]">Create Company</Link></div>
             <div className="rounded-md bg-zinc-900 border border-zinc-800 p-3 text-xs text-zinc-400">
-              <div className="font-semibold text-zinc-300">Note</div>
-              <div>Login ID is auto-generated (e.g., OS0001). Contact Admin if you don't have credentials. Temp password must be changed after first login.</div>
+              <div className="font-semibold text-zinc-300">Note (per wireframe)</div>
+              <div>Login ID auto-generated (e.g., OS0001 — Olive System initials + seq). Overall users cannot register — Admin creates via invite. Temp password auto-generated for first time; change on first login. Email verification required.</div>
             </div>
           </form>
         </CardContent>

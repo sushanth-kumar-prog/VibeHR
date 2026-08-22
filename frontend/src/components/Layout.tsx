@@ -36,6 +36,7 @@ export default function Layout(){
     {label:'Employees', path:'/'},
     {label:'Attendance', path:'/attendance'},
     {label:'Time Off', path:'/time-off'},
+    {label:'Reports', path:'/reports'},
   ]
 
   return (
@@ -52,15 +53,16 @@ export default function Layout(){
           </div>
           <div className="flex items-center gap-3">
             {!today?.checked_in ? (
-              <Button size="sm" disabled={checking} onClick={()=>handleCheck('in')}>Check In</Button>
+              <Button size="sm" disabled={checking} onClick={()=>handleCheck('in')}>Check In ({today?.status || 'absent'})</Button>
             ) : !today?.checked_out ? (
-              <Button size="sm" variant="outline" disabled={checking} onClick={()=>handleCheck('out')}>Check Out</Button>
+              <Button size="sm" variant="outline" disabled={checking} onClick={()=>handleCheck('out')}>Check Out • {today?.status}</Button>
             ) : (
-              <span className="text-xs text-zinc-500">Done for today • {today?.working_hours ?? '-'}h • {today?.status}</span>
+              <span className="text-xs text-zinc-500">Done today • {today?.working_hours ?? '-'}h • {today?.status}</span>
             )}
             <div className="relative">
               <button onClick={()=>setShowProfile(s=>!s)} className="h-8 w-8 rounded-full bg-[#a855f7] flex items-center justify-center text-sm font-bold">
                 {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
+                <span className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-[#0a0a0f] ${today?.status==='present' ? 'bg-green-500' : today?.status==='half_day' ? 'bg-amber-500' : today?.status==='leave' ? 'bg-yellow-500' : 'bg-red-500'}`} />
               </button>
               {showProfile && (
                 <div className="absolute right-0 mt-2 w-48 rounded-lg border border-zinc-800 bg-zinc-900 p-2 shadow-xl">
@@ -69,6 +71,7 @@ export default function Layout(){
                   <div className="px-2 text-xs text-zinc-500 truncate">{user?.email}</div>
                   <div className="my-2 border-t border-zinc-800"/>
                   <Link to="/me" onClick={()=>setShowProfile(false)} className="block px-2 py-1.5 text-sm hover:bg-zinc-800 rounded">My Profile</Link>
+                  <Link to="/reports" onClick={()=>setShowProfile(false)} className="block px-2 py-1.5 text-sm hover:bg-zinc-800 rounded">Reports</Link>
                   <button onClick={()=>{logout(); nav('/login')}} className="w-full text-left px-2 py-1.5 text-sm hover:bg-zinc-800 rounded">Log Out</button>
                 </div>
               )}
