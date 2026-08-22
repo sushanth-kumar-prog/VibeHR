@@ -93,7 +93,7 @@ export default function Documents(){
       {/* Upload */}
       <Card className="p-5">
         <h3 className="font-semibold flex items-center gap-2"><Upload className="h-4 w-4"/> Upload Document</h3>
-        <p className="text-xs text-zinc-500 mt-1">Any file type • Stored via POST /documents/upload/:user_id → employee-documents bucket</p>
+        <p className="text-xs text-zinc-500 mt-1">Any file type • Visible only to you and admins</p>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <label className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-[#714B67] text-white text-sm font-medium cursor-pointer hover:bg-[#5f4057] transition">
             <Upload className="h-4 w-4"/> {uploading ? 'Uploading...' : 'Choose File'}
