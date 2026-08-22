@@ -48,7 +48,7 @@ export default function Settings(){
           </div>
           <div>
             <label className="text-sm">Company Logo</label>
-            {company.logo_url && <img src={company.logo_url.startsWith('/uploads') ? `http://localhost:8000${company.logo_url}` : company.logo_url} alt="logo" className="h-16 mt-2 border border-zinc-800 rounded"/>}
+            {company.logo_url && <img src={company.logo_url.startsWith('/uploads') ? `http://localhost:8000${company.logo_url}` : company.logo_url} alt="logo" className="h-16 mt-2 border border-zinc-200 dark:border-zinc-800 rounded"/>}
             <div className="flex gap-2 mt-2">
               <input type="file" accept="image/*" onChange={e=>setLogoFile(e.target.files?.[0]||null)} className="text-sm"/>
               <Button size="sm" variant="outline" onClick={uploadLogo} disabled={!isAdmin}>Upload Logo</Button>
@@ -67,7 +67,7 @@ export default function Settings(){
         </div>
         <Button size="sm" onClick={changePwd}>Change Password</Button>
       </Card>
-      {msg && <div className="text-sm p-3 rounded bg-zinc-900 border border-zinc-800">{msg}</div>}
+      {msg && <div className="text-sm p-3 rounded bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
       {!isAdmin && <div className="text-sm text-amber-400">You are {user?.role} — only admin/hr can edit company settings.</div>}
     </div>
   )

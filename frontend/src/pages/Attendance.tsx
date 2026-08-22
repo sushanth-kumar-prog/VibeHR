@@ -59,7 +59,7 @@ export default function Attendance(){
           <h3 className="font-semibold text-sm">Week ISO {weekData.monday} → {weekData.sunday} — Total {weekData.total_hours}h • Payable {weekData.payable_days}/7 days</h3>
           <div className="grid grid-cols-7 gap-2 mt-3 text-xs">
             {weekData.days.map((d:any)=>(
-              <div key={d.date} className={`border rounded p-2 text-center ${d.status==='present'?'border-green-800 bg-green-950/30':d.status==='half_day'?'border-amber-800 bg-amber-950/30':d.status==='leave'?'border-yellow-800 bg-yellow-950/30':'border-zinc-800 bg-zinc-900/30'}`}>
+              <div key={d.date} className={`border rounded p-2 text-center ${d.status==='present'?'border-green-800 bg-green-950/30':d.status==='half_day'?'border-amber-800 bg-amber-950/30':d.status==='leave'?'border-yellow-800 bg-yellow-950/30':'border-zinc-800 bg-zinc-50 dark:bg-zinc-900/30'}`}>
                 <div className="font-medium">{d.weekday}</div>
                 <div className="text-[11px] text-zinc-400">{d.date.slice(5)}</div>
                 <div className="mt-1 text-[10px]">{d.check_in ? new Date(d.check_in).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '—'} → {d.check_out ? new Date(d.check_out).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '—'}</div>
@@ -75,10 +75,10 @@ export default function Attendance(){
       {view==='day' && (
         <Card className="overflow-auto">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900 text-zinc-400 text-xs"><tr><th className="text-left p-3">Date</th><th className="text-left p-3">User</th><th className="text-left p-3">Check In</th><th className="text-left p-3">Check Out</th><th className="text-left p-3">Work Hours</th><th className="text-left p-3">Status</th><th className="text-left p-3">Location</th></tr></thead>
+            <thead className="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 text-xs"><tr><th className="text-left p-3">Date</th><th className="text-left p-3">User</th><th className="text-left p-3">Check In</th><th className="text-left p-3">Check Out</th><th className="text-left p-3">Work Hours</th><th className="text-left p-3">Status</th><th className="text-left p-3">Location</th></tr></thead>
             <tbody>
               {display.map(r=>(
-                <tr key={r.id} className="border-t border-zinc-800">
+                <tr key={r.id} className="border-t border-zinc-200 dark:border-zinc-800">
                   <td className="p-3">{r.date}</td>
                   <td className="p-3 text-xs font-mono">{r.user_id.slice(0,8)}</td>
                   <td className="p-3 text-xs">{r.check_in ? new Date(r.check_in).toLocaleTimeString() : '—'}</td>
