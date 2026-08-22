@@ -182,15 +182,7 @@ export default function Signup(){
             </div>
           </div>
 
-          <div className="mt-6 shrink-0 space-y-3">
-            <div className="rounded-xl bg-white/10 border border-white/15 backdrop-blur p-3 flex gap-3">
-              <Quote className="h-4 w-4 text-white/40 shrink-0 mt-0.5" />
-              <div>
-                <div className="flex gap-0.5 text-amber-300"><Star className="h-3 w-3 fill-amber-300" /><Star className="h-3 w-3 fill-amber-300" /><Star className="h-3 w-3 fill-amber-300" /><Star className="h-3 w-3 fill-amber-300" /><Star className="h-3 w-3 fill-amber-300" /></div>
-                <p className="text-xs leading-relaxed text-white/80 mt-1">“We set up Dayflow in an afternoon. Our board finally has one source of truth.”</p>
-                <div className="text-[11px] text-white/50 mt-1">— Director, FinLoom • 120 employees</div>
-              </div>
-            </div>
+          <div className="mt-6 shrink-0">
             <div className="flex items-center gap-2 text-xs text-white/50">
               <ShieldCheck className="h-3.5 w-3.5" /> Your data stays private and protected. Enterprise security from day one.
             </div>
