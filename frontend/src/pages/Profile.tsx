@@ -7,8 +7,9 @@ import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
 
 export default function Profile(){
-  const { id } = useParams()
+  const { id: paramId } = useParams()
   const { user: me } = useAuth()
+  const id = paramId || me?.id
   const [user, setUser] = useState<any>(null)
   const [tab, setTab] = useState<'resume'|'private'|'salary'>('resume')
   const [salary, setSalary] = useState<any>(null)
