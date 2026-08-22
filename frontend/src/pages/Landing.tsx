@@ -6,7 +6,6 @@ import {
   MapPin, Timer, FileText, Layers, TrendingUp, Lock, Globe, Zap, Menu, X, Play, ChevronRight, Star
 } from 'lucide-react'
 import { useAuth } from '../stores/auth'
-import ThemeToggle from '../components/ThemeToggle'
 
 const BRAND = '#714B67'
 
@@ -33,7 +32,6 @@ export default function Landing() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <ThemeToggle />
             {token ? (
               <Link to="/dashboard">
                 <button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#714B67] text-white hover:bg-[#5f4057] shadow">
@@ -58,9 +56,6 @@ export default function Landing() {
         </div>
         {mobileOpen && (
           <div className="lg:hidden border-t border-zinc-200 bg-white px-4 py-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-zinc-600">Theme</span><ThemeToggle />
-            </div>
             <a href="#features" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-zinc-700">Features</a>
             <a href="#how-it-works" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-zinc-700">How it works</a>
             <a href="#pricing" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-zinc-700">Pricing</a>
