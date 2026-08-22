@@ -8,6 +8,7 @@ import Profile from './pages/Profile'
 import Attendance from './pages/Attendance'
 import TimeOff from './pages/TimeOff'
 import Reports from './pages/Reports'
+import Payroll from './pages/Payroll'
 import Settings from './pages/Settings'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -60,6 +61,7 @@ export default function App(){
             <Route path="/me" element={<Profile/>}/>
             <Route path="/attendance" element={<Attendance/>}/>
             <Route path="/time-off" element={<TimeOff/>}/>
+            <Route path="/payroll" element={<Payroll/>}/>
             <Route path="/reports" element={<Reports/>}/>
             <Route path="/settings" element={<Settings/>}/>
           </Route>
