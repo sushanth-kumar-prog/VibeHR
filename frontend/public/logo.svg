@@ -1,18 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Dayflow logo">
-  <!-- Dayflow — sunrise over flowing waves -->
+  <!-- Dayflow — abstract D built from flowing strokes -->
   <rect width="64" height="64" rx="15" fill="#714B67"/>
-  <!-- sun rays -->
-  <g stroke="#FFFFFF" stroke-width="3" stroke-linecap="round">
-    <path d="M32 13.5 V9"/>
-    <path d="M23.9 17.4 L21 14.5"/>
-    <path d="M40.1 17.4 L43 14.5"/>
-  </g>
-  <!-- sun -->
-  <circle cx="32" cy="25.5" r="8.5" fill="#FFFFFF"/>
-  <!-- flow: mint wave -->
-  <path d="M8 41 C12.7 35, 19.3 35, 24 41 S35.3 47, 40 41 S51.3 35, 56 41"
-        fill="none" stroke="#C2E9DF" stroke-width="4.5" stroke-linecap="round"/>
-  <!-- flow: lavender wave -->
-  <path d="M14 50 C17.8 45, 22.2 45, 26 50 S34.2 55, 38 50 S46.2 45, 50 50"
-        fill="none" stroke="#DDCFF2" stroke-width="4.5" stroke-linecap="round"/>
+  <!-- stem -->
+  <path d="M20 14 V50" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+  <!-- bowl, upper flow -->
+  <path d="M20 14 C33 14, 42.5 19, 44.5 27" fill="none" stroke="#DDCFF2" stroke-width="9" stroke-linecap="round"/>
+  <!-- bowl, lower flow -->
+  <path d="M43.5 39 C41 47, 31 50, 20 50" fill="none" stroke="#C2E9DF" stroke-width="9" stroke-linecap="round"/>
 </svg>
