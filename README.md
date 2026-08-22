@@ -41,6 +41,10 @@ docker-compose up --build
 - **Attendance (Advanced):** Check-In/Out with geolocation + IP, working hours calc, status (present/absent/half_day/leave, <4h absent, 4-6 half-day), list view with filters. Attendance as basis for payroll.
 - **Leave:** Request (paid/sick/unpaid) with calendar view for employees, queue with Approve/Reject for admin/hr, balances.
 - **Payroll Full Engine:** Components (earning/deduction, fixed/% of wage/basic), compute API, breakdown, warnings if earnings exceed wage, per-user salary structure. Seed defaults included.
+- **Reports & Analytics:** Interactive reports module for comprehensive tracking of workforce metrics (attendance, leaves, payroll).
+- **Document Management:** Centralized handling of employee documents, resumes, and HR files.
+- **Notifications Engine:** System notifications and alerts for organizational events and leave request updates.
+- **User Customization:** Avatar uploads and personalized user profiles seamlessly integrated with Supabase storage.
 
 ## API Docs
 - FastAPI Swagger: http://localhost:8000/docs
