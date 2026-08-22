@@ -9,6 +9,7 @@ import {
   Users, UserPlus, Clock, CalendarDays, Wallet, TrendingUp, TrendingDown,
   CheckCircle2, AlertTriangle, ArrowUpRight, ArrowDownRight, Search, X, Building2, Briefcase, Mail, Shield
 } from 'lucide-react'
+import CommunicationHub from '../components/CommunicationHub'
 
 function resolveFileUrl(url?: string){
   if(!url) return ''
@@ -22,7 +23,7 @@ function resolveFileUrl(url?: string){
 
 type Employee = {
   id: string, employee_id: string, email: string, first_name: string, last_name: string,
-  role: string, avatar_url?: string, department?: string, job_title?: string
+  role: string, avatar_url?: string, department?: string, job_title?: string, phone?: string
 }
 
 export default function Dashboard(){
@@ -455,8 +456,8 @@ export default function Dashboard(){
             const st=todayMap[emp.id]||'absent'
             const color=st==='present'?'bg-emerald-500':st==='half_day'?'bg-amber-500':st==='leave'?'bg-yellow-500':'bg-red-500'
             return (
-              <Link key={emp.id} to={`/profile/${emp.id}`}>
-                <Card className="p-4 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition h-full relative group">
+              <Card key={emp.id} className="p-4 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition h-full relative group flex flex-col">
+                <Link to={`/profile/${emp.id}`} className="flex-1">
                   <div className={`absolute top-3 right-3 h-3 w-3 rounded-full ${color} ring-2 ring-white dark:ring-zinc-900`} title={`Attendance: ${st}`} />
                   <div className="flex gap-3">
                     <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden text-zinc-600 dark:text-zinc-200">
@@ -473,8 +474,13 @@ export default function Dashboard(){
                     <span className={`px-2 py-1 rounded-full ${st==='present'?'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300': st==='half_day'?'bg-amber-50 text-amber-700':'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'}`}>{st==='present'?'Present today': st==='half_day'?'Half-day': st==='leave'?'On leave':'Absent'}</span>
                     <span className="text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white flex items-center gap-1">View <ArrowUpRight className="h-3 w-3"/></span>
                   </div>
-                </Card>
-              </Link>
+                </Link>
+                {/* Communication Hub — Compact Mode (Add ons.md Integration 3) */}
+                <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-zinc-500">Contact:</span>
+                  <CommunicationHub user={emp} compact currentUserId={user?.id} />
+                </div>
+              </Card>
             )
           })}
         </div>
