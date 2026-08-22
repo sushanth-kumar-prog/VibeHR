@@ -4,12 +4,10 @@ import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
-import { useToast } from '../components/ui/toast'
 import { Info, Upload, FileText, X, CheckCircle2, Loader2 } from 'lucide-react'
 
 export default function TimeOff(){
   const { user } = useAuth()
-  const toast = useToast()
   const isAdmin = user?.role==='admin' || user?.role==='hr'
   const [myLeaves,setMyLeaves]=useState<any[]>([])
   const [queue,setQueue]=useState<any[]>([])
@@ -54,11 +52,8 @@ export default function TimeOff(){
   }
 
   const decide = async(id:string, action:'approve'|'reject')=>{
-    try{
-      await api.post(`/leave/${id}/${action}`, {comment: action})
-      toast.success(`Leave request ${action==='approve' ? 'approved' : 'rejected'} ✓`)
-      loadQueue()
-    }catch(ex:any){ toast.error(ex.response?.data?.detail || `Failed to ${action} leave request`) }
+    await api.post(`/leave/${id}/${action}`, {comment: action})
+    loadQueue()
   }
 
   const uploadFile = async(file: File)=>{

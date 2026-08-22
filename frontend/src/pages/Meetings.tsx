@@ -4,7 +4,6 @@ import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
-import { useToast } from '../components/ui/toast'
 import { Link } from 'react-router-dom'
 import { Video, CalendarPlus, X, Copy, Check, Users, Radio, CalendarClock, Trash2, ExternalLink, Search } from 'lucide-react'
 
@@ -20,7 +19,6 @@ function fmt(iso: string){
 
 export default function Meetings(){
   const { user } = useAuth()
-  const toast = useToast()
   const isAdmin = user?.role === 'admin' || user?.role === 'hr'
   const [meetings, setMeetings] = useState<Meeting[]>([])
   const [employees, setEmployees] = useState<any[]>([])
@@ -78,7 +76,7 @@ export default function Meetings(){
 
   const cancelMeeting = async(id:string)=>{
     if(!confirm('Cancel this meeting?')) return
-    try{ await api.delete(`/meetings/${id}`); await load(); toast.success('Meeting cancelled ✓') }catch(ex:any){ toast.error(ex.response?.data?.detail||'Cancel failed') }
+    try{ await api.delete(`/meetings/${id}`); await load() }catch(ex:any){ setMsg(ex.response?.data?.detail||'Cancel failed') }
   }
 
   const copy = async(link:string)=>{
@@ -210,12 +208,6 @@ export default function Meetings(){
                 </div>
                 <div>
                   <label className="text-xs text-zinc-500">Attendees * ({form.attendees.length} selected)</label>
-                  {employees.filter(e=>e.id!==user?.id).length===0 ? (
-                    <div className="mt-1 p-4 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 text-sm text-zinc-500 text-center">
-                      No other team members in your company yet.
-                      <Link to="/employees" className="ml-1 text-violet-600 hover:underline font-medium">Invite employees first</Link>
-                    </div>
-                  ) : (
                   <div className="mt-1 max-h-40 overflow-auto rounded-lg border border-zinc-200 dark:border-zinc-800 divide-y divide-zinc-100 dark:divide-zinc-800">
                     {employees.filter(e=>e.id!==user?.id).map(emp=>(
                       <label key={emp.id} className="flex items-center gap-2 px-3 py-1.5 text-sm cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800">
@@ -225,7 +217,6 @@ export default function Meetings(){
                       </label>
                     ))}
                   </div>
-                  )}
                 </div>
                 <p className="text-xs text-zinc-500">Google Calendar event + Meet link auto-generated; email invites sent in background. Falls back to mock link without service account.</p>
                 <Button type="submit" disabled={submitting} className="w-full">{submitting ? 'Scheduling…' : 'Schedule & Generate Meet Link'}</Button>

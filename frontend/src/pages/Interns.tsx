@@ -4,7 +4,6 @@ import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
-import { useToast } from '../components/ui/toast'
 import { Link } from 'react-router-dom'
 import {
   GraduationCap, UserPlus, X, Award, CalendarClock, Wallet, TrendingUp,
@@ -38,7 +37,6 @@ const bandColor: Record<string,string> = {
 
 export default function Interns(){
   const { user } = useAuth()
-  const toast = useToast()
   const isAdmin = user?.role === 'admin' || user?.role === 'hr'
   const isIntern = user?.role === 'intern'
   const [interns, setInterns] = useState<Intern[]>([])
@@ -75,7 +73,6 @@ export default function Interns(){
       setShowCreate(false)
       setForm({user_id:'', mentor_id:'', start_date:'', end_date:'', stipend:'', project_title:'', institute:'', department:''})
       await load()
-      toast.success('Internship created ✓')
     }catch(ex:any){ setMsg(ex.response?.data?.detail || 'Failed') }
   }
 
@@ -94,20 +91,19 @@ export default function Interns(){
 
   const doConvert = async(i:Intern)=>{
     if(!confirm(`Convert ${i.name} to full-time employee?`)) return
-    try{ await api.post(`/interns/${i.user_id}/convert`); await load(); toast.success(`${i.name} converted to full-time employee ✓`) }catch(ex:any){ toast.error(ex.response?.data?.detail||'Convert failed') }
+    try{ await api.post(`/interns/${i.user_id}/convert`); await load() }catch(ex:any){ setMsg(ex.response?.data?.detail||'Failed') }
   }
   const doExtend = async(e:React.FormEvent)=>{
     e.preventDefault()
     if(!extendFor || !extendEnd) return
     try{
       await api.post(`/interns/${extendFor.user_id}/extend`, {end_date: extendEnd})
-      toast.success(`Internship extended for ${extendFor.name} until ${extendEnd} ✓`)
       setExtendFor(null); setExtendEnd(''); await load()
-    }catch(ex:any){ toast.error(ex.response?.data?.detail||'Extend failed') }
+    }catch(ex:any){ setMsg(ex.response?.data?.detail||'Failed') }
   }
   const doEnd = async(i:Intern)=>{
     if(!confirm(`End internship for ${i.name}? Account will be deactivated.`)) return
-    try{ await api.post(`/interns/${i.user_id}/end`); await load(); toast.success(`Internship ended for ${i.name} ✓`) }catch(ex:any){ toast.error(ex.response?.data?.detail||'Failed to end internship') }
+    try{ await api.post(`/interns/${i.user_id}/end`); await load() }catch(ex:any){ setMsg(ex.response?.data?.detail||'Failed') }
   }
 
   const filtered = interns.filter(i=> !filterStatus || i.status===filterStatus)

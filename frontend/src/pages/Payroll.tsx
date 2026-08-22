@@ -3,16 +3,15 @@ import { Link } from 'react-router-dom'
 import { api } from '../api/client'
 import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
-import { useToast } from '../components/ui/toast'
 import { useAuth } from '../stores/auth'
 
 export default function Payroll(){
   const { user } = useAuth()
-  const toast = useToast()
   const isAdmin = user?.role === 'admin' || user?.role === 'hr'
   const [pay, setPay] = useState<any>(null)
   const [allPay, setAllPay] = useState<any[]>([])
   const [components, setComponents] = useState<any[]>([])
+  const [msg, setMsg] = useState('')
 
   const load = async()=>{
     try{ const p = await api.get('/reports/payroll'); setPay(p.data)}catch{}
@@ -24,12 +23,10 @@ export default function Payroll(){
   useEffect(()=>{ load() },[])
 
   const seed = async()=>{
-    try{
-      await api.post('/payroll/seed-defaults')
-      const c = await api.get('/payroll/components')
-      setComponents(c.data)
-      toast.success('Default salary components seeded ✓')
-    }catch(e:any){ toast.error(e.response?.data?.detail || 'Failed to seed components') }
+    await api.post('/payroll/seed-defaults')
+    const c = await api.get('/payroll/components')
+    setComponents(c.data)
+    setMsg('Seeded default salary components')
   }
 
   return (
@@ -83,6 +80,7 @@ export default function Payroll(){
               </tbody>
             </table>
           ): <div className="text-sm text-zinc-500 mt-4">No salary structures yet. Open any employee profile → Salary Info to set monthly wage.</div>}
+          {msg && <div className="text-xs p-2 mt-3 rounded bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
         </Card>
       ) : (
         <Card className="p-6 text-sm text-zinc-500">

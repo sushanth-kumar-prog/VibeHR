@@ -3,11 +3,9 @@ import { api } from '../api/client'
 import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
-import { useToast } from '../components/ui/toast'
 import { Bell, Mail, Send, RefreshCw, AlertTriangle, Info, CheckCircle2 } from 'lucide-react'
 
 export default function Notifications(){
-  const toast = useToast()
   const [notifs, setNotifs] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [testTitle, setTestTitle] = useState('')
@@ -24,12 +22,7 @@ export default function Notifications(){
   const sendTest = async(e:React.FormEvent)=>{
     e.preventDefault()
     if(!testTitle || !testMsg) return
-    try{
-      await api.post('/notifications/test', {title: testTitle, message: testMsg})
-      setTestTitle(''); setTestMsg('')
-      await load()
-      toast.success('Test notification sent ✓')
-    }catch(ex:any){ toast.error(ex.response?.data?.detail || 'Failed to send notification') }
+    try{ await api.post('/notifications/test', {title: testTitle, message: testMsg}); setTestTitle(''); setTestMsg(''); await load() }catch{}
   }
 
   const filtered = notifs.filter(n=>{
@@ -59,7 +52,7 @@ export default function Notifications(){
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><Bell className="h-6 w-6 text-amber-500"/> Notifications</h1>
-          <p className="text-sm text-zinc-500 mt-1">System alerts • Invite / leave / payroll events • Real email via Brevo SMTP • `GET /notifications`</p>
+          <p className="text-sm text-zinc-500 mt-1">System alerts • Invite / leave / payroll events • Mock email via Supabase SMTP (server logs `[EMAIL ALERT]`) • `GET /notifications`</p>
         </div>
         <Button variant="outline" size="sm" onClick={load} disabled={loading} className="gap-2">
           <RefreshCw className={`h-4 w-4 ${loading?'animate-spin':''}`}/> Refresh
@@ -68,8 +61,8 @@ export default function Notifications(){
 
       <div className="grid lg:grid-cols-3 gap-4">
         <Card className="p-5">
-          <h3 className="font-semibold flex items-center gap-2"><Mail className="h-4 w-4"/> Email Alerts (Live SMTP)</h3>
-          <p className="text-xs text-zinc-500 mt-1">Notifications with a recipient are delivered for real via Brevo SMTP (`send_email`). Use `POST /notifications/test` to send one to your own inbox.</p>
+          <h3 className="font-semibold flex items-center gap-2"><Mail className="h-4 w-4"/> Email Alerts (Mock)</h3>
+          <p className="text-xs text-zinc-500 mt-1">All notifications also print to backend log as `[EMAIL ALERT] title: message` — would send via Supabase SMTP/Brevo in production.</p>
           <div className="mt-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 text-xs text-amber-800 dark:text-amber-200">
             Invite, leave approve/reject, and payroll updates auto-create notifications for the company.
           </div>

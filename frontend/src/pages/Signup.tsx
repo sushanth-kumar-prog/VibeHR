@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { api } from '../api/client'
 import {
-  ArrowRight, ArrowLeft, Upload, Building2, Check, ShieldCheck, Globe, Users, Eye, EyeOff, Image as ImageIcon, X, Lock
+  ArrowRight, ArrowLeft, Upload, Building2, Check, ShieldCheck, Globe, Users, Eye, EyeOff, Image as ImageIcon, X
 } from 'lucide-react'
 
 type Form = {
@@ -120,9 +120,6 @@ export default function Signup(){
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         <div className="absolute -top-24 -right-24 h-[560px] w-[560px] rounded-full bg-white/[0.06] blur-[90px]" />
         <div className="absolute -bottom-32 -left-32 h-[520px] w-[520px] rounded-full bg-[#8a6582]/20 blur-[80px]" />
-        {/* subtle grid texture — matches landing CTA */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:48px_48px] opacity-30" />
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:18px_18px]" />
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
@@ -164,62 +161,44 @@ export default function Signup(){
             </div>
           </div>
 
-          <div className="mt-8 flex-1 min-h-0 relative flex flex-col">
-            <div className="relative">
-              <div className="absolute left-[15px] top-[14px] h-[calc(100%-28px)] w-px bg-white/15" />
-              <div className="space-y-6 relative">
-                {steps.map((s,i)=>{
-                  const active = i===step
-                  const done = i < step
-                  return (
-                    <div key={s.title} className="flex gap-4">
-                      <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 border-2 transition ${active ? 'bg-white text-[#4A2C40] border-white shadow-lg' : done ? 'bg-white text-[#4A2C40] border-white' : 'bg-transparent text-white/60 border-white/25'}`}>
-                        {done ? <Check className="h-4 w-4" /> : <span className="text-xs font-bold">{i+1}</span>}
-                      </div>
-                      <div className="pt-0.5">
-                        <div className={`text-sm font-semibold leading-none ${active ? 'text-white' : done ? 'text-white/80' : 'text-white/60'}`}>{s.title}</div>
-                        <div className={`text-xs mt-1 ${active ? 'text-white/70' : 'text-white/45'}`}>{s.desc}</div>
-                      </div>
+          <div className="mt-8 flex-1 min-h-0 relative">
+            <div className="absolute left-[15px] top-[14px] bottom-[14px] w-px bg-white/15" />
+            <div className="space-y-6 relative">
+              {steps.map((s,i)=>{
+                const active = i===step
+                const done = i < step
+                return (
+                  <div key={s.title} className="flex gap-4">
+                    <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 border-2 transition ${active ? 'bg-white text-[#4A2C40] border-white shadow-lg' : done ? 'bg-white text-[#4A2C40] border-white' : 'bg-transparent text-white/60 border-white/25'}`}>
+                      {done ? <Check className="h-4 w-4" /> : <span className="text-xs font-bold">{i+1}</span>}
                     </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Benefits — landing style checklist */}
-            <div className="mt-auto pt-10 pb-2 space-y-3 max-w-[420px]">
-              {[
-                'Free for up to 5 employees',
-                'No credit card required',
-                'Enterprise security from day one',
-              ].map(t=>(
-                <div key={t} className="flex items-center gap-3 text-sm text-white/90">
-                  <span className="h-6 w-6 rounded-full bg-white/15 border border-white/20 flex items-center justify-center shrink-0"><Check className="h-3.5 w-3.5" /></span>
-                  {t}
-                </div>
-              ))}
+                    <div className="pt-0.5">
+                      <div className={`text-sm font-semibold leading-none ${active ? 'text-white' : done ? 'text-white/80' : 'text-white/60'}`}>{s.title}</div>
+                      <div className={`text-xs mt-1 ${active ? 'text-white/70' : 'text-white/45'}`}>{s.desc}</div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
 
-          <div className="mt-6 shrink-0 flex items-center justify-between text-xs text-white/50 pt-5 border-t border-white/10">
-            <span>© 2026 Dayflow Technologies</span>
-            <span className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> Secure</span>
-              <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> Private</span>
-            </span>
+          <div className="mt-6 shrink-0">
+            <div className="flex items-center gap-2 text-xs text-white/50">
+              <ShieldCheck className="h-3.5 w-3.5" /> Your data stays private and protected. Enterprise security from day one.
+            </div>
           </div>
         </div>
       </div>
 
       {/* Right — 50% Side Panel Card - no outer space */}
-        <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-white dark:bg-zinc-900 lg:bg-white lg:dark:bg-zinc-900 lg:overflow-hidden">
+        <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-white dark:bg-zinc-900 lg:bg-white lg:dark:bg-zinc-900 lg:overflow-auto">
         <div className="lg:hidden h-12 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
           <Link to="/" className="flex items-center gap-2 font-bold text-sm"><img src="/logo.svg" alt="Dayflow logo" className="h-6 w-6 rounded-lg" /> Dayflow</Link>
           <Link to="/login" className="text-xs text-[#714B67] font-medium">Sign In</Link>
         </div>
 
         {/* Side Panel Card — flush, no outer gap/border */}
-        <div className="flex flex-col flex-1 min-h-0 bg-white dark:bg-zinc-900 overflow-hidden">
+        <div className="flex flex-col flex-1 bg-white dark:bg-zinc-900 overflow-hidden">
           {/* header */}
           <div className="px-6 sm:px-10 py-7 border-b border-zinc-100 dark:border-zinc-800 shrink-0">
             <div className="w-full max-w-2xl">
@@ -250,7 +229,7 @@ export default function Signup(){
             </div>
           </div>
 
-          <form onSubmit={submit} className="flex-1 min-h-0 lg:overflow-y-auto px-6 sm:px-10 py-7 space-y-6">
+          <form onSubmit={submit} className="px-6 sm:px-10 py-7 space-y-6">
            <div className="w-full max-w-2xl space-y-5">
             {step===0 && (
               <div className="space-y-5">
@@ -414,15 +393,9 @@ export default function Signup(){
            </div>
           </form>
 
-          <div className="px-6 sm:px-10 py-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-center gap-3 text-sm text-zinc-600 dark:text-zinc-400 shrink-0">
-            <span>Already have an account?</span>
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center h-8 px-4 rounded-md bg-[#714B67] text-white text-xs font-semibold hover:bg-[#5f4057] transition-colors shadow"
-            >
-              Sign In
-            </Link>
-            <span className="text-zinc-300">•</span>
+          <div className="px-6 sm:px-10 py-4 border-t border-zinc-100 dark:border-zinc-800 text-center text-sm text-zinc-600 dark:text-zinc-400 shrink-0">
+            Already have an account? <Link to="/login" className="text-[#714B67] font-semibold hover:underline">Sign In</Link>
+            <span className="mx-2 text-zinc-300">•</span>
             <Link to="/" className="hover:underline">Back to home</Link>
           </div>
         </div>
