@@ -56,6 +56,9 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
         first_name=payload.adminFirstName,
         last_name=payload.adminLastName,
         phone=payload.phone,
+        job_title=payload.jobTitle or "Administrator",
+        department=payload.department or "Administration",
+        address=payload.address,
         is_temp_password=False,
         email_verified=False
     )
@@ -67,7 +70,7 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
 
     # email verification token + real SMTP send via Brevo
     verify_token = jwt.encode({"sub": str(user.id), "type": "verify", "exp": datetime.now(timezone.utc)+timedelta(days=1)}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    verify_url = f"https://dayflow.susindran.in/verify?token={verify_token}"  # frontend verify page (or backend /auth/verify-email)
+    verify_url = f"https://Dayflow.susindran.in/verify?token={verify_token}"  # frontend verify page (or backend /auth/verify-email)
     try:
         from ..services.mail import send_email, verification_email_html
         html = verification_email_html(f"{payload.adminFirstName} {payload.adminLastName}", verify_url, emp_id)
@@ -227,7 +230,7 @@ async def invite_employee(payload: InviteEmployeeRequest, current: User = Depend
         print(f"notify failed: {e}")
     try:
         from ..services.mail import send_email, invite_email_html
-        login_url = "https://dayflow.susindran.in/login"
+        login_url = "https://Dayflow.susindran.in/login"
         html = invite_email_html(f"{payload.firstName} {payload.lastName}", emp_id, payload.email, temp_pw, company.name, login_url)
         send_email(payload.email, f"You're invited to {company.name} on Dayflow — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}")
         print(f"[MAIL] Invite sent to {payload.email} ({emp_id})")
