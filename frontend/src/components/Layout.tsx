@@ -50,7 +50,7 @@ export default function Layout(){
         <div className="mx-auto max-w-[1400px] px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link to="/dashboard" className="flex items-center gap-2 font-bold text-lg tracking-tight">
-              <span className="h-7 w-7 rounded-lg bg-[#714B67] flex items-center justify-center text-xs font-bold text-white">DF</span>
+              <img src="/logo.svg" alt="Dayflow logo" className="h-7 w-7 rounded-lg" />
               Dayflow
             </Link>
             <nav className="hidden md:flex items-center gap-1">

@@ -7,7 +7,7 @@ export default function About(){
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-[#714B67] flex items-center justify-center font-bold text-sm text-white">DF</div>
+            <img src="/logo.svg" alt="Dayflow logo" className="h-8 w-8 rounded-lg" />
             <span className="font-bold text-[18px] tracking-tight">Dayflow</span>
             <span className="hidden sm:inline text-[10px] tracking-[0.14em] text-zinc-500 border border-zinc-200 rounded-full px-2 py-0.5 ml-1 bg-zinc-50">HRMS</span>
           </Link>
