@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .db.session import engine, Base
-from .routers import auth, users, attendance, leave, payroll
+from .routers import auth, users, attendance, leave, payroll, documents, reports
 # import models to register
-from .models import company, user, attendance as att_model, leave as leave_model, payroll as payroll_model
+from .models import company, user, attendance as att_model, leave as leave_model, payroll as payroll_model, document as doc_model
 
 app = FastAPI(title="VibeHR API", version="1.0.0", description="HRMS - React FastAPI Supabase")
 
@@ -21,6 +21,8 @@ app.include_router(users.router, prefix="/api/v1")
 app.include_router(attendance.router, prefix="/api/v1")
 app.include_router(leave.router, prefix="/api/v1")
 app.include_router(payroll.router, prefix="/api/v1")
+app.include_router(documents.router, prefix="/api/v1")
+app.include_router(reports.router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
