@@ -2,14 +2,19 @@ from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import re
 from ..db.session import get_db
 from ..core.deps import get_current_user, require_admin
 from ..models.user import User
 from ..models.meeting import Meeting, MeetingStatus
 from ..models.company import Company
-from ..services.google_meet import create_calendar_event_with_meet, generate_instant_meet_link
+from ..services.google_meet import (
+    create_calendar_event_with_meet,
+    create_instant_meet,
+    delete_calendar_event,
+    is_configured,
+)
 
 router = APIRouter(prefix="/meetings", tags=["meetings"])
 
@@ -74,8 +79,8 @@ async def create_meeting(
         attendee_uuids.append(str(uid))
         attendee_emails.append(u.email)
 
-    # create Google Calendar event + Meet link
-    meet_link, cal_event_id = await create_calendar_event_with_meet(
+    # create Google Calendar event + Meet link (real API, demo fallback)
+    meet_link, cal_event_id, meet_source = await create_calendar_event_with_meet(
         title=title,
         description=description or "",
         start_time=start_time,
@@ -138,6 +143,8 @@ async def create_meeting(
         "end_time": meeting.end_time.isoformat(),
         "status": meeting.status,
         "attendee_ids": meeting.attendee_ids,
+        "source": meet_source,
+        "google_meet_configured": is_configured(),
         "created_at": meeting.created_at.isoformat() if meeting.created_at else None
     }
 
@@ -194,10 +201,29 @@ async def upcoming_meetings(db: AsyncSession = Depends(get_db), current: User = 
 
 @router.post("/instant")
 async def instant_meet(payload: dict | None = None, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
-    meet_link, cal_id = generate_instant_meet_link()
-    # optionally store as meeting with 1h duration now->+1h with just requester as attendee
+    # optionally invite the selected employee (from Communication Hub) to the call
+    attendee_emails = []
+    attendee_ids = [str(current.id)]
+    data = payload or {}
+    if data.get("attendee_id"):
+        try:
+            uid = uuid.UUID(str(data["attendee_id"]))
+        except:
+            raise HTTPException(status_code=400, detail="Invalid attendee id")
+        res = await db.execute(select(User).where(User.id == uid, User.company_id == current.company_id, User.is_active == True))
+        u = res.scalar_one_or_none()
+        if not u:
+            raise HTTPException(status_code=400, detail="Attendee not found in company or inactive")
+        if str(uid) != str(current.id):
+            attendee_ids.append(str(uid))
+            attendee_emails.append(u.email)
+
+    meet_link, cal_id, meet_source = await create_instant_meet(
+        organizer_email=current.email,
+        attendee_emails=attendee_emails,
+    )
     now = datetime.now(timezone.utc)
-    end = now.replace(microsecond=0) + __import__('datetime').timedelta(hours=1)
+    end = now + timedelta(hours=1)
     meeting = Meeting(
         company_id=current.company_id,
         organizer_id=current.id,
@@ -208,11 +234,19 @@ async def instant_meet(payload: dict | None = None, db: AsyncSession = Depends(g
         start_time=now,
         end_time=end,
         status=MeetingStatus.scheduled,
-        attendee_ids=[str(current.id)]
+        attendee_ids=attendee_ids
     )
     db.add(meeting)
     await db.commit()
-    return {"meet_link": meet_link, "link": meet_link, "url": meet_link, "calendar_event_id": cal_id, "id": str(meeting.id)}
+    return {
+        "meet_link": meet_link,
+        "link": meet_link,
+        "url": meet_link,
+        "calendar_event_id": cal_id,
+        "id": str(meeting.id),
+        "source": meet_source,
+        "google_meet_configured": is_configured(),
+    }
 
 @router.delete("/{meeting_id}")
 async def cancel_meeting(meeting_id: str, db: AsyncSession = Depends(get_db), current: User = Depends(require_admin)):
@@ -226,5 +260,6 @@ async def cancel_meeting(meeting_id: str, db: AsyncSession = Depends(get_db), cu
         raise HTTPException(status_code=404, detail="Meeting not found")
     m.status = MeetingStatus.cancelled
     await db.commit()
-    # TODO: delete calendar event if real
-    return {"cancelled": True, "id": meeting_id}
+    # remove the backing Google Calendar event (no-op for demo ids)
+    cal_deleted = await delete_calendar_event(m.calendar_event_id)
+    return {"cancelled": True, "id": meeting_id, "calendar_event_deleted": cal_deleted}

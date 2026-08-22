@@ -27,6 +27,20 @@ class Settings(BaseSettings):
     OPENAI_BASE_URL: str = "https://api.openai.com/v1"
     OPENAI_MODEL: str = "gpt-4o-mini"
 
+    # Google Calendar + Meet integration (real Meet links)
+    # Option A: path to a service-account JSON key file
+    GOOGLE_SERVICE_ACCOUNT_JSON: str = ""
+    # Option B: full service-account JSON key content inline (single line)
+    GOOGLE_SERVICE_ACCOUNT_JSON_CONTENT: str = ""
+    # Option C: OAuth user refresh token (works with personal Gmail)
+    GOOGLE_OAUTH_CLIENT_ID: str = ""
+    GOOGLE_OAUTH_CLIENT_SECRET: str = ""
+    GOOGLE_OAUTH_REFRESH_TOKEN: str = ""
+    # Workspace domain-wide delegation subject (service account impersonation)
+    GOOGLE_IMPERSONATE_EMAIL: str = ""
+    # Calendar to create events on
+    GOOGLE_CALENDAR_ID: str = "primary"
+
     class Config:
         env_file = ".env"
 
