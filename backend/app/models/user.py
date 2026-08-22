@@ -1,4 +1,6 @@
+from __future__ import annotations
 import uuid
+from typing import Optional
 from sqlalchemy import String, Boolean, Enum, ForeignKey, DateTime, func, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -21,12 +23,12 @@ class User(Base):
     role: Mapped[str] = mapped_column(Enum(UserRole), default=UserRole.employee, nullable=False)
     first_name: Mapped[str] = mapped_column(String(100), nullable=False)
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    phone: Mapped[str | None] = mapped_column(String(30), nullable=True)
-    address: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    job_title: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    department: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    date_of_joining: Mapped[date | None] = mapped_column(Date, nullable=True)
-    avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    phone: Mapped[str] = mapped_column(String(30), nullable=True)
+    address: Mapped[str] = mapped_column(String(500), nullable=True)
+    job_title: Mapped[str] = mapped_column(String(100), nullable=True)
+    department: Mapped[str] = mapped_column(String(100), nullable=True)
+    date_of_joining: Mapped[date] = mapped_column(Date, nullable=True)
+    avatar_url: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_temp_password: Mapped[bool] = mapped_column(Boolean, default=False)
     email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
