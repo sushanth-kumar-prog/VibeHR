@@ -65,8 +65,15 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     await db.commit()
     await db.refresh(user)
 
-    # email verification token (mock - would send via SMTP/Supabase)
+    # email verification token + real SMTP send via Brevo
     verify_token = jwt.encode({"sub": str(user.id), "type": "verify", "exp": datetime.now(timezone.utc)+timedelta(days=1)}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    verify_url = f"https://dayflow.susindran.in/verify?token={verify_token}"  # frontend verify page (or backend /auth/verify-email)
+    try:
+        from ..services.mail import send_email, verification_email_html
+        html = verification_email_html(f"{payload.adminFirstName} {payload.adminLastName}", verify_url, emp_id)
+        send_email(payload.email, f"Verify your VibeHR account — {company.name}", html, f"Verify: {verify_url} | Employee ID: {emp_id}")
+    except Exception as e:
+        print(f"[MAIL] verification send failed: {e}")
 
     access = create_access_token({"sub": str(user.id), "company_id": str(company.id), "role": user.role})
     refresh = create_refresh_token({"sub": str(user.id)})
@@ -210,11 +217,18 @@ async def invite_employee(payload: InviteEmployeeRequest, current: User = Depend
     db.add(user)
     await db.commit()
     await db.refresh(user)
-    # mock email alert
+    # real email via Brevo SMTP + notification
     try:
         from .notifications import add_notification
         add_notification(current.company_id, "New Employee Invited", f"{payload.firstName} {payload.lastName} ({emp_id}) invited with temp password. Email verification pending.", "invite")
-        print(f"[MOCK EMAIL] To: {payload.email} | Temp password: {temp_pw} | Employee ID: {emp_id}")
     except Exception as e:
         print(f"notify failed: {e}")
+    try:
+        from ..services.mail import send_email, invite_email_html
+        login_url = "https://dayflow.susindran.in/login"
+        html = invite_email_html(f"{payload.firstName} {payload.lastName}", emp_id, payload.email, temp_pw, company.name, login_url)
+        send_email(payload.email, f"You're invited to {company.name} on VibeHR — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}")
+        print(f"[MAIL] Invite sent to {payload.email} ({emp_id})")
+    except Exception as e:
+        print(f"[MAIL] invite send failed: {e}")
     return {"id": str(user.id), "employee_id": emp_id, "email": payload.email, "temp_password": temp_pw, "role": role}
