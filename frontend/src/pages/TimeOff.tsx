@@ -41,6 +41,16 @@ export default function TimeOff(){
     }catch(ex:any){ setMsg(ex.response?.data?.detail || 'Failed')}
   }
 
+  function resolveFileUrl(url?: string){
+    if(!url) return '#'
+    if(url.startsWith('http://') || url.startsWith('https://')) return url
+    if(url.startsWith('/uploads')){
+      const base = (import.meta.env.VITE_API_URL as string || 'http://localhost:8001/api/v1').replace(/\/api\/v1\/?$/, '')
+      return `${base}${url}`
+    }
+    return url
+  }
+
   const decide = async(id:string, action:'approve'|'reject')=>{
     await api.post(`/leave/${id}/${action}`, {comment: action})
     loadQueue()
@@ -192,7 +202,7 @@ export default function TimeOff(){
                 <div className="mt-2 flex items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2.5 py-2">
                   <FileText className="h-4 w-4 text-zinc-500 shrink-0" />
                   <span className="text-xs truncate flex-1 text-zinc-700 dark:text-zinc-300">{form.doc_url}</span>
-                  <a href={form.doc_url} target="_blank" rel="noreferrer" className="text-xs text-violet-600 dark:text-violet-400 hover:underline shrink-0">Open</a>
+                  <a href={resolveFileUrl(form.doc_url)} target="_blank" rel="noopener noreferrer" className="text-xs text-violet-600 dark:text-violet-400 hover:underline shrink-0">Open</a>
                   <button type="button" onClick={()=>{setForm(f=>({...f, doc_url:''})); setFileName(''); setMsg('Attachment removed')}} className="h-6 w-6 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center shrink-0"><X className="h-3.5 w-3.5" /></button>
                 </div>
               )}

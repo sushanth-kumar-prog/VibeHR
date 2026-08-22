@@ -6,6 +6,16 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
 
+function resolveFileUrl(url?: string){
+  if(!url) return '#'
+  if(url.startsWith('http://') || url.startsWith('https://')) return url
+  if(url.startsWith('/uploads')){
+    const base = (import.meta.env.VITE_API_URL as string || 'http://localhost:8001/api/v1').replace(/\/api\/v1\/?$/, '')
+    return `${base}${url}`
+  }
+  return url
+}
+
 export default function Profile(){
   const { id: paramId } = useParams()
   const { user: me } = useAuth()
@@ -15,6 +25,7 @@ export default function Profile(){
   const [salary, setSalary] = useState<any>(null)
   const [formSalary, setFormSalary] = useState('50000')
   const [components, setComponents] = useState<any[]>([])
+  const [preview, setPreview] = useState<any>(null)
   const [msg, setMsg] = useState('')
   const [docs, setDocs] = useState<any[]>([])
   const [pwd, setPwd] = useState({old:'', next:'', confirm:''})
@@ -51,6 +62,21 @@ export default function Profile(){
     }catch{}
   }
   useEffect(()=>{ load() },[id])
+
+  // Live preview: compute salary breakdown without saving (show all salary info)
+  useEffect(()=>{
+    if(tab!=='salary' || !canViewSalary) return
+    const wage = parseFloat(formSalary)
+    if(!wage || isNaN(wage) || wage<=0){ setPreview(null); return }
+    // debounce
+    const t = setTimeout(async()=>{
+      try{
+        const {data}= await api.post('/payroll/compute', {monthly_wage: wage})
+        setPreview(data)
+      }catch{ setPreview(null) }
+    }, 350)
+    return ()=> clearTimeout(t)
+  },[formSalary, tab, components.length, canViewSalary])
 
   const saveSalary = async()=>{
     setMsg('')
@@ -109,12 +135,12 @@ export default function Profile(){
       <Card className="p-6">
         <div className="flex gap-4">
           <div className="h-16 w-16 rounded-full bg-[#714B67]/30 border border-[#714B67]/50 flex items-center justify-center text-xl font-bold overflow-hidden">
-            {user.avatar_url ? <img src={user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${user.avatar_url}` : user.avatar_url} alt="avatar" className="h-full w-full object-cover"/> : `${user.first_name[0]}${user.last_name[0]}`}
+            {user.avatar_url ? <img src={resolveFileUrl(user.avatar_url)} alt="avatar" className="h-full w-full object-cover"/> : `${user.first_name[0]}${user.last_name[0]}`}
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold">{user.first_name} {user.last_name}</h2>
             <div className="text-sm text-zinc-500">{user.employee_id} • {user.role} • {user.job_title || '—'} {company?.name && `• ${company.name}`}</div>
-            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={company.logo_url.startsWith('/uploads') ? `http://localhost:8000${company.logo_url}` : company.logo_url} target="_blank" className="text-[#714B67]">Company Logo</a></span>}</div>
+            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={resolveFileUrl(company.logo_url)} target="_blank" rel="noopener noreferrer" className="text-[#714B67] hover:underline">Company Logo</a></span>}</div>
             {(me?.id===id || me?.role!=='employee') && <div className="mt-2"><label className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded cursor-pointer">Change Avatar<input type="file" accept="image/*" onChange={uploadAvatar} className="hidden"/></label></div>}
           </div>
         </div>
@@ -182,9 +208,9 @@ export default function Profile(){
             <input type="file" onChange={uploadDoc} className="text-sm"/>
             <div className="space-y-1">
               {docs.map((d:any)=>(
-                <div key={d.id} className="flex justify-between items-center text-sm border border-zinc-200 dark:border-zinc-800 rounded p-2">
-                  <div>{d.name} <span className="text-xs text-zinc-500">{d.mime_type}</span></div>
-                  <a href={d.file_url} target="_blank" className="text-xs text-[#714B67]">View</a>
+                <div key={d.id} className="flex justify-between items-center text-sm border border-zinc-200 dark:border-zinc-800 rounded-xl p-2.5 hover:border-violet-300 dark:hover:border-violet-700 transition">
+                  <div className="min-w-0 flex-1 truncate pr-2">{d.name} <span className="text-xs text-zinc-500">{d.mime_type}</span></div>
+                  <a href={resolveFileUrl(d.file_url)} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[#714B67] hover:text-[#5a3d53] dark:text-violet-400 dark:hover:text-violet-300 px-2 py-1 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 shrink-0">View</a>
                 </div>
               ))}
               {docs.length===0 && <div className="text-xs text-zinc-500">No documents — upload resume, ID, etc.</div>}
@@ -205,7 +231,7 @@ export default function Profile(){
       )}
 
       {tab==='salary' && canViewSalary && (
-        <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-4">
+        <div className="space-y-4">
           <Card className="p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">Salary Info {canEditSalary ? '' : '(Read-only)'}</h3>
@@ -221,31 +247,37 @@ export default function Profile(){
                 <Input value={String((parseFloat(formSalary)||0)*12)} disabled />
               </div>
             </div>
-            {components.length>0 && <div className="text-xs text-zinc-500">Template components: {components.map(c=>`${c.name} ${c.value_type==='percentage'?c.value+'%': '₹'+c.value} (${c.type})`).join(' • ')}</div>}
+            {components.length>0 && <div className="text-xs text-zinc-500">Template components: {components.map(c=>`${c.name} ${c.value_type==='percentage'?c.value+'%'+(c.percentage_of? ' of '+c.percentage_of:''): '₹'+c.value} (${c.type})`).join(' • ')}</div>}
             {canEditSalary && <Button onClick={saveSalary}>Compute & Save Salary</Button>}
             {msg && <div className="text-sm p-2 rounded bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
-            {salary?.breakdown && (
+            {(() => {
+              const display = salary?.breakdown || preview
+              if(!display) return <div className="text-xs text-zinc-500 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-lg p-3">Enter monthly wage to preview breakdown — includes Basic, HRA, PF, PT etc. {components.length===0 && 'Click Seed Default Components first.'}</div>
+              const isPreview = !salary?.breakdown && !!preview
+              return (
               <div className="border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
-                <div className="bg-zinc-50 dark:bg-zinc-900 px-3 py-2 text-sm font-medium">Breakdown — Net Pay ₹{salary.breakdown.net_pay} / month</div>
+                <div className={`px-3 py-2 text-sm font-medium flex justify-between ${isPreview ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200' : 'bg-zinc-50 dark:bg-zinc-900'}`}>
+                  <span>{isPreview ? 'Preview' : 'Saved'} — Net Pay ₹{display.net_pay} / month {isPreview && '(not saved yet)'}</span>
+                  <span className="text-xs font-normal opacity-70">₹{display.yearly_wage ?? display.monthly_wage*12}/yr</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 p-3 bg-zinc-50/50 dark:bg-zinc-900/20 text-xs">
+                  <div className="rounded bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-2 text-center"><div className="text-zinc-500">Basic</div><div className="font-bold">₹{display.basic_amount}</div></div>
+                  <div className="rounded bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-2 text-center"><div className="text-emerald-700 dark:text-emerald-300">Earnings</div><div className="font-bold">₹{display.total_earnings}</div></div>
+                  <div className="rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-2 text-center"><div className="text-red-700 dark:text-red-300">Deductions</div><div className="font-bold">₹{display.total_deductions}</div></div>
+                </div>
                 <table className="w-full text-sm">
                   <thead className="bg-zinc-100 dark:bg-zinc-900/50 text-zinc-400 text-xs"><tr><th className="text-left p-2">Component</th><th className="text-right p-2">Type</th><th className="text-right p-2">Monthly</th><th className="text-right p-2">Yearly</th></tr></thead>
                   <tbody>
-                    {salary.breakdown.breakdown.map((b:any,i:number)=>(
-                      <tr key={i} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-2">{b.name}</td><td className="p-2 text-right text-xs">{b.type}</td><td className="p-2 text-right">₹{b.amount_monthly}</td><td className="p-2 text-right">₹{b.amount_yearly}</td></tr>
+                    {display.breakdown.map((b:any,i:number)=>(
+                      <tr key={i} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-2">{b.name} <span className="text-xs text-zinc-500">{b.value_type==='percentage' ? `${b.value}%${b.percentage_of ? ' of '+b.percentage_of : ''}` : ''}</span></td><td className="p-2 text-right text-xs capitalize"><span className={`px-1.5 py-0.5 rounded text-[11px] ${b.type==='earning' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>{b.type}</span></td><td className="p-2 text-right">₹{b.amount_monthly}</td><td className="p-2 text-right">₹{b.amount_yearly}</td></tr>
                     ))}
                   </tbody>
                 </table>
-                {salary.breakdown.warnings?.length>0 && <div className="p-2 text-xs text-amber-400">{salary.breakdown.warnings.join(', ')}</div>}
+                {display.warnings?.length>0 && <div className="p-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-t border-amber-200 dark:border-amber-800">{display.warnings.join(', ')}</div>}
+                {isPreview && canEditSalary && <div className="p-2 text-xs text-zinc-500 bg-zinc-50 dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800">Click Compute & Save Salary to persist this structure for {user.first_name}.</div>}
               </div>
-            )}
-          </Card>
-          <Card className="p-6 bg-amber-950/20 border-amber-900/50">
-            <h4 className="font-semibold text-amber-200">Important</h4>
-            <div className="text-xs text-amber-100/80 space-y-2 mt-2 leading-relaxed">
-              <p>Salary components can be Fixed Amount or % of Wage/Basic. Total earnings must not exceed defined Wage. PF 12% of Basic, PT ₹200, etc.</p>
-              <p>Example: Wage 700k, Basic 40% → 280k. PF 12% of Basic → 33.6k/year.</p>
-              <p>This tab is only visible to Admin/HR. Employees see their own salary read-only.</p>
-            </div>
+              )
+            })()}
           </Card>
         </div>
       )}
