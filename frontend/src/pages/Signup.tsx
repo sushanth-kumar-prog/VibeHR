@@ -123,7 +123,7 @@ export default function Signup(){
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <span className="h-9 w-9 rounded-xl bg-white flex items-center justify-center text-sm font-bold text-[#4A2C40]">DF</span>
+            <img src="/logo.svg" alt="Dayflow logo" className="h-9 w-9 rounded-xl" />
             <span className="font-bold text-xl tracking-tight">Dayflow</span>
             <span className="text-[10px] tracking-[0.14em] text-white/60 ml-1">HRMS</span>
           </Link>
@@ -194,7 +194,7 @@ export default function Signup(){
       {/* Right — 50% Side Panel Card */}
         <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:bg-[#f5f3f5] lg:dark:bg-zinc-950 lg:p-4 xl:p-5 lg:overflow-auto">
         <div className="lg:hidden h-12 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
-          <Link to="/" className="flex items-center gap-2 font-bold text-sm"><span className="h-6 w-6 rounded-lg bg-[#714B67] flex items-center justify-center text-[11px] font-bold text-white">DF</span> Dayflow</Link>
+          <Link to="/" className="flex items-center gap-2 font-bold text-sm"><img src="/logo.svg" alt="Dayflow logo" className="h-6 w-6 rounded-lg" /> Dayflow</Link>
           <Link to="/login" className="text-xs text-[#714B67] font-medium">Sign In</Link>
         </div>
 

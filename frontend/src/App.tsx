@@ -9,6 +9,13 @@ import Attendance from './pages/Attendance'
 import TimeOff from './pages/TimeOff'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
+import About from './pages/About'
+import Contact from './pages/Contact'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
+import HelpCenter from './pages/HelpCenter'
+import GettingStarted from './pages/GettingStarted'
+import Support from './pages/Support'
 import Layout from './components/Layout'
 import { useAuth } from './stores/auth'
 
@@ -40,6 +47,13 @@ export default function App(){
           <Route path="/" element={<Landing/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/signup" element={<Signup/>}/>
+          <Route path="/about" element={<About/>}/>
+          <Route path="/contact" element={<Contact/>}/>
+          <Route path="/privacy" element={<Privacy/>}/>
+          <Route path="/terms" element={<Terms/>}/>
+          <Route path="/help" element={<HelpCenter/>}/>
+          <Route path="/getting-started" element={<GettingStarted/>}/>
+          <Route path="/support" element={<Support/>}/>
           <Route element={<Protected><Layout/></Protected>}>
             <Route path="/dashboard" element={<Dashboard/>}/>
             <Route path="/profile/:id" element={<Profile/>}/>

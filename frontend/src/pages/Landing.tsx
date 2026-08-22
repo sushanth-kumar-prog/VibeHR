@@ -21,7 +21,7 @@ export default function Landing() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-[#714B67] flex items-center justify-center font-bold text-sm text-white">DF</div>
+              <img src="/logo.svg" alt="Dayflow logo" className="h-8 w-8 rounded-lg" />
               <span className="font-bold text-[18px] tracking-tight text-zinc-900">Dayflow</span>
               <span className="hidden sm:inline text-[10px] tracking-[0.14em] text-zinc-500 border border-zinc-200 rounded-full px-2 py-0.5 ml-1 bg-zinc-50">HRMS</span>
             </Link>
@@ -515,7 +515,7 @@ export default function Landing() {
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-10">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2"><div className="h-7 w-7 rounded-lg bg-[#714B67] flex items-center justify-center text-xs font-bold text-white">DF</div><span className="font-bold text-zinc-900">Dayflow</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
+              <div className="flex items-center gap-2"><img src="/logo.svg" alt="Dayflow logo" className="h-7 w-7 rounded-lg" /><span className="font-bold text-zinc-900">Dayflow</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
               <p className="mt-3 text-sm text-zinc-600 max-w-sm">The complete HR platform for modern teams. Secure, reliable, and loved by HR leaders everywhere.</p>
               <div className="mt-4 text-xs text-zinc-500">© 2026 Dayflow Technologies Pvt. Ltd. All rights reserved.</div>
             </div>
@@ -531,18 +531,18 @@ export default function Landing() {
             <div>
               <div className="text-sm font-semibold text-zinc-900">Resources</div>
               <ul className="mt-3 space-y-2 text-sm text-zinc-600">
-                <li><a href="#" className="hover:text-zinc-900">Help Center</a></li>
-                <li><a href="#" className="hover:text-zinc-900">Getting Started Guide</a></li>
-                <li><a href="#" className="hover:text-zinc-900">Support</a></li>
+                <li><Link to="/help" className="hover:text-zinc-900">Help Center</Link></li>
+                <li><Link to="/getting-started" className="hover:text-zinc-900">Getting Started Guide</Link></li>
+                <li><Link to="/support" className="hover:text-zinc-900">Support</Link></li>
               </ul>
             </div>
             <div>
               <div className="text-sm font-semibold text-zinc-900">Company</div>
               <ul className="mt-3 space-y-2 text-sm text-zinc-600">
-                <li><a href="#" className="hover:text-zinc-900">About</a></li>
-                <li><a href="#" className="hover:text-zinc-900">Contact</a></li>
-                <li><a href="#" className="hover:text-zinc-900">Privacy</a></li>
-                <li><a href="#" className="hover:text-zinc-900">Terms</a></li>
+                <li><Link to="/about" className="hover:text-zinc-900">About</Link></li>
+                <li><Link to="/contact" className="hover:text-zinc-900">Contact</Link></li>
+                <li><Link to="/privacy" className="hover:text-zinc-900">Privacy</Link></li>
+                <li><Link to="/terms" className="hover:text-zinc-900">Terms</Link></li>
               </ul>
             </div>
           </div>

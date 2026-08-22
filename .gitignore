@@ -1,6 +1,13 @@
-# Root
+# Secrets — never commit real keys (Brevo BREVO_SMTP_KEY-*, Supabase service_role, etc.)
 .env
-.env.local
+.env.*
+!.env.example
+**/.env
+**/.env.*
+*.key
+*.pem
+secrets/
+*secret*
 *.log
 .DS_Store
 Thumbs.db
