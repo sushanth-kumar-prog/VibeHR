@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout HR — Login / Onboarding Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Caveat:wght@600;700&family=Kalam:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F7F4;
+    --ink:#111111;
+    --grey:#6E6A66;
+    --lime:#D6F23C;
+    --lime-dark:#B9D923;
+    --indigo:#1D02A6;
+    --indigo-dark:#15017E;
+    --purple:#B49BEA;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Poppins', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  /* --- font switcher --- */
+  .font-switcher{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:8px;
+    background:#fff;
+    border:1px solid #E9E4DC;
+    border-radius:999px;
+    padding:6px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.06);
+    z-index:50;
+  }
+  .font-switcher button{
+    font-family:'Poppins',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    border:none;
+    background:transparent;
+    color:var(--grey);
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .font-switcher button.active{
+    background:var(--indigo);
+    color:#fff;
+  }
+
+  .card{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    max-width:960px;
+    width:100%;
+    background:#fff;
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(80,60,70,0.14);
+    margin-top:40px;
+  }
+
+  /* LEFT — brand panel */
+  .brand{
+    background:linear-gradient(160deg, var(--indigo) 0%, var(--indigo-dark) 100%);
+    color:#fff;
+    padding:56px 44px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .brand::before{
+    content:"";
+    position:absolute;
+    width:300px;height:300px;
+    border-radius:44% 56% 60% 40% / 50% 44% 56% 50%;
+    background:var(--purple);
+    opacity:0.55;
+    top:-110px;right:-120px;
+  }
+  .brand::after{
+    content:"";
+    position:absolute;
+    width:200px;height:200px;
+    border-radius:60% 40% 44% 56% / 56% 60% 40% 44%;
+    background:var(--purple);
+    opacity:0.35;
+    bottom:-70px;left:-70px;
+  }
+  .doodle-smile{
+    width:46px;height:46px;
+    margin-bottom:22px;
+  }
+  .headline{
+    font-size:44px;
+    line-height:1.15;
+    margin-bottom:8px;
+    position:relative;
+    z-index:2;
+    transition:font-family .2s ease;
+  }
+  .headline.f-marker{font-family:'Permanent Marker', cursive; font-size:36px; line-height:1.3;}
+  .headline.f-caveat{font-family:'Caveat', cursive; font-weight:700; font-size:52px;}
+  .headline.f-kalam{font-family:'Kalam', cursive; font-weight:700; font-size:38px;}
+
+  .underline-doodle{
+    width:180px;
+    margin:2px 0 22px -2px;
+    display:block;
+  }
+  .brand p{
+    font-size:15px;
+    line-height:1.7;
+    color:rgba(255,255,255,0.82);
+    max-width:340px;
+    position:relative;
+    z-index:2;
+  }
+  .stat-row{
+    display:flex;
+    gap:28px;
+    margin-top:36px;
+    position:relative;
+    z-index:2;
+  }
+  .stat-row div{font-size:13px;color:rgba(255,255,255,0.75);}
+  .stat-row strong{display:block;font-size:22px;color:#fff;font-weight:700;}
+  .mustard-dot{
+    position:absolute;
+    width:14px;height:14px;
+    border-radius:50%;
+    background:var(--lime);
+  }
+
+  /* RIGHT — form panel */
+  .form-panel{
+    padding:56px 48px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .eyebrow{
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--indigo);
+    margin-bottom:10px;
+  }
+  .form-title{
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .form-sub{
+    font-size:14px;
+    color:var(--grey);
+    margin-bottom:30px;
+  }
+  .field{
+    margin-bottom:18px;
+  }
+  .field label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    padding:13px 14px;
+    border-radius:10px;
+    border:1.5px solid #E9E4DC;
+    font-family:'Poppins',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    outline:none;
+    transition:border .15s ease;
+  }
+  .field input:focus{
+    border-color:var(--indigo);
+  }
+  .row-between{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:12.5px;
+    color:var(--grey);
+    margin-bottom:22px;
+  }
+  .row-between a{color:var(--indigo);text-decoration:none;font-weight:600;}
+  .btn-primary{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:var(--lime);
+    color:var(--ink);
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .btn-primary:hover{background:var(--lime-dark);}
+  .divider{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:22px 0;
+    color:var(--grey);
+    font-size:12px;
+  }
+  .divider::before,.divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:#EEE9E1;
+  }
+  .sso-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:26px;
+  }
+  .sso-row button{
+    flex:1;
+    padding:11px;
+    border-radius:10px;
+    border:1.5px solid #E9E4DC;
+    background:#fff;
+    font-family:'Poppins',sans-serif;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .footer-note{
+    font-size:13px;
+    color:var(--grey);
+    text-align:center;
+  }
+  .footer-note a{color:var(--indigo);font-weight:600;text-decoration:none;}
+
+  @media (max-width:760px){
+    .card{grid-template-columns:1fr;}
+    .brand{padding:40px 30px;}
+    .headline{font-size:34px;}
+    .headline.f-caveat{font-size:42px;}
+    .form-panel{padding:40px 30px;}
+    .font-switcher{position:static;transform:none;margin-bottom:20px;}
+    body{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="font-switcher">
+  <button data-font="marker" class="active">Marker</button>
+  <button data-font="caveat">Caveat</button>
+  <button data-font="kalam">Kalam</button>
+</div>
+
+<div class="card">
+  <div class="brand">
+    <div class="mustard-dot" style="top:40px;left:38%;"></div>
+    <div class="mustard-dot" style="bottom:70px;right:60px;width:9px;height:9px;"></div>
+
+    <svg class="doodle-smile" viewBox="0 0 60 60" fill="none">
+      <circle cx="30" cy="30" r="26" stroke="#D6F23C" stroke-width="2.5"/>
+      <circle cx="21" cy="25" r="2.6" fill="#fff"/>
+      <circle cx="39" cy="25" r="2.6" fill="#fff"/>
+      <path d="M18 36c4 6 20 6 24 0" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </svg>
+
+    <h1 class="headline f-marker" id="headline">You're<br>almost in!</h1>
+
+    <svg class="underline-doodle" viewBox="0 0 180 14" fill="none">
+      <path d="M2 8c30-10 60-10 88-3 26 6 58 6 88-3" stroke="#D6F23C" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+
+    <p>A few taps and your HR home is ready — leave, payroll, team directory, all in one friendly place.</p>
+
+    <div class="stat-row">
+      <div><strong>2 min</strong>setup</div>
+      <div><strong>1 tap</strong>SSO login</div>
+      <div><strong>0</strong>paperwork</div>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <div class="eyebrow">Onboarding · Step 1 of 3</div>
+    <div class="form-title">Create your account</div>
+    <div class="form-sub">Use your work email — your admin already added you.</div>
+
+    <div class="field">
+      <label>Work email</label>
+      <input type="email" placeholder="sushanth@company.com">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" placeholder="Create a password">
+    </div>
+
+    <div class="row-between">
+      <span>8+ characters, 1 number</span>
+      <a href="#">Show</a>
+    </div>
+
+    <button class="btn-primary">Continue</button>
+
+    <div class="divider">or continue with</div>
+    <div class="sso-row">
+      <button>Google</button>
+      <button>Microsoft</button>
+    </div>
+
+    <div class="footer-note">Already onboarded? <a href="#">Log in</a></div>
+  </div>
+</div>
+
+<script>
+  const headline = document.getElementById('headline');
+  const buttons = document.querySelectorAll('.font-switcher button');
+  const fontMap = {
+    marker: 'f-marker',
+    caveat: 'f-caveat',
+    kalam: 'f-kalam'
+  };
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      headline.classList.remove('f-marker','f-caveat','f-kalam');
+      headline.classList.add(fontMap[btn.dataset.font]);
+    });
+  });
+</script>
+
+</body>
+</html>
