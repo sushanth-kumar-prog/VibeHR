@@ -31,7 +31,7 @@ export default function Login(){
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <span className="h-9 w-9 rounded-xl bg-white flex items-center justify-center text-sm font-bold text-[#4A2C40]">DF</span>
+            <img src="/logo.svg" alt="Dayflow logo" className="h-9 w-9 rounded-xl" />
             <span className="font-bold text-xl tracking-tight">Dayflow</span>
             <span className="text-[10px] tracking-[0.14em] text-white/60 ml-1">HRMS</span>
           </Link>
@@ -85,7 +85,7 @@ export default function Login(){
       {/* Right — 50% Side Panel Card */}
       <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:bg-white lg:dark:bg-zinc-950 lg:p-4 xl:p-5">
         <div className="lg:hidden h-14 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
-          <Link to="/" className="flex items-center gap-2 font-bold"><span className="h-7 w-7 rounded-lg bg-[#714B67] flex items-center justify-center text-xs font-bold text-white">DF</span> Dayflow</Link>
+          <Link to="/" className="flex items-center gap-2 font-bold"><img src="/logo.svg" alt="Dayflow logo" className="h-7 w-7 rounded-lg" /> Dayflow</Link>
           <Link to="/signup" className="text-sm text-[#714B67] font-medium">Create Company</Link>
         </div>
 
