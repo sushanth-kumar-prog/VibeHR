@@ -1,0 +1,49 @@
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../stores/auth'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+
+export default function Login(){
+  const [email,setEmail]=useState('')
+  const [password,setPassword]=useState('')
+  const [err,setErr]=useState('')
+  const [loading,setLoading]=useState(false)
+  const { login } = useAuth()
+  const nav = useNavigate()
+  const submit = async(e:React.FormEvent)=>{
+    e.preventDefault(); setErr(''); setLoading(true)
+    try{ await login(email,password); nav('/') } catch(ex:any){ setErr(ex.response?.data?.detail || 'Login failed')}
+    finally{ setLoading(false)}
+  }
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-center">Sign In</CardTitle>
+          <p className="text-center text-xs text-zinc-500">VibeHR — Human Resource Management</p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm">Login ID / Email</label>
+              <Input value={email} onChange={e=>setEmail(e.target.value)} placeholder="OS0001 or email@company.com" required/>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm">Password</label>
+              <Input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/>
+            </div>
+            {err && <div className="text-sm text-red-400">{err}</div>}
+            <Button type="submit" disabled={loading} className="w-full">{loading ? 'Signing in...' : 'Sign In'}</Button>
+            <div className="text-center text-sm text-zinc-500">Don't have an account? <Link to="/signup" className="text-[#a855f7]">Sign Up</Link></div>
+            <div className="rounded-md bg-zinc-900 border border-zinc-800 p-3 text-xs text-zinc-400">
+              <div className="font-semibold text-zinc-300">Note</div>
+              <div>Login ID is auto-generated (e.g., OS0001). Contact Admin if you don't have credentials. Temp password must be changed after first login.</div>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

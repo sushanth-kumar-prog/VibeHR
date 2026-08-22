@@ -1,0 +1,17 @@
+import * as React from "react"
+import { cn } from "../../lib/utils"
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "default" | "outline" | "ghost"
+  size?: "sm" | "md" | "lg"
+}
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant="default", size="md", ...props}, ref) => {
+  const variants: Record<string,string> = {
+    default: "bg-[#a855f7] text-white hover:bg-[#9333ea] shadow",
+    outline: "border border-zinc-700 bg-transparent hover:bg-zinc-900",
+    ghost: "hover:bg-zinc-900"
+  }
+  const sizes: Record<string,string> = { sm: "h-8 px-3 text-sm", md: "h-10 px-4", lg: "h-11 px-8" }
+  return <button ref={ref} className={cn("inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:opacity-50", variants[variant], sizes[size], className)} {...props} />
+})
+Button.displayName="Button"
