@@ -178,7 +178,7 @@ export default function Profile(){
           <div className="text-xs text-zinc-500">Employees can edit limited fields (phone, address, avatar). Admin can edit all employee details (job, dept, role). Salary structure visible in Salary Info tab.</div>
 
           <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 space-y-3">
-            <h4 className="font-medium">Documents (Supabase Storage)</h4>
+            <h4 className="font-medium">Documents</h4>
             <input type="file" onChange={uploadDoc} className="text-sm"/>
             <div className="space-y-1">
               {docs.map((d:any)=>(
