@@ -20,7 +20,7 @@ Current `backend/.env` has:
 - `SMTP_PORT=465`
 - `SMTP_USER=a2301b001@smtp-brevo.com`
 - `SMTP_PASSWORD=<REDACTED>` ← **Auth failed 535** on 465/587 — please go Brevo → Transactional → SMTP → Regenerate key and re-share
-- `SMTP_FROM_EMAIL=noreply@dayflow.susindran.in` (domain must be authenticated in Brevo → Senders & Domains → verify SPF/DKIM or use a verified Brevo sender)
+- `SMTP_FROM_EMAIL=noreply@Dayflow.susindran.in` (domain must be authenticated in Brevo → Senders & Domains → verify SPF/DKIM or use a verified Brevo sender)
 - `SMTP_USE_TLS=false`
 - `SMTP_USE_SSL=true`
 
@@ -29,16 +29,16 @@ Current `backend/.env` has:
 - `ALGORITHM=HS256`
 - `ACCESS_TOKEN_EXPIRE_MINUTES=60`
 - `REFRESH_TOKEN_EXPIRE_DAYS=7`
-- `CORS_ORIGINS=http://localhost:5173,http://localhost:3000,https://dayflow.susindran.in`
+- `CORS_ORIGINS=http://localhost:5173,http://localhost:3000,https://Dayflow.susindran.in`
 
 Optional:
 - `REQUIRE_EMAIL_VERIFICATION=true|false` — if `true`, `POST /auth/login` returns 403 until verified (currently soft banner only)
 
 ## 4) Frontend `frontend/.env`
-- `VITE_API_URL=http://localhost:8000/api/v1` (local) or `https://api.dayflow.susindran.in/api/v1` (prod)
+- `VITE_API_URL=http://localhost:8000/api/v1` (local) or `https://api.Dayflow.susindran.in/api/v1` (prod)
 - `VITE_SUPABASE_URL` — same as `SUPABASE_URL` (for `lib/supabase.ts` direct public URL helpers)
 - `VITE_SUPABASE_ANON_KEY` — same as `SUPABASE_ANON_KEY`
-- Optional for verification link: `VITE_APP_URL=https://dayflow.susindran.in` (used in `verify_url`)
+- Optional for verification link: `VITE_APP_URL=https://Dayflow.susindran.in` (used in `verify_url`)
 
 ## 5) How to Give Later
 Paste either:

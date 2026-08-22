@@ -71,7 +71,7 @@ export default function Reports(){
             <thead className="bg-zinc-900 text-xs text-zinc-400"><tr><th className="p-2 text-left">Employee</th><th className="p-2 text-left">ID</th><th className="p-2 text-right">Monthly</th><th className="p-2 text-right">Yearly</th><th className="p-2 text-right">Effective From</th></tr></thead>
             <tbody>
               {allPay.map((row:any)=>(
-                <tr key={row.user_id} className="border-t border-zinc-800"><td className="p-2">{row.name}</td><td className="p-2 font-mono text-xs">{row.employee_id}</td><td className="p-2 text-right">₹{row.monthly_wage}</td><td className="p-2 text-right">₹{row.yearly_wage}</td><td className="p-2 text-right text-xs">{row.effective_from || '—'}</td></tr>
+                <tr key={row.user_id} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-2">{row.name}</td><td className="p-2 font-mono text-xs">{row.employee_id}</td><td className="p-2 text-right">₹{row.monthly_wage}</td><td className="p-2 text-right">₹{row.yearly_wage}</td><td className="p-2 text-right text-xs">{row.effective_from || '—'}</td></tr>
               ))}
             </tbody>
           </table>
@@ -93,11 +93,11 @@ export default function Reports(){
               <div>Payable Days: {slip.payable_days}/30 • Adjusted Net: <b>₹{slip.net_pay_adjusted}</b></div>
             </div>
             {slip.breakdown && (
-              <table className="w-full text-sm mt-3 border border-zinc-800 rounded">
+              <table className="w-full text-sm mt-3 border border-zinc-200 dark:border-zinc-800 rounded">
                 <thead className="bg-zinc-900 text-xs text-zinc-400"><tr><th className="p-2 text-left">Component</th><th className="p-2 text-right">Monthly</th><th className="p-2 text-right">Yearly</th></tr></thead>
                 <tbody>
                   {slip.breakdown.breakdown?.map((b:any,i:number)=>(
-                    <tr key={i} className="border-t border-zinc-800"><td className="p-2">{b.name}</td><td className="p-2 text-right">₹{b.amount_monthly}</td><td className="p-2 text-right">₹{b.amount_yearly}</td></tr>
+                    <tr key={i} className="border-t border-zinc-200 dark:border-zinc-800"><td className="p-2">{b.name}</td><td className="p-2 text-right">₹{b.amount_monthly}</td><td className="p-2 text-right">₹{b.amount_yearly}</td></tr>
                   ))}
                 </tbody>
               </table>

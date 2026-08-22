@@ -58,10 +58,10 @@ export default function Dashboard(){
           <p className="text-sm text-zinc-500">Quick-access cards as per spec 3.2.1 Employee Dashboard</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link to={`/profile/${user?.id}`}><Card className="p-6 hover:border-[#a855f7] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-800 flex items-center justify-center">👤</div><div className="font-medium">My Profile</div><div className="text-xs text-zinc-500">View personal/job/salary details</div></Card></Link>
-          <Link to="/attendance"><Card className="p-6 hover:border-[#a855f7] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-800 flex items-center justify-center">⏰</div><div className="font-medium">Attendance</div><div className="text-xs text-zinc-500">{stats ? `${stats.present} present • ${stats.absent} absent` : 'Daily/weekly view'}</div></Card></Link>
-          <Link to="/time-off"><Card className="p-6 hover:border-[#a855f7] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-800 flex items-center justify-center">🗓️</div><div className="font-medium">Leave Requests</div><div className="text-xs text-zinc-500">Apply Paid/Sick/Unpaid</div></Card></Link>
-          <Link to="/reports"><Card className="p-6 hover:border-[#a855f7] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-800 flex items-center justify-center">💰</div><div className="font-medium">My Payslip</div><div className="text-xs text-zinc-500">Read-only payroll view</div></Card></Link>
+          <Link to={`/profile/${user?.id}`}><Card className="p-6 hover:border-[#714B67] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">👤</div><div className="font-medium">My Profile</div><div className="text-xs text-zinc-500">View personal/job/salary details</div></Card></Link>
+          <Link to="/attendance"><Card className="p-6 hover:border-[#714B67] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">⏰</div><div className="font-medium">Attendance</div><div className="text-xs text-zinc-500">{stats ? `${stats.present} present • ${stats.absent} absent` : 'Daily/weekly view'}</div></Card></Link>
+          <Link to="/time-off"><Card className="p-6 hover:border-[#714B67] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">🗓️</div><div className="font-medium">Leave Requests</div><div className="text-xs text-zinc-500">Apply Paid/Sick/Unpaid</div></Card></Link>
+          <Link to="/reports"><Card className="p-6 hover:border-[#714B67] text-center space-y-2"><div className="mx-auto h-10 w-10 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">💰</div><div className="font-medium">My Payslip</div><div className="text-xs text-zinc-500">Read-only payroll view</div></Card></Link>
         </div>
         <Card className="p-4">
           <h3 className="font-semibold">Recent Activity</h3>
@@ -99,10 +99,10 @@ export default function Dashboard(){
           const color=st==='present'?'bg-green-500':st==='half_day'?'bg-amber-500':st==='leave'?'bg-yellow-500':'bg-red-500'
           return (
           <Link key={emp.id} to={`/profile/${emp.id}`}>
-            <Card className="p-4 hover:border-zinc-700 transition-colors h-full relative group">
-              <div className={`absolute top-3 right-3 h-3 w-3 rounded-full ${color} ring-2 ring-zinc-900`} title={`Attendance: ${st}`} />
+            <Card className="p-4 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors h-full relative group">
+              <div className={`absolute top-3 right-3 h-3 w-3 rounded-full ${color} ring-2 ring-white dark:ring-zinc-900`} title={`Attendance: ${st}`} />
               <div className="flex gap-3">
-                <div className="h-12 w-12 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden text-zinc-600 dark:text-zinc-200">
                   {emp.avatar_url ? <img src={emp.avatar_url.startsWith('/uploads')?`http://localhost:8000${emp.avatar_url}`:emp.avatar_url} className="h-full w-full object-cover"/> : `${emp.first_name[0]}${emp.last_name[0]}`}
                 </div>
                 <div className="min-w-0">
@@ -126,14 +126,14 @@ export default function Dashboard(){
           <Input placeholder="Email" type="email" value={invite.email} onChange={e=>setInvite({...invite, email:e.target.value})} required/>
           <Input placeholder="Job Title" value={invite.jobTitle} onChange={e=>setInvite({...invite, jobTitle:e.target.value})} />
           <Input placeholder="Department" value={invite.department} onChange={e=>setInvite({...invite, department:e.target.value})} />
-          <select value={invite.role} onChange={e=>setInvite({...invite, role:e.target.value})} className="h-10 rounded-md border border-zinc-800 bg-zinc-900 px-3 text-sm">
+          <select value={invite.role} onChange={e=>setInvite({...invite, role:e.target.value})} className="h-10 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 text-sm">
             <option value="employee">Employee</option>
             <option value="hr">HR</option>
             <option value="admin">Admin</option>
           </select>
           <Button type="submit" className="md:col-span-3">Invite & Generate ID</Button>
         </form>
-        {msg && <div className="mt-3 text-sm p-2 rounded bg-zinc-900 border border-zinc-800">{msg}</div>}
+        {msg && <div className="mt-3 text-sm p-2 rounded bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
       </Card>
     </div>
   )
